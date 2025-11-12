@@ -6,8 +6,7 @@ import '../../routes/app_routes.dart';
 
 class FaceConfirmationScreen extends StatelessWidget {
   final ThemeController themeController = Get.find<ThemeController>();
-
-  const FaceConfirmationScreen({super.key});
+  FaceConfirmationScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +37,7 @@ class FaceConfirmationScreen extends StatelessWidget {
                 fontWeight: FontWeight.w600,
                 fontSize: 16,
                 color: themeController.isDarkMode.value
-                    ? Colors.white.withOpacity(0.9)
+                    ? Colors.white.withValues(alpha: 0.9)
                     : const Color(0xFF535353),
                 height: 1.2,
               ),
@@ -54,7 +53,7 @@ class FaceConfirmationScreen extends StatelessWidget {
                 fontWeight: FontWeight.w400,
                 fontSize: 14,
                 color: themeController.isDarkMode.value
-                    ? Colors.white.withOpacity(0.7)
+                    ? Colors.white.withValues(alpha: 0.7)
                     : const Color(0xFF6A6A6A),
                 height: 1.3,
               ),

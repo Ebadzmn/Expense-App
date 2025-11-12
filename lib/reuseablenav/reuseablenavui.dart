@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:your_expense/homepage/main_home_page_controller.dart';
+
+
+import '../home/home_controller.dart';
 
 class CustomBottomNavBar extends StatelessWidget {
   final bool isDarkMode;

@@ -1,4 +1,4 @@
-package com.example.your_expense
+package com.mashiur.expenseapp
 
 import io.flutter.embedding.android.FlutterActivity
 

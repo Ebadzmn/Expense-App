@@ -1,35 +1,56 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
-    id("kotlin-android")
+    id("org.jetbrains.kotlin.android")
     id("dev.flutter.flutter-gradle-plugin")
 }
 
+// ✅ Load keystore properties
+val keystoreProperties = Properties()
+val keystorePropertiesFile = rootProject.file("key.properties")
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(keystorePropertiesFile.inputStream())
+} else {
+    println("⚠️ key.properties not found at ${keystorePropertiesFile.path}")
+}
+
 android {
-    namespace = "com.example.your_expense"
+    namespace = "com.mashiur.expenseapp" // ✅ Unique namespace
     compileSdk = 36
 
-    // ndkVersion = "27.0.12077973" // Remove if not needed
+    defaultConfig {
+        applicationId = "com.mashiur.expenseapp" // ✅ Unique applicationId
+        minSdk = flutter.minSdkVersion
+        targetSdk = 36
+        // Read from pubspec.yaml: e.g., version: 1.0.1+2
+        versionCode = flutter.versionCode
+        versionName = flutter.versionName
+    }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_11.toString()
+        jvmTarget = "17"
     }
 
-    defaultConfig {
-        applicationId = "com.example.your_expense"
-        minSdk = 23
-        targetSdk = 34
-        versionCode = project.properties["flutter.versionCode"]?.toString()?.toIntOrNull() ?: 1
-        versionName = project.properties["flutter.versionName"]?.toString() ?: "1.0.0"
+    signingConfigs {
+        create("release") {
+            storeFile = rootProject.file(keystoreProperties["storeFile"]?.toString() ?: "upload-key.jks")
+            storePassword = keystoreProperties["storePassword"]?.toString() ?: "123456"
+            keyAlias = keystoreProperties["keyAlias"]?.toString() ?: "upload"
+            keyPassword = keystoreProperties["keyPassword"]?.toString() ?: "123456"
+        }
     }
 
     buildTypes {
-        release {
-            signingConfig = signingConfigs.getByName("debug")
+        getByName("release") {
+            isMinifyEnabled = false
+            isShrinkResources = false
+            signingConfig = signingConfigs.getByName("release")
         }
     }
 }
