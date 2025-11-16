@@ -28,7 +28,7 @@ import '../Settings/language/languageui.dart';
 import '../Settings/main_setting_screen.dart';
 import '../Settings/notification/notificationscreen.dart';
 import '../Settings/premium/paymentsuccessscreen.dart';
-import '../Settings/premium/paymenttypetui.dart';
+// import '../Settings/premium/paymenttypetui.dart';
 import '../Settings/premium/paymentui.dart';
 import '../Settings/userprofile/PersonalInformationScreen.dart';
 import '../Settings/userprofile/EditNameScreen.dart';
@@ -234,7 +234,7 @@ class AppRoutes {
     ),
     GetPage(name: nonProSavings, page: () => NonProSavingsPage()),
     GetPage(name: proSavings, page: () => ProSavingsPage()),
-    GetPage(name: paymentScreen, page: () => PaymentScreen()),
+    // GetPage(name: paymentScreen, page: () => PaymentScreen()),
     GetPage(name: paymentSuccess, page: () => PaymentSuccessScreen()),
     GetPage(name: currencyChange, page: () => CurrencyExchangeScreen()),
     GetPage(name: addTransaction, page: () => AddTransactionScreen()),

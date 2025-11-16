@@ -113,4 +113,4 @@ If you have questions or requests regarding this Privacy Policy, contact us at:
 
 Email: support@your-expense.app
 
-We respond within a reasonable timeframe.
+We will respond within a reasonable timeframe.

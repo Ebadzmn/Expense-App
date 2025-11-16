@@ -1,7 +1,7 @@
 name: your_expense
 description: "A new Flutter project."
 publish_to: 'none'
-version: 1.0.0+1
+version: 1.0.1+5
 
 environment:
   sdk: ^3.8.1
@@ -30,6 +30,7 @@ dependencies:
   clipboard: ^0.1.3
   local_auth: ^2.3.0
   in_app_purchase: ^3.2.3
+  in_app_purchase_android: ^0.4.0+5
 
 dev_dependencies:
   flutter_test:

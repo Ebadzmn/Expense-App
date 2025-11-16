@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import '../../home/home_controller.dart';
 import '../../services/api_base_service.dart';
 import '../../services/config_service.dart';
+import '../../services/token_service.dart';
 
 
 class MonthlyBudgetController extends GetxService {
@@ -18,7 +19,26 @@ class MonthlyBudgetController extends GetxService {
   @override
   void onInit() {
     super.onInit();
-    fetchMonthlyBudget();
+    // Only fetch budget when authenticated
+    if (Get.isRegistered<TokenService>()) {
+      final tokenService = Get.find<TokenService>();
+      if (tokenService.isTokenValid()) {
+        fetchMonthlyBudget();
+      } else {
+        print('MonthlyBudgetController: Skipping initial budget fetch; user not authenticated.');
+        // Default state without network call
+        currentBudget.value = {
+          'totalBudget': 0.0,
+          'month': getCurrentMonth(),
+        };
+      }
+    } else {
+      print('MonthlyBudgetController: TokenService not registered; skipping initial budget fetch.');
+      currentBudget.value = {
+        'totalBudget': 0.0,
+        'month': getCurrentMonth(),
+      };
+    }
   }
 
   // Get current month in required format

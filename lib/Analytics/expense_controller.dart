@@ -4,6 +4,7 @@ import '../home/home_controller.dart';
 import 'ExpenseService.dart';
 import 'expense_model.dart';
 import 'package:your_expense/services/config_service.dart';
+import 'package:your_expense/services/token_service.dart';
 
 import 'package:your_expense/Analytics/analytics_controller.dart';
 
@@ -45,7 +46,17 @@ class ExpenseController extends GetxController {
       });
     }
 
-    loadExpenses();
+    // Only load expenses when user is authenticated
+    if (Get.isRegistered<TokenService>()) {
+      final tokenService = Get.find<TokenService>();
+      if (tokenService.isTokenValid()) {
+        loadExpenses();
+      } else {
+        print('ExpenseController: Skipping initial load; user not authenticated.');
+      }
+    } else {
+      print('ExpenseController: TokenService not registered; skipping initial load.');
+    }
   }
 
   /// Monitors for month changes and automatically resets to current month
