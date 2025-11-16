@@ -1,63 +1,116 @@
-# Privacy Policy for Your Expense
+Updated Privacy Policy (Camera Permission Reason Added Clearly)
+Privacy Policy for Your Expense
 
 Last updated: 2025-11-05
 
 Your Expense ("we", "our", or "us") respects your privacy. This Privacy Policy explains what information we collect, how we use it, and your choices. This policy applies to our mobile application available on Google Play and the Apple App Store.
 
-## Information We Collect
+Information We Collect
 
-- Camera data: Images/video frames captured via your device camera for features like face verification, barcode/QR scanning, and optional profile photo upload.
-- Photos: If you choose, images from your photo library for receipt scanning or profile photo.
-- Basic app data: Device information (model, OS version), crash logs, and usage analytics necessary to operate and improve the app.
-- Purchase data: If you subscribe or make in-app purchases, transaction identifiers provided by the platform.
+Camera data:
+We access your device camera to allow you to capture photos of invoices and receipts for OCR (Optical Character Recognition).
+This enables the app to automatically extract expense details (date, amount, vendor, items) and add them to your expense list.
 
-## How We Use Your Information
+The camera may also be used for:
 
-- Face verification and App Lock: Camera frames are processed on-device to verify your identity. We do not sell biometric data.
-- Barcode/QR scanning: Camera frames are processed on-device to extract codes. No images are sent to our servers unless you choose to upload content.
-- Profile image: If you upload a profile photo, the image is transmitted securely to our backend to store and display in your account.
-- Receipts/OCR: If you capture or upload receipt images, they may be processed (locally or by our backend) to extract text and save expense entries.
-- App functionality, support, and improvement: To maintain and enhance app features, debug issues, and ensure service integrity.
+Barcode/QR scanning
 
-## On-Device Processing
+Optional profile photo capture
 
-Where possible, image frames are processed locally on your device (e.g., face verification and barcode scanning). When you explicitly upload images (e.g., profile photo or receipts), those images are transmitted securely to our servers to provide the requested feature.
+(If enabled) App Lock or face verification features
 
-## Data Sharing
+We do NOT use the camera for any purpose other than the features you explicitly trigger.
 
-- We do not sell personal information.
-- Service providers: We may share minimal data with third-party providers strictly to deliver services (e.g., crash reporting, analytics, ads). These providers are bound by confidentiality and data protection obligations.
-- Legal: We may disclose information if required by law or to protect our rights and users.
+Photos (Gallery Access):
+If you choose to upload an invoice/receipt from your gallery instead of using the camera, we access the selected image only.
 
-## Advertising
+Basic app data:
+Device information (model, OS version), crash logs, and usage analytics required to operate and improve the app.
 
-Our app integrates Google Mobile Ads. Ad networks may collect device identifiers and usage information to display and measure ads, in accordance with their policies. You can learn more at Google’s Advertising Policies and opt-out options on your device.
+Purchase data:
+For subscriptions or in-app purchases, we receive only the transaction identifiers from Google Play or Apple App Store.
 
-## Data Retention
+How We Use Your Information
 
-We retain information only as long as necessary to provide the service, comply with legal obligations, resolve disputes, and enforce agreements. You may request deletion of your account data via the contact below.
+Invoice/OCR Processing (Main Camera Use Case):
+When you take a picture of an invoice or receipt, the app processes the image locally or via our secure backend to extract expense data.
+This is the primary reason your device camera is required.
 
-## Your Choices
+Barcode/QR scanning:
+Camera frames are processed on-device to extract barcode/QR information.
+No images are sent to our servers unless you choose to upload content.
 
-- Permissions: You can deny camera or photo library permissions. Some features may not work without these permissions.
-- Access/Deletion: Contact us to request access or deletion of your data associated with your account.
+Profile image upload:
+If you upload a profile photo, it is securely stored on our backend and displayed in your account.
 
-## Children’s Privacy
+Face verification / App Lock (if enabled):
+Camera frames are processed on-device only to verify your identity for unlocking the app.
+We do not save or sell biometric data.
 
-Our app is not directed to children under the age of 13. We do not knowingly collect personal information from children.
+App functionality, support, and improvement:
+To maintain and enhance features, debug issues, and ensure service quality.
 
-## Security
+On-Device Processing
 
-We use reasonable administrative, technical, and physical safeguards to protect your information. No method of transmission or storage is 100% secure.
+Where possible, image frames (e.g., for invoice scanning, face verification, barcode scanning) are processed locally on your device.
+Only when you intentionally upload an image (e.g., a receipt or profile photo) is it transmitted securely to our server.
 
-## Changes to This Policy
+Data Sharing
 
-We may update this Privacy Policy from time to time. We will post the updated version within the app and/or on our website. Continued use of the app after changes indicates acceptance of the updated policy.
+We do not sell personal information.
 
-## Contact Us
+Service providers: Limited data may be shared with third parties for analytics, crash reporting, or OCR processing.
 
-If you have questions or requests about this Privacy Policy, please contact:
+Legal reasons: We may disclose information if required by law or to protect user rights.
+
+Advertising
+
+Our app integrates Google Mobile Ads.
+Ad networks may collect device identifiers and usage information to display relevant ads, following their privacy standards and your device settings.
+
+Data Retention
+
+We retain data only as long as necessary for:
+
+App functionality
+
+Legal obligations
+
+User account operations
+
+You may request deletion of your data at any time via the contact below.
+
+Your Choices
+
+You can deny camera or gallery permissions, but:
+
+Invoice/receipt scanning (OCR)
+
+Barcode/QR scanning
+
+Profile image capture
+will not work without camera access.
+
+You may request access or deletion of your stored account data.
+
+Children’s Privacy
+
+This app is not directed to children under 13, and we do not knowingly collect personal information from children.
+
+Security
+
+We use reasonable administrative, technical, and physical measures to protect your information.
+However, no method of storage or transmission is 100% secure.
+
+Changes to This Policy
+
+We may update this Privacy Policy periodically.
+Continued use of the app means you accept the updated terms.
+
+Contact Us
+
+If you have questions or requests regarding this Privacy Policy, contact us at:
 
 Email: support@your-expense.app
 
-We will respond within a reasonable timeframe.
+We respond within a reasonable timeframe.
