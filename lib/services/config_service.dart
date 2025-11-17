@@ -56,6 +56,10 @@ class ConfigService extends GetxService {
   String get userProfileEndpoint => '$baseUrl/user/profile';
   String get marketplaceSearchEndpoint => '$baseUrl/marketplace/search';
   String get categoryEndpoint => '$baseUrl/category';
+  // Payment endpoint (for posting successful IAP transactions)
+  String get paymentEndpoint => '$baseUrl/payment';
+  // Subscription status endpoint (server verifies App/Play store receipts and entitlement)
+  String get subscriptionStatusEndpoint => '$baseUrl/subscription/status';
 
   String getBudgetEndpoint(String monthYear) => '$baseUrl/budget/$monthYear';
   String getMonthlyBudgetSimpleEndpoint(String month) => '$baseUrl/budget/simple-monthly-budget?Month=$month';

@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import '../../Settings/appearance/ThemeController.dart';
 import '../../routes/app_routes.dart';
 import '../comparisongraphcontroller.dart';
+import 'package:your_expense/services/subscription_service.dart';
 
 
 class ComparisonGraphScreen extends StatelessWidget {
@@ -369,32 +370,38 @@ class ComparisonGraphScreen extends StatelessWidget {
               SizedBox(height: screenHeight * 0.03),
 
               // View all Purchase Button
-              SizedBox(
-                width: double.infinity,
-                height: 48,
-                child: OutlinedButton(
-                  onPressed: () {
-                    Get.toNamed(AppRoutes.nonProSavings);
-                  },
-                  style: OutlinedButton.styleFrom(
-                    side: BorderSide(
-                      color: isDarkMode ? const Color(0xFF333333) : Colors.grey[300]!,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    backgroundColor: isDarkMode ? const Color(0xFF1E1E1E) : Colors.white,
-                  ),
-                  child: Text(
-                    'viewAllPurchase'.tr,
-                    style: TextStyle(
-                      color: isDarkMode ? Colors.white : Colors.black87,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ),
-              ),
+  SizedBox(
+    width: double.infinity,
+    height: 48,
+    child: OutlinedButton(
+      onPressed: () {
+        // Route to Pro or Non-Pro Savings based on subscription status
+        final sub = Get.find<SubscriptionService>();
+        if (sub.isActivePro) {
+          Get.toNamed(AppRoutes.proSavings);
+        } else {
+          Get.toNamed(AppRoutes.nonProSavings);
+        }
+      },
+      style: OutlinedButton.styleFrom(
+        side: BorderSide(
+          color: isDarkMode ? const Color(0xFF333333) : Colors.grey[300]!,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+        backgroundColor: isDarkMode ? const Color(0xFF1E1E1E) : Colors.white,
+      ),
+      child: Text(
+        'viewAllPurchase'.tr,
+        style: TextStyle(
+          color: isDarkMode ? Colors.white : Colors.black87,
+          fontSize: 16,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+    ),
+  ),
             ],
           ),
         );

@@ -13,6 +13,7 @@ import 'package:your_expense/config/app_config.dart';
 import 'package:your_expense/services/config_service.dart';
 import 'package:your_expense/services/token_service.dart';
 import 'package:your_expense/services/api_base_service.dart';
+import 'package:your_expense/services/subscription_service.dart';
 import 'package:your_expense/services/category_service.dart';
 
 import 'package:your_expense/services/face_id_service.dart';
@@ -64,7 +65,10 @@ Future<void> main() async {
   await Get.putAsync(() => ConfigService().init());
   await Get.putAsync(() => TokenService().init());
   await Get.putAsync(() => ApiBaseService().init());
+  await Get.putAsync(() => SubscriptionService().init());
   await Get.putAsync(() => CategoryService().init());
+  // Face ID service should be ready before routing to allow app-launch gate
+  await Get.putAsync(() => FaceIdService().init());
 
   // Ensure MarketplaceService is ready before any page using it
   await Get.putAsync(() => MarketplaceService().init());
@@ -76,6 +80,15 @@ Future<void> main() async {
   await Get.putAsync(() => IncomeService().init());
   // Ensure login dependencies are available before UI builds
   await Get.putAsync(() => LoginService().init());
+
+  // After core services and token are ready, do local recheck and expiry enforcement only
+  try {
+    await SubscriptionService.to.recheckAndPersist();
+  } catch (e) {
+    debugPrint('[Startup] Subscription local recheck failed: $e');
+  }
+  // Ensure ProfileService is available before any screen calls Get.find
+  await Get.putAsync(() => ProfileService().init());
 
   // Essential controllers before UI
   Get.put(ThemeController(), permanent: true);
@@ -96,12 +109,11 @@ Future<void> main() async {
   // Continue initializing remaining services concurrently (do not await)
   Future(() async {
     await Future.wait([
-      Get.putAsync(() => FaceIdService().init()),
+      // Already initialized above; keep out of concurrent init
       Get.putAsync(() => RegistrationApiService().init()),
       Get.putAsync(() => VerificationApiService().init()),
       Get.putAsync(() => ReviewService().init()),
-      // IncomeService initialized earlier; removing from concurrent init
-      Get.putAsync(() => ProfileService().init()),
+      // IncomeService and ProfileService initialized earlier; removing from concurrent init
       Get.putAsync(() => UserService().init()),
       Get.putAsync(() => ChangeEmailService().init()),
     ]);

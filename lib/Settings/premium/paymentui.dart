@@ -2,8 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:your_expense/services/iap_service.dart';
+import 'package:your_expense/services/subscription_service.dart';
 
 import '../appearance/ThemeController.dart';
+
+// Top-level load indicator to confirm this file is loaded by the route
+final _paymentUiLoaded = (() {
+  print('[IAP] paymentui.dart library loaded');
+  return true;
+})();
 
 class PremiumPlansScreen extends StatefulWidget {
   const PremiumPlansScreen({super.key});
@@ -23,13 +30,20 @@ class _PremiumPlansScreenState extends State<PremiumPlansScreen> {
     themeController = Get.find<ThemeController>();
     iap = Get.isRegistered<IapService>() ? Get.find<IapService>() : Get.put(IapService());
     // init IAP (will also query products and listen for purchases)
+    print('[IAP] PremiumPlansScreen init: calling iap.init()');
     iap.init();
+    // Show a visible hint so you can confirm on-device
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Get.snackbar('IAP', 'Premium screen loaded, init called', snackPosition: SnackPosition.BOTTOM);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    print('[IAP] PremiumPlansScreen build()');
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
+    final sub = Get.find<SubscriptionService>();
 
     return Obx(() => Scaffold(
           backgroundColor: themeController.isDarkModeActive ? const Color(0xFF121212) : const Color(0xFFF8F9FA),
@@ -56,7 +70,11 @@ class _PremiumPlansScreenState extends State<PremiumPlansScreen> {
             ),
             centerTitle: true,
           ),
-          body: SingleChildScrollView(
+          body: (sub.isPro.value && sub.isActivePro)
+              // Pro user view
+              ? _buildProUserScreen(screenWidth, screenHeight)
+              // Normal purchase flow view
+              : SingleChildScrollView(
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
               child: Column(
@@ -221,44 +239,44 @@ class _PremiumPlansScreenState extends State<PremiumPlansScreen> {
                         child: ValueListenableBuilder<bool>(
                           valueListenable: iap.isLoading,
                           builder: (context, loading, __) {
-                            final isDisabled = loading || selected == null;
+                            final bool isDisabledStyle = loading || selected == null;
 
                             return ElevatedButton(
-                              onPressed: isDisabled
-                                  ? null
-                                  : () async {
-                                      // safety: if selected is null (race), try re-query once
-                                      if (selected == null) {
-                                        Get.snackbar('Retrying', 'Trying to refresh product list...'.tr,
-                                            snackPosition: SnackPosition.BOTTOM);
-                                        await iap.queryProducts({IapService.monthlyId, IapService.yearlyId});
-                                        // try to find again
-                                        ProductDetails? retrySelected;
-                                        try {
-                                          retrySelected = iap.products.value.firstWhere((p) => p.id == selectedProductId);
-                                        } catch (_) {
-                                          retrySelected = null;
-                                        }
-                                        if (retrySelected == null) {
-                                          Get.snackbar(
-                                            'Not available',
-                                            'Product not available yet. Try reinstalling the app from Play Store or wait a few minutes.'.tr,
-                                            snackPosition: SnackPosition.BOTTOM,
-                                          );
-                                          return;
-                                        } else {
-                                          debugPrint('Upgrade pressed for product id: ' + (retrySelected.id));
-                                          await iap.buy(retrySelected);
-                                          return;
-                                        }
-                                      }
+                              onPressed: () async {
+                                // prevent double taps while loading
+                                if (loading) return;
 
-                                      // normal flow
-                                      debugPrint('Upgrade pressed for product id: ' + (selected.id));
-                                      await iap.buy(selected!);
-                                    },
+                                // If selected is null, try re-query once and proceed if found
+                                if (selected == null) {
+                                  Get.snackbar('Retrying', 'Trying to refresh product list...'.tr,
+                                      snackPosition: SnackPosition.BOTTOM);
+                                  await iap.queryProducts({IapService.monthlyId, IapService.yearlyId});
+                                  ProductDetails? retrySelected;
+                                  try {
+                                    retrySelected = iap.products.value.firstWhere((p) => p.id == selectedProductId);
+                                  } catch (_) {
+                                    retrySelected = null;
+                                  }
+                                  if (retrySelected == null) {
+                                    Get.snackbar(
+                                      'Not available',
+                                      'Product not available yet. Try reinstalling the app from Play Store or wait a few minutes.'.tr,
+                                      snackPosition: SnackPosition.BOTTOM,
+                                    );
+                                    return;
+                                  } else {
+                                    debugPrint('Upgrade pressed for product id: ' + (retrySelected.id));
+                                    await iap.buy(retrySelected);
+                                    return;
+                                  }
+                                }
+
+                                // normal flow
+                                debugPrint('Upgrade pressed for product id: ' + (selected.id));
+                                await iap.buy(selected!);
+                              },
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: isDisabled ? Colors.grey : const Color(0xFF2196F3),
+                                backgroundColor: isDisabledStyle ? Colors.grey : const Color(0xFF2196F3),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(screenWidth * 0.03),
                                 ),
@@ -271,7 +289,7 @@ class _PremiumPlansScreenState extends State<PremiumPlansScreen> {
                                       child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
                                     )
                                   : Text(
-                                      selected == null ? 'not_available'.tr : 'upgrade_now'.tr,
+                                      selected == null ? 'retry_products'.tr : 'upgrade_now'.tr,
                                       style: TextStyle(
                                         color: Colors.white,
                                         fontSize: screenWidth * 0.04,
@@ -291,6 +309,110 @@ class _PremiumPlansScreenState extends State<PremiumPlansScreen> {
             ),
           ),
         ));
+  }
+
+  Widget _buildProUserScreen(double screenWidth, double screenHeight) {
+    final isDarkMode = themeController.isDarkModeActive;
+    final sub = Get.find<SubscriptionService>();
+    // Touch reactive values so Obx rebuilds
+    final bool pro = sub.isPro.value;
+    final DateTime? expiry = sub.getExpiryDate;
+    final bool active = sub.isActivePro;
+    final int? remaining = sub.remainingDays;
+
+    return Center(
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.08),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Icon(Icons.workspace_premium, size: screenWidth * 0.2, color: const Color(0xFF2196F3)),
+            SizedBox(height: screenHeight * 0.02),
+            Text(
+              'payment_success_title'.tr,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: screenWidth * 0.06,
+                fontWeight: FontWeight.w700,
+                color: isDarkMode ? Colors.white : Colors.black,
+              ),
+            ),
+            SizedBox(height: screenHeight * 0.01),
+            Text(
+              'payment_success_subtitle'.tr,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: screenWidth * 0.04,
+                color: isDarkMode ? Colors.grey[300] : const Color(0xFF6B7280),
+              ),
+            ),
+            SizedBox(height: screenHeight * 0.03),
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.04, vertical: screenHeight * 0.015),
+              decoration: BoxDecoration(
+                color: isDarkMode ? const Color(0xFF1E1E1E) : Colors.white,
+                borderRadius: BorderRadius.circular(screenWidth * 0.03),
+                border: Border.all(color: Colors.green.shade300),
+              ),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.verified, color: Colors.green, size: screenWidth * 0.06),
+                      SizedBox(width: screenWidth * 0.02),
+                      Text(
+                        'Premium Active',
+                        style: TextStyle(
+                          fontSize: screenWidth * 0.045,
+                          fontWeight: FontWeight.w600,
+                          color: isDarkMode ? Colors.white : Colors.black,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: screenHeight * 0.01),
+                  Text(
+                    (expiry == null)
+                        ? 'Lifetime Premium'
+                        : 'Expires on ' + expiry.toLocal().toString().split('.').first,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: screenWidth * 0.035, color: isDarkMode ? Colors.grey[300] : const Color(0xFF6B7280)),
+                  ),
+                  if (remaining != null) ...[
+                    SizedBox(height: screenHeight * 0.005),
+                    Text(
+                      'Remaining days: ' + remaining.toString(),
+                      style: TextStyle(fontSize: screenWidth * 0.035, color: Colors.green.shade700),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+            SizedBox(height: screenHeight * 0.03),
+            SizedBox(
+              width: double.infinity,
+              height: screenHeight * 0.06,
+              child: ElevatedButton(
+                onPressed: () {
+                  Get.back();
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF2196F3),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(screenWidth * 0.03)),
+                  elevation: 0,
+                ),
+                child: Text(
+                  'Continue',
+                  style: TextStyle(color: Colors.white, fontSize: screenWidth * 0.04, fontWeight: FontWeight.w600),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   Widget _buildPlanCard({

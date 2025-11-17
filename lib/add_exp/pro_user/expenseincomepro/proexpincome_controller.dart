@@ -14,6 +14,7 @@ import 'package:your_expense/services/config_service.dart'; // Add this import
 import 'package:your_expense/Analytics/expense_model.dart';
 import 'package:your_expense/home/home_controller.dart';
 import 'package:your_expense/add_exp/common/barcode_scanner_screen.dart';
+import 'package:your_expense/services/subscription_service.dart';
 
 
 class ProExpensesIncomeController extends GetxController {
@@ -42,6 +43,10 @@ class ProExpensesIncomeController extends GetxController {
 
   final incomeCategories = <Map<String, dynamic>>[].obs;
 
+  // Custom name mapping for the 'Other' tiles
+  final customExpenseOtherName = ''.obs;
+  final customIncomeOtherName = ''.obs;
+
   final paymentMethods = <Map<String, dynamic>>[
     {'name': 'cash', 'icon': Icons.money},
     {'name': 'mobile', 'icon': Icons.phone_android},
@@ -54,6 +59,11 @@ class ProExpensesIncomeController extends GetxController {
   late final OcrService _ocrService;
   late final ApiBaseService _apiService;
   late final ConfigService _configService;
+  late final SubscriptionService _subscriptionService;
+
+  // Inline custom category input state
+  final showCustomCategoryInput = false.obs;
+  late final TextEditingController customCategoryController;
 
   @override
   void onInit() {
@@ -65,6 +75,7 @@ class ProExpensesIncomeController extends GetxController {
     _ocrService = Get.find<OcrService>();
     _apiService = Get.find<ApiBaseService>();
     _configService = Get.find<ConfigService>();
+    _subscriptionService = Get.find<SubscriptionService>();
     _initializeControllers();
     _loadUnlockStatus();
     _loadExpenseCategories();
@@ -75,6 +86,11 @@ class ProExpensesIncomeController extends GetxController {
       initialTab = args['defaultTab'] ?? 0;
       currentTab.value = initialTab;
     }
+
+    // Apply subscription-based unlocks now and react to changes
+    _applyProSubscriptionUnlock();
+    ever(_subscriptionService.isPro, (_) => _applyProSubscriptionUnlock());
+    ever<DateTime?>(_subscriptionService.expiryDate, (_) => _applyProSubscriptionUnlock());
   }
 
   // Map category names to appropriate icons
@@ -142,12 +158,14 @@ class ProExpensesIncomeController extends GetxController {
   void _initializeControllers() {
     amountController = TextEditingController();
     descriptionController = TextEditingController();
+    customCategoryController = TextEditingController();
   }
 
   @override
   void onClose() {
     amountController.dispose();
     descriptionController.dispose();
+    customCategoryController.dispose();
     super.onClose();
   }
 
@@ -155,6 +173,17 @@ class ProExpensesIncomeController extends GetxController {
     final prefs = await SharedPreferences.getInstance();
     isExpenseProUnlocked.value = prefs.getBool('isExpenseProUnlocked') ?? false;
     isIncomeProUnlocked.value = prefs.getBool('isIncomeProUnlocked') ?? false;
+  }
+
+  void _applyProSubscriptionUnlock() {
+    if (_subscriptionService.isActivePro) {
+      isExpenseProUnlocked.value = true;
+      isIncomeProUnlocked.value = true;
+    } else if (_subscriptionService.isProUser && _subscriptionService.isExpiredNow) {
+      // Optional: lock back if expired
+      isExpenseProUnlocked.value = false;
+      isIncomeProUnlocked.value = false;
+    }
   }
 
   Future<void> unlockProFeatures(bool isExpense) async {
@@ -169,15 +198,25 @@ class ProExpensesIncomeController extends GetxController {
   void switchToTab(int tab) {
     currentTab.value = tab;
     clearSelections();
+    // keep custom name input visibility consistent per tab
+    showCustomCategoryInput.value = false;
   }
 
   void selectExpenseCategory(String category) {
-    selectedExpenseCategory.value = category;
+    if (category.toLowerCase() == 'other' && customExpenseOtherName.value.isNotEmpty) {
+      selectedExpenseCategory.value = customExpenseOtherName.value;
+    } else {
+      selectedExpenseCategory.value = category;
+    }
   }
 
 
   void selectIncomeCategory(String category) {
-    selectedIncomeCategory.value = category;
+    if (category.toLowerCase() == 'other income' && customIncomeOtherName.value.isNotEmpty) {
+      selectedIncomeCategory.value = customIncomeOtherName.value;
+    } else {
+      selectedIncomeCategory.value = category;
+    }
   }
 
   void selectPaymentMethod(String method) {
@@ -196,6 +235,35 @@ class ProExpensesIncomeController extends GetxController {
     selectedExpenseCategory.value = '';
     selectedIncomeCategory.value = '';
     selectedPaymentMethod.value = '';
+  }
+
+  // Custom category helpers
+  void toggleCustomCategoryInput() {
+    showCustomCategoryInput.toggle();
+  }
+
+  void useCustomCategoryFromInput() {
+    final name = customCategoryController.text.trim();
+    if (name.isEmpty) {
+      Get.snackbar('Error', 'Please enter a category name');
+      return;
+    }
+    if (currentTab.value == 0) {
+      customExpenseOtherName.value = name;
+      selectExpenseCategory('Other');
+    } else {
+      customIncomeOtherName.value = name;
+      selectIncomeCategory('Other Income');
+    }
+    showCustomCategoryInput.value = false;
+  }
+
+  Future<void> addTransactionWithCustomCategory() async {
+    useCustomCategoryFromInput();
+    // If validation failed, it already showed a snackbar
+    if (currentTab.value == 0 && selectedExpenseCategory.value.isEmpty) return;
+    if (currentTab.value == 1 && selectedIncomeCategory.value.isEmpty) return;
+    await addTransaction();
   }
 
   // New method for processing OCR raw text for expenses

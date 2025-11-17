@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../appearance/ThemeController.dart';
- // Import your ThemeController
+import '../../services/face_id_service.dart';
+import '../../services/local_auth_service.dart';
 
 class AppUnlockScreen extends StatefulWidget {
   const AppUnlockScreen({super.key});
@@ -15,6 +16,19 @@ class _AppUnlockScreenState extends State<AppUnlockScreen> {
   String selectedOption = 'none'; // Default selection
   bool enableFaceID = true;
   bool faceIDForAppLaunch = true;
+
+  late final FaceIdService _faceService;
+  late final LocalAuthService _localAuth;
+
+  @override
+  void initState() {
+    super.initState();
+    _faceService = Get.find<FaceIdService>();
+    _localAuth = Get.find<LocalAuthService>();
+    // Initialize toggle state from saved preference
+    enableFaceID = _faceService.isEnabledForCurrentUser();
+    faceIDForAppLaunch = _faceService.isLaunchGateEnabledForCurrentUser();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -128,10 +142,83 @@ class _AppUnlockScreenState extends State<AppUnlockScreen> {
                 'enable_faceid_desc'.tr,
                 'assets/icons/enabalfaceid.png',
                 enableFaceID,
-                    (value) {
-                  setState(() {
-                    enableFaceID = value;
-                  });
+                (value) async {
+                  // Handle enable/disable with service and biometric support
+                  if (value) {
+                    final supported = await _localAuth.isSupported();
+                    if (!supported) {
+                      if (mounted) {
+                        setState(() {
+                          enableFaceID = false;
+                        });
+                      }
+                      Get.snackbar(
+                        'Face ID unavailable',
+                        'Your device does not support biometrics.',
+                        snackPosition: SnackPosition.BOTTOM,
+                        backgroundColor: Colors.red.shade100,
+                        colorText: Colors.red.shade800,
+                      );
+                      return;
+                    }
+                    try {
+                      await _faceService.enableForCurrentUser();
+                      if (mounted) {
+                        setState(() {
+                          enableFaceID = true;
+                        });
+                      }
+                      Get.snackbar(
+                        'Enabled',
+                        'Face ID enabled for your account.',
+                        snackPosition: SnackPosition.BOTTOM,
+                        backgroundColor: Colors.green.shade100,
+                        colorText: Colors.green.shade800,
+                      );
+                    } catch (e) {
+                      if (mounted) {
+                        setState(() {
+                          enableFaceID = false;
+                        });
+                      }
+                      Get.snackbar(
+                        'Error',
+                        'Could not enable Face ID. Please try again.',
+                        snackPosition: SnackPosition.BOTTOM,
+                        backgroundColor: Colors.red.shade100,
+                        colorText: Colors.red.shade800,
+                      );
+                    }
+                  } else {
+                    try {
+                      await _faceService.disableForCurrentUser();
+                      if (mounted) {
+                        setState(() {
+                          enableFaceID = false;
+                        });
+                      }
+                      Get.snackbar(
+                        'Disabled',
+                        'Face ID disabled for your account.',
+                        snackPosition: SnackPosition.BOTTOM,
+                        backgroundColor: Colors.orange.shade100,
+                        colorText: Colors.orange.shade800,
+                      );
+                    } catch (e) {
+                      if (mounted) {
+                        setState(() {
+                          enableFaceID = true;
+                        });
+                      }
+                      Get.snackbar(
+                        'Error',
+                        'Could not disable Face ID. Please try again.',
+                        snackPosition: SnackPosition.BOTTOM,
+                        backgroundColor: Colors.red.shade100,
+                        colorText: Colors.red.shade800,
+                      );
+                    }
+                  }
                 },
                 screenWidth,
                 screenHeight,
@@ -144,10 +231,42 @@ class _AppUnlockScreenState extends State<AppUnlockScreen> {
                 'faceid_app_launch_desc'.tr,
                 'assets/icons/rocket.png',
                 faceIDForAppLaunch,
-                    (value) {
-                  setState(() {
-                    faceIDForAppLaunch = value;
-                  });
+                (value) async {
+                  // Persist app-launch gate preference; require biometrics support when enabling
+                  if (value) {
+                    final supported = await _localAuth.isSupported();
+                    if (!supported) {
+                      if (mounted) setState(() { faceIDForAppLaunch = false; });
+                      Get.snackbar(
+                        'Face ID unavailable',
+                        'Your device does not support biometrics.',
+                        snackPosition: SnackPosition.BOTTOM,
+                        backgroundColor: Colors.red.shade100,
+                        colorText: Colors.red.shade800,
+                      );
+                      return;
+                    }
+                  }
+                  try {
+                    await _faceService.setLaunchGateForCurrentUser(value);
+                    if (mounted) setState(() { faceIDForAppLaunch = value; });
+                    Get.snackbar(
+                      value ? 'Enabled' : 'Disabled',
+                      value ? 'Face ID required on app launch.' : 'Face ID not required on launch.',
+                      snackPosition: SnackPosition.BOTTOM,
+                      backgroundColor: value ? Colors.green.shade100 : Colors.orange.shade100,
+                      colorText: value ? Colors.green.shade800 : Colors.orange.shade800,
+                    );
+                  } catch (e) {
+                    if (mounted) setState(() { faceIDForAppLaunch = !value; });
+                    Get.snackbar(
+                      'Error',
+                      'Could not update app-launch Face ID setting.',
+                      snackPosition: SnackPosition.BOTTOM,
+                      backgroundColor: Colors.red.shade100,
+                      colorText: Colors.red.shade800,
+                    );
+                  }
                 },
                 screenWidth,
                 screenHeight,

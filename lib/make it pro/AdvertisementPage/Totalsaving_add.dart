@@ -4,6 +4,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:your_expense/Comparison/prosavingpage/proserviceui.dart';
 import 'package:your_expense/Settings/appearance/ThemeController.dart';
 import 'package:your_expense/Settings/premium/paymentui.dart';
+import 'package:your_expense/routes/app_routes.dart';
+import 'package:your_expense/services/subscription_service.dart';
 
 import '../../ad_helper.dart';
 
@@ -18,10 +20,20 @@ class TotalSavingAdvertisement extends StatefulWidget {
 class _TotalSavingAdvertisementState extends State<TotalSavingAdvertisement> {
   final themeController = Get.find<ThemeController>();
   bool _isAdLoading = false;
+  late final SubscriptionService _subscriptionService;
 
   @override
   void initState() {
     super.initState();
+    // Initialize subscription service and bypass ad if already Pro
+    _subscriptionService = Get.find<SubscriptionService>();
+    if (_subscriptionService.isActivePro) {
+      // Navigate directly to Pro savings if user is active Pro
+      Future.microtask(() {
+        Get.offNamed(AppRoutes.proSavings);
+      });
+      return;
+    }
     // No preload needed with simplified AdHelper
   }
 
@@ -33,6 +45,11 @@ class _TotalSavingAdvertisementState extends State<TotalSavingAdvertisement> {
 
   Future<void> _showAdAndNavigate() async {
     if (_isAdLoading) return;
+    // If Pro is active, skip ad flow
+    if (_subscriptionService.isActivePro) {
+      Get.offNamed(AppRoutes.proSavings);
+      return;
+    }
     setState(() {
       _isAdLoading = true;
     });
@@ -48,10 +65,7 @@ class _TotalSavingAdvertisementState extends State<TotalSavingAdvertisement> {
         );
         Future.delayed(const Duration(seconds: 1), () {
           if (mounted) {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => ProSavingsPage()),
-            );
+            Get.offNamed(AppRoutes.proSavings);
           }
         });
         if (mounted) {
@@ -61,10 +75,7 @@ class _TotalSavingAdvertisementState extends State<TotalSavingAdvertisement> {
         }
       },
       onAdFailed: () {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => ProSavingsPage()),
-        );
+        Get.offNamed(AppRoutes.proSavings);
         if (mounted) {
           setState(() {
             _isAdLoading = false;

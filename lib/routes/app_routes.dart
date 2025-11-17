@@ -33,6 +33,7 @@ import '../Settings/premium/paymentui.dart';
 import '../Settings/userprofile/PersonalInformationScreen.dart';
 import '../Settings/userprofile/EditNameScreen.dart';
 import '../Settings/userprofile/changeemail.dart';
+import 'package:your_expense/middleware/pro_user_middleware.dart';
 
 import '../add_exp/category/add_category_ui.dart';
 import '../add_exp/category/category_demo_screen.dart';
@@ -130,7 +131,7 @@ class AppRoutes {
 
   static final routes = [
     // Authentication Routes
-    GetPage(name: initial, page: () => OnboardingScreen()),
+    GetPage(name: initial, page: () => OnboardingScreen(), middlewares: [ProUserMiddleware()]),
     GetPage(name: login, page: () => LoginScreen()),
     GetPage(name: faceLogin, page: () => FaceLoginScreen()),
     GetPage(name: register, page: () => RegistrationScreen()),
@@ -144,7 +145,7 @@ class AppRoutes {
     GetPage(name: setNewPassword, page: () => SetNewPasswordScreen()),
 
     // Main App Routes
-    GetPage(name: mainHome, page: () => MainHomeScreen(), transition: Transition.noTransition),
+    GetPage(name: mainHome, page: () => MainHomeScreen(), transition: Transition.noTransition, middlewares: [ProUserMiddleware()]),
     GetPage(name: analytics, page: () => AnalyticsScreen(), transition: Transition.noTransition),
     GetPage(name: settings, page: () => SettingsScreen(), transition: Transition.noTransition),
     GetPage(name: personalInformation, page: () => PersonalInformationScreen()),

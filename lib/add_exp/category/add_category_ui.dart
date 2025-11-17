@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:your_expense/add_exp/category/add_category_controller.dart';
 
 
 import '../../Settings/appearance/ThemeController.dart'; // Import your ThemeController
@@ -34,6 +35,9 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final ctrl = Get.isRegistered<AddCategoryController>()
+        ? AddCategoryController.to
+        : Get.put(AddCategoryController());
     return Obx(() => Scaffold(
       backgroundColor: themeController.isDarkModeActive ? const Color(0xFF121212) : Colors.white,
       appBar: AppBar(
@@ -136,37 +140,64 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
             // Add Button
             SizedBox(
               width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {
-                  if (categoryController.text.isNotEmpty && selectedIconId != null) {
-                    final selectedIcon = baseIcons.firstWhere(
-                          (icon) => icon['id'] == selectedIconId,
-                      orElse: () => {'id': '', 'path': ''},
-                    );
-                    Get.back(result: {
-                      'name': categoryController.text,
-                      'icon': selectedIcon['path'],
-                      'iconPath': 'assets/icons/${selectedIcon['path']}',
-                    });
-                  }
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  elevation: 0,
-                ),
-                child: Text(
-                  'add'.tr,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
+              child: Obx(() => ElevatedButton(
+                    onPressed: ctrl.isLoading.value
+                        ? null
+                        : () async {
+                            final name = categoryController.text.trim();
+                            if (name.isEmpty) {
+                              Get.snackbar('Invalid', 'Category name is required', snackPosition: SnackPosition.BOTTOM);
+                              return;
+                            }
+                            if (selectedIconId == null) {
+                              Get.snackbar('Invalid', 'Please choose an icon', snackPosition: SnackPosition.BOTTOM);
+                              return;
+                            }
+                            final selectedIcon = baseIcons.firstWhere(
+                              (icon) => icon['id'] == selectedIconId,
+                              orElse: () => {'id': '', 'path': ''},
+                            );
+
+                            FocusScope.of(context).unfocus();
+                            final ok = await ctrl.addCategory({
+                              'name': name,
+                              'icon': selectedIcon['path'] ?? '',
+                            });
+
+                            if (ok) {
+                              Get.back(result: {
+                                'name': name,
+                                'icon': selectedIcon['path'],
+                                'iconPath': 'assets/icons/${selectedIcon['path']}',
+                              });
+                            }
+                          },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      elevation: 0,
+                    ),
+                    child: ctrl.isLoading.value
+                        ? const SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                            ),
+                          )
+                        : Text(
+                            'add'.tr,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
+                            ),
+                          ),
+                  )),
             ),
 
             const Spacer(),

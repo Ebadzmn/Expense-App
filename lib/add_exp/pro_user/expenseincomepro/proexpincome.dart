@@ -337,9 +337,21 @@ class ProExpensesIncomeScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: categories.map((category) {
             String categoryName = category['name'];
-            bool isSelected = isExpense
-                ? controller.selectedExpenseCategory.value == categoryName
-                : controller.selectedIncomeCategory.value == categoryName;
+            bool isSelected;
+            if (isExpense) {
+              // If this tile is 'Other', mark selected when the underlying selected is the custom name
+              if (categoryName.toLowerCase() == 'other' && controller.customExpenseOtherName.value.isNotEmpty) {
+                isSelected = controller.selectedExpenseCategory.value == controller.customExpenseOtherName.value;
+              } else {
+                isSelected = controller.selectedExpenseCategory.value == categoryName;
+              }
+            } else {
+              if (categoryName.toLowerCase() == 'other income' && controller.customIncomeOtherName.value.isNotEmpty) {
+                isSelected = controller.selectedIncomeCategory.value == controller.customIncomeOtherName.value;
+              } else {
+                isSelected = controller.selectedIncomeCategory.value == categoryName;
+              }
+            }
 
             return Expanded(
               child: GestureDetector(
@@ -403,19 +415,18 @@ class ProExpensesIncomeScreen extends StatelessWidget {
   }
 
   Widget _buildAddCustomCategory(ProExpensesIncomeController controller, bool isDarkMode) {
-    return GestureDetector(
-      onTap: () {
-        Get.toNamed('/addCategory');
-      },
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: isDarkMode ? const Color(0xFF2A2A2A) : Colors.grey[200],
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Column(
-          children: [
-            Row(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        GestureDetector(
+          onTap: controller.toggleCustomCategoryInput,
+          child: Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: isDarkMode ? const Color(0xFF2A2A2A) : Colors.grey[200],
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(Icons.add, color: Colors.blue),
@@ -429,9 +440,115 @@ class ProExpensesIncomeScreen extends StatelessWidget {
                 ),
               ],
             ),
-          ],
+          ),
         ),
-      ),
+        const SizedBox(height: 12),
+        Obx(() => controller.showCustomCategoryInput.value
+            ? Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: isDarkMode ? const Color(0xFF2A2A2A) : Colors.grey[200],
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text(
+                      'categoryName'.tr,
+                      style: GoogleFonts.inter(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: isDarkMode ? Colors.white : Colors.black,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    TextField(
+                      controller: controller.customCategoryController,
+                      style: GoogleFonts.inter(
+                        fontSize: 16,
+                        color: isDarkMode ? Colors.white : Colors.black,
+                      ),
+                      decoration: InputDecoration(
+                        hintText: 'enterCategory'.tr,
+                        hintStyle: TextStyle(
+                          color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(
+                            color: isDarkMode ? Colors.grey[700]! : Colors.grey,
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: const BorderSide(color: Colors.blue),
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 12,
+                        ),
+                        filled: isDarkMode,
+                        fillColor: isDarkMode ? const Color(0xFF2A2A2A) : Colors.transparent,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: OutlinedButton(
+                            onPressed: controller.useCustomCategoryFromInput,
+                            style: OutlinedButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(vertical: 12),
+                            ),
+                            child: Text(
+                              'select'.tr,
+                              style: GoogleFonts.inter(
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: controller.isLoading.value
+                                ? null
+                                : controller.addTransactionWithCustomCategory,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.blue,
+                              padding: const EdgeInsets.symmetric(vertical: 12),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                            child: Obx(() => controller.isLoading.value
+                                ? const SizedBox(
+                                    height: 20,
+                                    width: 20,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                    ),
+                                  )
+                                : Text(
+                                    (controller.currentTab.value == 0 ? 'addExpense'.tr : 'addIncome'.tr),
+                                    style: GoogleFonts.inter(
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.white,
+                                    ),
+                                  )),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              )
+            : const SizedBox.shrink()),
+      ],
     );
   }
 

@@ -56,5 +56,10 @@
 	</array>
 	<key>com.mashiur.expenseapp</key>
 	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+    <!-- Usage descriptions required for biometrics and camera access -->
+    <key>NSFaceIDUsageDescription</key>
+    <string>We use Face ID to unlock the app and secure your data.</string>
+    <key>NSCameraUsageDescription</key>
+    <string>Camera access is used for face verification setup.</string>
 </dict>
 </plist>

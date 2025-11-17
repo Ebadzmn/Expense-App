@@ -18,6 +18,11 @@ class FaceIdService extends GetxService {
     return 'face_id_enabled_$userId';
   }
 
+  String _launchGateKeyForUser(String? userId) {
+    if (userId == null || userId.isEmpty) return 'face_id_launch_gate_global';
+    return 'face_id_launch_gate_$userId';
+  }
+
   Future<void> enableForCurrentUser() async {
     final tokenService = Get.find<TokenService>();
     final userId = tokenService.getUserId();
@@ -54,5 +59,26 @@ class FaceIdService extends GetxService {
 
   bool isEnabledGlobally() {
     return _prefs?.getBool('face_id_enabled_global') ?? false;
+  }
+
+  // App-launch gate persistence
+  Future<void> setLaunchGateForCurrentUser(bool enabled) async {
+    final tokenService = Get.find<TokenService>();
+    final userId = tokenService.getUserId();
+    await _prefs?.setBool(_launchGateKeyForUser(userId), enabled);
+  }
+
+  bool isLaunchGateEnabledForCurrentUser() {
+    final tokenService = Get.find<TokenService>();
+    final userId = tokenService.getUserId();
+    return _prefs?.getBool(_launchGateKeyForUser(userId)) ?? false;
+  }
+
+  Future<void> setLaunchGateForUser(String userId, bool enabled) async {
+    await _prefs?.setBool(_launchGateKeyForUser(userId), enabled);
+  }
+
+  bool isLaunchGateEnabledForUser(String userId) {
+    return _prefs?.getBool(_launchGateKeyForUser(userId)) ?? false;
   }
 }
