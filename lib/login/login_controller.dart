@@ -9,6 +9,7 @@ import 'package:your_expense/Settings/userprofile/profile_services.dart';
 
 import '../home/home_controller.dart';
 import 'login_service.dart';
+import 'package:your_expense/services/subscription_service.dart';
 
 class LoginController extends GetxController {
   final emailController = TextEditingController();
@@ -40,6 +41,11 @@ class LoginController extends GetxController {
       final response = await loginService.login(email, password);
 
       if (response['success'] == true) {
+        // Immediately reconcile premium status with server after login (fresh installs included)
+        try {
+          await SubscriptionService.to.reconcileWithServer();
+        } catch (_) {}
+
         // Token is saved via LoginService. Navigate and ensure home data is loaded.
         Get.offNamed(AppRoutes.mainHome);
         try {

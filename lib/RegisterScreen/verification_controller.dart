@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter/services.dart';
 import 'verification_api_service.dart';
+import 'package:your_expense/login/login_service.dart';
+import 'package:your_expense/services/subscription_service.dart';
 import '../routes/app_routes.dart';
 
 class VerificationController extends GetxController {
@@ -23,7 +25,7 @@ class VerificationController extends GetxController {
   Timer? _countdownTimer;
 
   @override
-  void onInit() {
+  Future<void> onInit() async {
     super.onInit();
 
     print('═══════════════════════════════════════');
@@ -49,6 +51,23 @@ class VerificationController extends GetxController {
       otpControllers[i].addListener(() {
         checkVerifyButtonState();
       });
+    }
+
+    // Ensure we are not carrying over a previous logged-in user's state
+    // during registration/OTP verification.
+    try {
+      if (Get.isRegistered<LoginService>()) {
+        final ls = Get.find<LoginService>();
+        if (ls.isLoggedIn.value) {
+          print('⚠️ Logged-in state detected at OTP screen; forcing logout to avoid user mix-up');
+          await ls.logout();
+        }
+      }
+      if (Get.isRegistered<SubscriptionService>()) {
+        await Get.find<SubscriptionService>().reset();
+      }
+    } catch (e) {
+      print('Warn: failed to clean auth state at OTP init: $e');
     }
 
     startResendCountdown();

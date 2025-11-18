@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:your_expense/services/iap_service.dart';
@@ -221,6 +222,55 @@ class _PremiumPlansScreenState extends State<PremiumPlansScreen> {
 
                   SizedBox(height: screenHeight * 0.06),
 
+                  // Store availability notice (helps iOS/web users understand requirements)
+                  ValueListenableBuilder<bool>(
+                    valueListenable: iap.isAvailable,
+                    builder: (context, available, _) {
+                      if (available) return const SizedBox.shrink();
+                      final bool isiOS = defaultTargetPlatform == TargetPlatform.iOS;
+                      return Container(
+                        width: double.infinity,
+                        padding: EdgeInsets.symmetric(
+                          horizontal: screenWidth * 0.04,
+                          vertical: screenHeight * 0.015,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.orange.shade100,
+                          borderRadius: BorderRadius.circular(screenWidth * 0.03),
+                          border: Border.all(color: Colors.orange.shade300),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Icon(Icons.info_outline, color: Colors.orange.shade700),
+                                SizedBox(width: screenWidth * 0.02),
+                                Text(
+                                  'Store not available'.tr,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: screenWidth * 0.04,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: screenHeight * 0.01),
+                            Text(
+                              isiOS
+                                  ? 'iOS e in-app purchase dekhte TestFlight diye install korun, App Store Connect e product IDs set kore Sandbox account e login korun.'
+                                  : 'This device does not support in-app purchases. Please install from Play Store or App Store.',
+                              style: TextStyle(
+                                fontSize: screenWidth * 0.032,
+                                color: const Color(0xFF6B7280),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+
                   // Upgrade Button
                   ValueListenableBuilder<List<ProductDetails>>(
                     valueListenable: iap.products,
@@ -245,6 +295,16 @@ class _PremiumPlansScreenState extends State<PremiumPlansScreen> {
                               onPressed: () async {
                                 // prevent double taps while loading
                                 if (loading) return;
+
+                                // Guard: if store is not available (e.g., web or unsupported), block upgrade
+                                if (!iap.isAvailable.value) {
+                                  Get.snackbar(
+                                    'Store not available',
+                                    'In-app purchases are not available on this device. Please use Play Store or App Store.',
+                                    snackPosition: SnackPosition.BOTTOM,
+                                  );
+                                  return;
+                                }
 
                                 // If selected is null, try re-query once and proceed if found
                                 if (selected == null) {
@@ -315,10 +375,8 @@ class _PremiumPlansScreenState extends State<PremiumPlansScreen> {
     final isDarkMode = themeController.isDarkModeActive;
     final sub = Get.find<SubscriptionService>();
     // Touch reactive values so Obx rebuilds
-    final bool pro = sub.isPro.value;
-    final DateTime? expiry = sub.getExpiryDate;
-    final bool active = sub.isActivePro;
-    final int? remaining = sub.remainingDays;
+    final bool serverPremium = sub.serverIsPremium.value;
+    final int? serverDays = sub.serverDaysLeft.value;
 
     return Center(
       child: Padding(
@@ -373,20 +431,18 @@ class _PremiumPlansScreenState extends State<PremiumPlansScreen> {
                     ],
                   ),
                   SizedBox(height: screenHeight * 0.01),
+                  // Show only API-provided fields as requested
+                  // (Removing computed Remaining days / expiry to avoid off-by-one confusion)
+                  SizedBox(height: screenHeight * 0.01),
+                  // Show raw entitlement snapshot based on server-derived state
                   Text(
-                    (expiry == null)
-                        ? 'Lifetime Premium'
-                        : 'Expires on ' + expiry.toLocal().toString().split('.').first,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: screenWidth * 0.035, color: isDarkMode ? Colors.grey[300] : const Color(0xFF6B7280)),
+                    'isPremium: ' + (serverPremium ? 'true' : 'false'),
+                    style: TextStyle(fontSize: screenWidth * 0.032, color: isDarkMode ? Colors.grey[300] : const Color(0xFF6B7280)),
                   ),
-                  if (remaining != null) ...[
-                    SizedBox(height: screenHeight * 0.005),
-                    Text(
-                      'Remaining days: ' + remaining.toString(),
-                      style: TextStyle(fontSize: screenWidth * 0.035, color: Colors.green.shade700),
-                    ),
-                  ],
+                  Text(
+                    'daysLeft: ' + ((serverDays ?? 0).toString()),
+                    style: TextStyle(fontSize: screenWidth * 0.032, color: isDarkMode ? Colors.grey[300] : const Color(0xFF6B7280)),
+                  ),
                 ],
               ),
             ),

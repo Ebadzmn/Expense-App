@@ -83,9 +83,10 @@ Future<void> main() async {
 
   // After core services and token are ready, do local recheck and expiry enforcement only
   try {
-    await SubscriptionService.to.recheckAndPersist();
+    // Call premium status endpoint on app launch so UI reflects latest entitlement
+    await SubscriptionService.to.reconcileWithServer();
   } catch (e) {
-    debugPrint('[Startup] Subscription local recheck failed: $e');
+    debugPrint('[Startup] Subscription reconcile failed: $e');
   }
   // Ensure ProfileService is available before any screen calls Get.find
   await Get.putAsync(() => ProfileService().init());

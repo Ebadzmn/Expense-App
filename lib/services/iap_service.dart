@@ -260,21 +260,27 @@ class IapService {
       print('[IAP] SUBMIT: endpoint=' + _config.paymentEndpoint + ' payload=' + jsonEncode(body));
 
       Get.snackbar('IAP', 'Submitting payment to server...', snackPosition: SnackPosition.BOTTOM);
-      await _api.request('POST', _config.paymentEndpoint, body: body, requiresAuth: true);
-      print('[IAP] Payment POST success');
+      final resp = await _api.request('POST', _config.paymentEndpoint, body: body, requiresAuth: true);
+      print('[IAP] Payment POST success: ' + (resp is Map<String, dynamic> ? jsonEncode(resp) : resp.toString()));
       Get.snackbar('IAP', 'Payment POST success', snackPosition: SnackPosition.BOTTOM);
 
-      DateTime? expiry;
-      if (productId == yearlyId) {
-        expiry = DateTime.now().add(const Duration(days: 365));
-      } else if (productId == monthlyId) {
-        expiry = DateTime.now().add(const Duration(days: 30));
-      }
-      await _sub.setSubscriptionStatus(pro: true, expiry: expiry);
-      debugPrint('[IAP] Pro status saved. Expiry: $expiry');
+      // IMPORTANT: Do not locally flip premium. Rely on server confirmation.
+      // Immediately reconcile with server to reflect true entitlement.
+      await _sub.reconcileWithServer();
 
-      debugPrint('[IAP] Navigating to success screen');
-      Get.offAllNamed(AppRoutes.paymentSuccess);
+      // Navigate to success only if server reports premium active
+      final bool premiumActive = _sub.serverIsPremium.value && (_sub.serverDaysLeft.value ?? 0) > 0;
+      if (premiumActive || _sub.isActivePro) {
+        debugPrint('[IAP] Server confirmed premium. Navigating to success screen.');
+        Get.offAllNamed(AppRoutes.paymentSuccess);
+      } else {
+        debugPrint('[IAP][WARN] Server did not confirm premium after POST. Showing pending message.');
+        Get.snackbar(
+          'Payment Pending',
+          'Waiting for server to confirm your purchase. It may take a moment.',
+          snackPosition: SnackPosition.BOTTOM,
+        );
+      }
     } catch (e, st) {
       debugPrint('Payment POST failed: $e\n$st');
       Get.snackbar(

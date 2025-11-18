@@ -58,6 +58,8 @@ class ConfigService extends GetxService {
   String get categoryEndpoint => '$baseUrl/category';
   // Payment endpoint (for posting successful IAP transactions)
   String get paymentEndpoint => '$baseUrl/payment';
+  // Premium status endpoint (server reports entitlement and remaining days)
+  String get premiumStatusEndpoint => '$baseUrl/payment/premium-status';
   // Subscription status endpoint (server verifies App/Play store receipts and entitlement)
   String get subscriptionStatusEndpoint => '$baseUrl/subscription/status';
 

@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:your_expense/services/api_base_service.dart';
 import 'package:your_expense/services/config_service.dart';
 import 'package:your_expense/services/token_service.dart';
+import 'package:your_expense/services/subscription_service.dart';
 
 import 'dart:convert';
 
@@ -163,6 +164,15 @@ class LoginService extends GetxService {
 
       final prefs = await SharedPreferences.getInstance();
       await prefs.remove('user_data');
+
+      // Also reset subscription state to avoid carrying over premium flags
+      try {
+        if (Get.isRegistered<SubscriptionService>()) {
+          await Get.find<SubscriptionService>().reset();
+        }
+      } catch (e) {
+        print('Warn: failed to reset SubscriptionService on logout: $e');
+      }
 
       currentUser.value = null;
       isLoggedIn.value = false;
