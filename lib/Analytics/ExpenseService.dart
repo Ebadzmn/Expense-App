@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:your_expense/services/api_base_service.dart';
 import 'package:your_expense/services/config_service.dart';
+import 'package:intl/intl.dart';
 import 'package:your_expense/services/category_service.dart';
 
 import 'expense_model.dart';
@@ -151,6 +152,8 @@ class ExpenseService extends GetxService {
       print('➕ Creating new expense: amount=$amount, category=$category, note=$note');
 
       final effectiveDate = date ?? DateTime.now();
+      final monthStr = DateFormat('yyyy-MM').format(effectiveDate);
+      final isoDate = effectiveDate.toIso8601String();
       final Map<String, dynamic> body = {
         // Send both keys to match varying backend expectations
         'source': category,
@@ -158,8 +161,11 @@ class ExpenseService extends GetxService {
         'categoryName': category,
         'amount': amount,
         'note': note,
-        if (month != null && month.isNotEmpty) 'month': month,
-        if (month == null || month.isEmpty) 'date': effectiveDate.toIso8601String(),
+        // Always include explicit date fields
+        'date': isoDate,
+        'createdAt': isoDate,
+        // Always include month derived from date for summary alignment
+        'month': (month != null && month.isNotEmpty) ? month : monthStr,
       };
       print('📦 Sending payload (create): $body');
 
@@ -184,14 +190,17 @@ class ExpenseService extends GetxService {
         if (he.statusCode == 400 && (he.message.contains('Validation Error') || he.message.contains('Required') || he.message.contains('source'))) {
           print('🔁 ${he.statusCode} "${he.message}" → enforcing source/month/date then retry');
           final effectiveDate = date ?? DateTime.now();
+          final monthStr = DateFormat('yyyy-MM').format(effectiveDate);
+          final isoDate = effectiveDate.toIso8601String();
           final retryBody = {
             'source': category,
             'category': category,
             'categoryName': category,
             'amount': amount,
             'note': note,
-            if (month != null && month.isNotEmpty) 'month': month,
-            if (month == null || month.isEmpty) 'date': effectiveDate.toIso8601String(),
+            'date': isoDate,
+            'createdAt': isoDate,
+            'month': (month != null && month.isNotEmpty) ? month : monthStr,
           };
           final retryResp = await _apiService.request(
             'POST',

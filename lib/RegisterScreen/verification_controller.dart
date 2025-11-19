@@ -231,10 +231,10 @@ class VerificationController extends GetxController {
         print('⏳ Waiting 800ms before navigation...');
         await Future.delayed(Duration(milliseconds: 800));
 
-        print('🚀 Attempting navigation to /faceVerification');
+        print('🚀 Attempting navigation to /login');
         try {
-          await Get.offNamed(AppRoutes.faceVerification);
-          print('✅ Navigated to face verification');
+          await Get.offAllNamed(AppRoutes.login);
+          print('✅ Navigated to login page');
         } catch (navError) {
           print('❌ Navigation error: $navError');
           print('❌ Stack trace: ${StackTrace.current}');

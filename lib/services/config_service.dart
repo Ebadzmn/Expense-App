@@ -13,6 +13,9 @@ class ConfigService extends GetxService {
   String get registerEndpoint => '$baseUrl/user';
   String get verifyEmailEndpoint => '$baseUrl/auth/verify-email';
   String get resendOtpEndpoint => '$baseUrl/auth/resend-otp';
+  // Some backends use "forget-password" while others use "forgot-password".
+  // Provide both for compatibility and prefer the explicit forget-password alias.
+  String get forgetPasswordEndpoint => '$baseUrl/auth/forget-password';
   String get forgotPasswordEndpoint => '$baseUrl/auth/forgot-password';
   String get resetPasswordEndpoint => '$baseUrl/auth/reset-password';
 

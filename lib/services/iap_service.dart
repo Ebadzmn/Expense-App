@@ -34,6 +34,8 @@ class IapService {
 
   // Prevent duplicate POSTs/navigations when sandbox auto-renews or stream replays
   final Set<String> _submittedTxIds = <String>{};
+  // Prevent repeated snackbars per session/transaction
+  final Set<String> _shownSnackKeys = <String>{};
 
   final ValueNotifier<bool> isAvailable = ValueNotifier(false);
   final ValueNotifier<bool> isLoading = ValueNotifier(false);
@@ -56,7 +58,7 @@ class IapService {
         error.value = 'Store not available';
         isLoading.value = false;
         print('[IAP] Store not available, aborting init');
-        Get.snackbar('IAP', 'Store not available on this device', snackPosition: SnackPosition.BOTTOM);
+        _showSnackOnce('iap:init:not_available', 'IAP', 'Store not available on this device');
         return;
       }
 
@@ -69,6 +71,14 @@ class IapService {
       isLoading.value = false;
       print('[IAP] init() finished');
     }
+  }
+
+  void _showSnackOnce(String key, String title, String message, {SnackPosition snackPosition = SnackPosition.BOTTOM, Duration? duration}) {
+    if (_shownSnackKeys.contains(key)) return;
+    _shownSnackKeys.add(key);
+    try {
+      Get.snackbar(title, message, snackPosition: snackPosition, duration: duration ?? const Duration(seconds: 3));
+    } catch (_) {}
   }
 
   Future<void> queryProducts(Set<String> ids) async {
@@ -202,7 +212,7 @@ class IapService {
         debugPrint('[IAP][DEBUG] extractOrderIdFromGoogle returned: $txId');
         if (txId == null || txId.isEmpty) {
           debugPrint('[IAP][ERROR] Missing Google Play orderId; aborting payment POST.');
-          Get.snackbar('Purchase Error', 'Missing Play Store orderId. Please retry or contact support.');
+          _showSnackOnce('iap:error:missing_google_order', 'Purchase Error', 'Missing Play Store orderId. Please retry or contact support.');
           return;
         }
       } else if (purchase is AppStorePurchaseDetails) {
@@ -211,7 +221,7 @@ class IapService {
         debugPrint('[IAP][DEBUG] extractTransactionIdFromAppStore returned: $txId');
         if (txId == null || txId.isEmpty) {
           debugPrint('[IAP][ERROR] Missing App Store transactionId; aborting payment POST.');
-          Get.snackbar('Purchase Error', 'Missing App Store transactionId. Please retry or contact support.');
+          _showSnackOnce('iap:error:missing_ios_tx', 'Purchase Error', 'Missing App Store transactionId. Please retry or contact support.');
           return;
         }
       } else {
@@ -223,7 +233,7 @@ class IapService {
         }
         if (txId == null || txId.isEmpty) {
           debugPrint('[IAP][ERROR] Missing transactionId from purchase; aborting payment POST.');
-          Get.snackbar('Purchase Error', 'Missing transactionId. Please retry or contact support.');
+          _showSnackOnce('iap:error:missing_tx', 'Purchase Error', 'Missing transactionId. Please retry or contact support.');
           return;
         }
       }
@@ -231,19 +241,12 @@ class IapService {
       final String transactionId = txId!;
 
       // Show product and transaction IDs to the user for immediate visibility
-      try {
-        Get.snackbar(
-          'Purchase Details',
-          'Product: ' + productId + '\nTransaction: ' + transactionId,
-          snackPosition: SnackPosition.BOTTOM,
-          duration: const Duration(seconds: 6),
-        );
-      } catch (_) {}
+      _showSnackOnce('iap:details:' + transactionId, 'Purchase Details', 'Product: ' + productId + '\nTransaction: ' + transactionId, duration: const Duration(seconds: 5));
 
       // Dedup: skip if this transactionId was already submitted in this session
       if (_submittedTxIds.contains(transactionId)) {
         print('[IAP][DEDUP] Already submitted transactionId=' + transactionId + ', skipping POST.');
-        Get.snackbar('IAP', 'Payment already recorded for this transaction', snackPosition: SnackPosition.BOTTOM);
+        _showSnackOnce('iap:dedup:' + transactionId, 'IAP', 'Payment already recorded for this transaction');
         return;
       }
       _submittedTxIds.add(transactionId);
@@ -259,10 +262,10 @@ class IapService {
 
       print('[IAP] SUBMIT: endpoint=' + _config.paymentEndpoint + ' payload=' + jsonEncode(body));
 
-      Get.snackbar('IAP', 'Submitting payment to server...', snackPosition: SnackPosition.BOTTOM);
+      _showSnackOnce('iap:submit:' + transactionId, 'IAP', 'Submitting payment to server...');
       final resp = await _api.request('POST', _config.paymentEndpoint, body: body, requiresAuth: true);
       print('[IAP] Payment POST success: ' + (resp is Map<String, dynamic> ? jsonEncode(resp) : resp.toString()));
-      Get.snackbar('IAP', 'Payment POST success', snackPosition: SnackPosition.BOTTOM);
+      _showSnackOnce('iap:post_success:' + transactionId, 'IAP', 'Payment POST success');
 
       // IMPORTANT: Do not locally flip premium. Rely on server confirmation.
       // Immediately reconcile with server to reflect true entitlement.
@@ -275,19 +278,12 @@ class IapService {
         Get.offAllNamed(AppRoutes.paymentSuccess);
       } else {
         debugPrint('[IAP][WARN] Server did not confirm premium after POST. Showing pending message.');
-        Get.snackbar(
-          'Payment Pending',
-          'Waiting for server to confirm your purchase. It may take a moment.',
-          snackPosition: SnackPosition.BOTTOM,
-        );
+        _showSnackOnce('iap:pending:' + transactionId, 'Payment Pending', 'Waiting for server to confirm your purchase. It may take a moment.');
       }
     } catch (e, st) {
       debugPrint('Payment POST failed: $e\n$st');
-      Get.snackbar(
-        'Payment Recorded',
-        'Purchase completed, but could not notify server right now.',
-        snackPosition: SnackPosition.BOTTOM,
-      );
+      final fallbackId = purchase.purchaseID ?? 'unknown';
+      _showSnackOnce('iap:recorded:' + fallbackId, 'Payment Recorded', 'Purchase completed, but could not notify server right now.');
       // Allow retry later by removing from submitted set if POST failed
       if (purchase.purchaseID != null && purchase.purchaseID!.isNotEmpty) {
         _submittedTxIds.remove(purchase.purchaseID);

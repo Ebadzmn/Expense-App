@@ -31,6 +31,7 @@ import 'package:your_expense/Settings/userprofile/change_email_service.dart';
 
 import 'package:your_expense/RegisterScreen/registration_api_service.dart';
 import 'package:your_expense/RegisterScreen/verification_api_service.dart';
+import 'package:your_expense/forget_password/forgot_password_api_service.dart';
 
 // Comparison feature service
 import 'package:your_expense/Comparison/MarketplaceService.dart';
@@ -113,6 +114,7 @@ Future<void> main() async {
       // Already initialized above; keep out of concurrent init
       Get.putAsync(() => RegistrationApiService().init()),
       Get.putAsync(() => VerificationApiService().init()),
+      Get.putAsync(() => ForgotPasswordApiService().init()),
       Get.putAsync(() => ReviewService().init()),
       // IncomeService and ProfileService initialized earlier; removing from concurrent init
       Get.putAsync(() => UserService().init()),

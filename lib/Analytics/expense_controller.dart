@@ -267,4 +267,19 @@ class ExpenseController extends GetxController {
   void clearError() {
     errorMessage.value = '';
   }
+
+  /// Reset controller state to avoid showing stale data after auth changes
+  void reset() {
+    try {
+      isLoading.value = false;
+      errorMessage.value = '';
+      allExpenses.clear();
+      expenses.clear();
+      final currentMonth = _configService.getCurrentMonth();
+      selectedMonth.value = currentMonth;
+      lastKnownMonth.value = currentMonth;
+    } catch (_) {
+      // swallow any errors; reset should be safe
+    }
+  }
 }

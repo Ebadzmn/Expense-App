@@ -2,6 +2,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:your_expense/Analytics/expense_controller.dart';
 
 import '../../routes/app_routes.dart';
 
@@ -53,6 +54,12 @@ class LoginController extends GetxController {
           home.reset();
           await home.ensureHomeDataLoaded();
         } catch (_) {}
+        // Reset expenses to avoid showing stale data from previous session
+        try {
+          final exp = Get.find<ExpenseController>();
+          exp.reset();
+          await exp.loadExpenses();
+        } catch (_) {}
         // Refresh profile so personal info shows correct name/email immediately
         try {
           final profile = Get.find<ProfileService>();
@@ -97,6 +104,10 @@ class LoginController extends GetxController {
       try {
         final home = Get.find<HomeController>();
         home.reset();
+      } catch (_) {}
+      try {
+        final exp = Get.find<ExpenseController>();
+        exp.reset();
       } catch (_) {}
     } catch (e) {
       errorMessage.value = e.toString().replaceAll('Exception: ', '');

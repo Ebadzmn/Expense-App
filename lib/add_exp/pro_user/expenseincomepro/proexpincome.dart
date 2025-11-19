@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 // Import your ThemeController
 
 import '../../../Settings/appearance/ThemeController.dart';
@@ -712,6 +713,8 @@ class ProExpensesIncomeScreen extends StatelessWidget {
   }
 
   Widget _buildDateTimeSection(ProExpensesIncomeController controller, bool isDarkMode) {
+    final DateTime now = DateTime.now();
+    final String defaultLabel = DateFormat('yyyy-MM-dd HH:mm').format(now);
     return Row(
       children: [
         Expanded(
@@ -735,7 +738,7 @@ class ProExpensesIncomeScreen extends StatelessWidget {
                 ),
                 child: Center(
                   child: Text(
-                    'feb1520241430'.tr,
+                    defaultLabel,
                     style: GoogleFonts.inter(
                       color: Colors.white,
                       fontSize: 12,
@@ -769,13 +772,19 @@ class ProExpensesIncomeScreen extends StatelessWidget {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Center(
-                    child: Text(
-                      'feb152024'.tr,
-                      style: GoogleFonts.inter(
-                        color: isDarkMode ? Colors.white : Colors.black,
-                        fontSize: 12,
-                      ),
-                    ),
+                    child: Obx(() {
+                      final DateTime d = controller.selectedDate.value;
+                      final TimeOfDay t = controller.selectedTime.value;
+                      final DateTime combined = DateTime(d.year, d.month, d.day, t.hour, t.minute);
+                      final String pickedLabel = DateFormat('yyyy-MM-dd HH:mm').format(combined);
+                      return Text(
+                        pickedLabel,
+                        style: GoogleFonts.inter(
+                          color: isDarkMode ? Colors.white : Colors.black,
+                          fontSize: 12,
+                        ),
+                      );
+                    }),
                   ),
                 ),
               ),

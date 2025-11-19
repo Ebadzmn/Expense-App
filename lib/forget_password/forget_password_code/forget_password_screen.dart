@@ -3,11 +3,56 @@ import 'package:get/get.dart';
 import 'package:your_expense/colors/app_colors.dart';
 import 'package:your_expense/routes/app_routes.dart';
 import 'package:your_expense/text_styles.dart';
+import '../forgot_password_api_service.dart';
 
 import '../../Settings/appearance/ThemeController.dart';
 
-class ForgotPasswordScreen extends StatelessWidget {
+class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});
+
+  @override
+  State<ForgotPasswordScreen> createState() => _ForgotPasswordScreenState();
+}
+
+class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
+  final TextEditingController _emailController = TextEditingController();
+  final RxBool _isSubmitting = false.obs;
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _submitEmail() async {
+    final email = _emailController.text.trim();
+    if (email.isEmpty) {
+      Get.snackbar('Error'.tr, 'Please enter email'.tr,
+          snackPosition: SnackPosition.BOTTOM);
+      return;
+    }
+    _isSubmitting.value = true;
+    try {
+      final service = Get.isRegistered<ForgotPasswordApiService>()
+          ? Get.find<ForgotPasswordApiService>()
+          : Get.put(ForgotPasswordApiService());
+      await service.init();
+      final resp = await service.requestForgetPassword(email);
+      final success = resp['success'] == true;
+      final message = resp['message']?.toString() ?? (success ? 'Success' : 'Failed');
+      if (success) {
+        Get.snackbar('Success'.tr, message, snackPosition: SnackPosition.BOTTOM);
+        Get.toNamed(AppRoutes.otpVerification, arguments: {'email': email});
+      } else {
+        Get.snackbar('Error'.tr, message, snackPosition: SnackPosition.BOTTOM);
+      }
+    } catch (e) {
+      Get.snackbar('Error'.tr, e.toString().replaceAll('Exception: ', ''),
+          snackPosition: SnackPosition.BOTTOM);
+    } finally {
+      _isSubmitting.value = false;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -94,7 +139,7 @@ class ForgotPasswordScreen extends StatelessWidget {
                 ),
                 SizedBox(height: isSmallScreen ? 16 : 24),
 
-                // Email/Phone Input Field
+                // Email Input Field
                 TextField(
                   decoration: InputDecoration(
                     hintText: 'enter_email_phone'.tr,
@@ -132,6 +177,7 @@ class ForgotPasswordScreen extends StatelessWidget {
                     fontSize: isSmallScreen ? 14 : null,
                     color: isDarkMode ? Colors.white : AppColors.text800,
                   ),
+                  controller: _emailController,
                 ),
 
                 const SizedBox(height: 16),
@@ -166,29 +212,38 @@ class ForgotPasswordScreen extends StatelessWidget {
 
                 SizedBox(height: isSmallScreen ? 16 : 24),
 
-                SizedBox(
-                  width: double.infinity,
-                  height: 50,
-                  child: ElevatedButton(
-                    onPressed: () => Get.toNamed(AppRoutes.otpVerification),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primary500,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                Obx(() => SizedBox(
+                      width: double.infinity,
+                      height: 50,
+                      child: ElevatedButton(
+                        onPressed: _isSubmitting.value ? null : _submitEmail,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primary500,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        child: _isSubmitting.value
+                            ? SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                ),
+                              )
+                            : Text(
+                                'continue'.tr,
+                                style: TextStyle(
+                                  fontFamily: 'Inter',
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: isSmallScreen ? 14 : 16,
+                                  color: Colors.white,
+                                  height: 1.2,
+                                ),
+                              ),
                       ),
-                    ),
-                    child: Text(
-                      'continue'.tr,
-                      style: TextStyle(
-                        fontFamily: 'Inter',
-                        fontWeight: FontWeight.w600,
-                        fontSize: isSmallScreen ? 14 : 16,
-                        color: Colors.white,
-                        height: 1.2,
-                      ),
-                    ),
-                  ),
-                ),
+                    )),
               ],
             ),
           ),

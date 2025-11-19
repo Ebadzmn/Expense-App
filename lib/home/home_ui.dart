@@ -5,6 +5,8 @@ import 'package:your_expense/reuseablenav/reuseablenavui.dart';
 import 'package:your_expense/routes/app_routes.dart';
 import 'package:your_expense/homepage/MonthlyBudgetPage.dart';
 import 'package:your_expense/homepage/edit/MonthlyBudgetNonPro/MonthlyBudgetNonPro.dart';
+import 'package:your_expense/Settings/userprofile/profile_services.dart';
+import 'package:your_expense/services/config_service.dart';
 
 import 'home_controller.dart';
 
@@ -16,6 +18,8 @@ class MainHomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final HomeController controller = Get.find<HomeController>();
     final ThemeController themeController = Get.find<ThemeController>();
+    final ProfileService profile = ProfileService.to;
+    final ConfigService configService = ConfigService.to;
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
 
@@ -54,10 +58,25 @@ class MainHomeScreen extends StatelessWidget {
                       ),
                       child: ClipRRect(
                         borderRadius: BorderRadius.all(Radius.circular(60)),
-                        child: Image.asset(
-                          'assets/images/profile_pic.png',
-                          fit: BoxFit.cover,
-                        ),
+                        child: Obx(() {
+                          final imgPath = profile.profileImage.value;
+                          final version = profile.imageVersion.value;
+                          if (imgPath.isNotEmpty) {
+                            final origin = Uri.parse(configService.baseUrl).origin;
+                            final url = (imgPath.startsWith('http://') || imgPath.startsWith('https://'))
+                                ? imgPath
+                                : '$origin$imgPath';
+                            final withVersion = version > 0 ? '$url?v=$version' : url;
+                            return Image.network(
+                              withVersion,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stack) {
+                                return Image.asset('assets/icons/user.png', fit: BoxFit.cover);
+                              },
+                            );
+                          }
+                          return Image.asset('assets/icons/user.png', fit: BoxFit.cover);
+                        }),
                       ),
                     ),
                     SizedBox(width: screenWidth * 0.03),
@@ -65,14 +84,14 @@ class MainHomeScreen extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            'hi_user'.tr,
-                            style: TextStyle(
-                              fontSize: screenWidth * 0.045,
-                              fontWeight: FontWeight.w600,
-                              color: textColor,
-                            ),
-                          ),
+                          Obx(() => Text(
+                                profile.userName.value,
+                                style: TextStyle(
+                                  fontSize: screenWidth * 0.045,
+                                  fontWeight: FontWeight.w600,
+                                  color: textColor,
+                                ),
+                              )),
                           SizedBox(height: screenHeight * 0.005),
                           Text(
                             'location'.tr,
@@ -247,10 +266,6 @@ class MainHomeScreen extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text('monthly_budget'.tr, style: TextStyle(fontSize: screenWidth * 0.045, fontWeight: FontWeight.w600, color: textColor)),
-                          GestureDetector(
-                            onTap: () => Get.to(() => MonthlyBudgetNonPro()), // Simple navigation
-                            child: Text('edit'.tr, style: TextStyle(color: primaryColor, fontSize: screenWidth * 0.035)),
-                          ),
                         ],
                       ),
                       SizedBox(height: screenHeight * 0.02),
@@ -311,6 +326,19 @@ class MainHomeScreen extends StatelessWidget {
                           )),
                         ],
                       ),
+                      SizedBox(height: screenHeight * 0.01),
+                      Obx(() {
+                        final saved = controller.monthlyBudget.value - controller.spentAmount.value;
+                        final savedDisplay = saved >= 0 ? saved : 0.0;
+                        return Text(
+                          '${'youSaved'.tr} \$${savedDisplay.toStringAsFixed(2)}',
+                          style: TextStyle(
+                            color: secondaryTextColor,
+                            fontWeight: FontWeight.w500,
+                            fontSize: screenWidth * 0.035,
+                          ),
+                        );
+                      }),
                     ],
                   ),
                 ),

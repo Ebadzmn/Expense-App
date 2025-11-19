@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:your_expense/services/api_base_service.dart';
 import 'package:your_expense/services/config_service.dart';
 import 'package:your_expense/Analytics/ExpenseService.dart';
+import 'package:your_expense/services/subscription_service.dart';
 
 import '../ad_helper.dart';
 import '../homepage/model/transaction.dart';
@@ -181,12 +182,36 @@ class HomeController extends GetxController {
       );
       print(budget);
 
-      // Update budget-related values
-      // monthlyBudget.value = budget.totalBudget; // Use simple endpoint amount instead
+      // Update budget-related values (prefer server-provided totalBudget)
+      monthlyBudget.value = budget.totalBudget;
       spentAmount.value = budget.totalExpense;
       spentPercentage.value = budget.totalPercentageUsed;
       leftAmount.value = budget.totalRemaining;
       leftPercentage.value = budget.totalPercentageLeft;
+
+      // Derive fallbacks when API omits remaining/percentage fields
+      try {
+        final mb = monthlyBudget.value;
+        final spent = spentAmount.value;
+        // Left amount fallback
+        if (leftAmount.value == 0.0) {
+          leftAmount.value = (mb - spent).clamp(0.0, double.infinity);
+        }
+        // Spent percentage fallback
+        if (spentPercentage.value == 0.0) {
+          spentPercentage.value = mb > 0.0
+              ? ((spent / mb) * 100).clamp(0.0, 100.0)
+              : 0.0;
+        }
+        // Left percentage fallback
+        if (leftPercentage.value == 0.0) {
+          leftPercentage.value = mb > 0.0
+              ? ((leftAmount.value / mb) * 100).clamp(0.0, 100.0)
+              : 0.0;
+        }
+      } catch (e) {
+        print('Budget fallback computation failed: $e');
+      }
 
       // Update monthly totals via summary endpoints
       try {
@@ -283,7 +308,14 @@ class HomeController extends GetxController {
   }
 
   void navigateToAddTransaction({required bool isExpense}) {
-    Get.toNamed(AppRoutes.addTransaction);
+    final sub = Get.isRegistered<SubscriptionService>()
+        ? Get.find<SubscriptionService>()
+        : Get.put(SubscriptionService());
+    if (sub.isActivePro) {
+      Get.toNamed(AppRoutes.proExpensesIncome);
+    } else {
+      Get.toNamed(AppRoutes.addTransaction);
+    }
   }
 
   void navigateToAddProExpense() {

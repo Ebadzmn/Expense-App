@@ -62,6 +62,7 @@ Service: $runtimeType
 Method: $method
 URL: $uri
 Headers: ${requestHeaders.keys.toList()}
+Authorization header: ${requestHeaders['Authorization'] ?? 'None'}
 Body: ${body != null ? json.encode(body) : 'None'}
 Requires Auth: $requiresAuth
 Token Valid: ${_tokenService.isTokenValid()}

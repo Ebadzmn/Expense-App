@@ -5,6 +5,8 @@ import 'package:your_expense/services/api_base_service.dart';
 import 'package:your_expense/services/config_service.dart';
 import 'package:your_expense/services/token_service.dart';
 import 'package:your_expense/services/subscription_service.dart';
+import 'package:your_expense/home/home_controller.dart';
+import 'package:your_expense/Analytics/expense_controller.dart';
 
 import 'dart:convert';
 
@@ -176,6 +178,22 @@ class LoginService extends GetxService {
 
       currentUser.value = null;
       isLoggedIn.value = false;
+
+      // Clear UI controllers to avoid showing previous user's data
+      try {
+        if (Get.isRegistered<HomeController>()) {
+          Get.find<HomeController>().reset();
+        }
+      } catch (e) {
+        print('Warn: failed to reset HomeController on logout: $e');
+      }
+      try {
+        if (Get.isRegistered<ExpenseController>()) {
+          Get.find<ExpenseController>().reset();
+        }
+      } catch (e) {
+        print('Warn: failed to reset ExpenseController on logout: $e');
+      }
     } catch (e) {
       print('Error during logout: $e');
       rethrow;

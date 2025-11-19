@@ -214,5 +214,41 @@ class TokenService extends GetxService {
     }
   }
 
+  // ===== Reset Password Token Management =====
+  Future<void> saveResetToken(String token) async {
+    try {
+      await _prefs?.setString('reset_password_token', token);
+      print('✅ Reset token saved successfully');
+      print('📋 Reset token length: ${token.length}');
+      print('📋 Reset token preview: ${token.substring(0, min(token.length, 20))}...');
+    } catch (e) {
+      print('❌ Error saving reset token: $e');
+    }
+  }
+
+  String? getResetToken() {
+    try {
+      final token = _prefs?.getString('reset_password_token');
+      if (token == null || token.isEmpty) {
+        print('📋 No reset token found in storage');
+        return null;
+      }
+      print('📋 Retrieved reset token: ${token.substring(0, min(token.length, 20))}...');
+      return token;
+    } catch (e) {
+      print('❌ Error retrieving reset token: $e');
+      return null;
+    }
+  }
+
+  Future<void> clearResetToken() async {
+    try {
+      await _prefs?.remove('reset_password_token');
+      print('✅ Reset token cleared successfully');
+    } catch (e) {
+      print('❌ Error clearing reset token: $e');
+    }
+  }
+
   int min(int a, int b) => a < b ? a : b;
 }

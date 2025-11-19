@@ -336,13 +336,15 @@ class ProExpensesIncomeController extends GetxController {
         return;
       }
       isLoading.value = true;
-      // Always use category name and send month like income
-      final month = DateFormat('yyyy-MM').format(selectedDate.value);
+      // Build effective date from selected date & time
+      final d = selectedDate.value;
+      final t = selectedTime.value;
+      final DateTime effectiveDate = DateTime(d.year, d.month, d.day, t.hour, t.minute);
       final success = await _expenseController.addExpense(
         amount: amount,
         category: selectedExpenseCategory.value,
         note: selectedExpenseCategory.value,
-        month: month,
+        date: effectiveDate,
       );
       isLoading.value = false;
       if (success) {
@@ -375,11 +377,13 @@ class ProExpensesIncomeController extends GetxController {
       isLoading.value = true;
       try {
         final incomeService = Get.find<IncomeService>();
-        final month = DateFormat('yyyy-MM').format(selectedDate.value);
+        final d = selectedDate.value;
+        final t = selectedTime.value;
+        final DateTime effectiveDate = DateTime(d.year, d.month, d.day, t.hour, t.minute);
         await incomeService.createIncome(
           source: selectedIncomeCategory.value,
           amount: amount,
-          month: month,
+          date: effectiveDate,
         );
         try {
           final home = Get.find<HomeController>();

@@ -16,6 +16,17 @@ class LocalAuthService {
     }
   }
 
+  // Check if face biometrics are available (primarily for Android)
+  Future<bool> hasFaceBiometrics() async {
+    try {
+      final types = await _auth.getAvailableBiometrics();
+      return types.contains(BiometricType.face);
+    } catch (e) {
+      debugPrint('LocalAuth getAvailableBiometrics error: $e');
+      return false;
+    }
+  }
+
   Future<bool> authenticate({String reason = 'Authenticate to continue'}) async {
     try {
       final didAuthenticate = await _auth.authenticate(

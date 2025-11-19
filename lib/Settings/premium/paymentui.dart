@@ -33,10 +33,6 @@ class _PremiumPlansScreenState extends State<PremiumPlansScreen> {
     // init IAP (will also query products and listen for purchases)
     print('[IAP] PremiumPlansScreen init: calling iap.init()');
     iap.init();
-    // Show a visible hint so you can confirm on-device
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Get.snackbar('IAP', 'Premium screen loaded, init called', snackPosition: SnackPosition.BOTTOM);
-    });
   }
 
   @override

@@ -267,6 +267,8 @@ class _ExpensePageState extends State<ExpensePage> {
   final TextEditingController _amountController = TextEditingController();
   final ApiBaseService _apiService = Get.find<ApiBaseService>(); // Add API service
   final ConfigService _configService = Get.find<ConfigService>(); // Add config service
+  DateTime? _selectedDate;
+  TimeOfDay? _selectedTime;
 
   // Categories from CategoryModel
   // late final List<Map<String, String>> _expenseCategories;
@@ -291,6 +293,29 @@ class _ExpensePageState extends State<ExpensePage> {
     _paymentController.dispose();
     _amountController.dispose();
     super.dispose();
+  }
+
+  Future<void> _selectDateTime() async {
+    final DateTime initialDate = _selectedDate ?? DateTime.now();
+    final TimeOfDay initialTime = _selectedTime ?? TimeOfDay.now();
+    final DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: initialDate,
+      firstDate: DateTime(2020),
+      lastDate: DateTime(2035),
+    );
+    if (pickedDate != null) {
+      final TimeOfDay? pickedTime = await showTimePicker(
+        context: context,
+        initialTime: initialTime,
+      );
+      if (pickedTime != null) {
+        setState(() {
+          _selectedDate = pickedDate;
+          _selectedTime = pickedTime;
+        });
+      }
+    }
   }
 
   Future<void> _handleOcrRaw(String rawText) async {
@@ -702,6 +727,21 @@ class _ExpensePageState extends State<ExpensePage> {
   }
 
   Widget _buildDateTimeSection() {
+    final DateTime now = DateTime.now();
+    final String defaultLabel = DateFormat('yyyy-MM-dd HH:mm').format(now);
+    final DateTime? picked = (_selectedDate != null)
+        ? DateTime(
+            _selectedDate!.year,
+            _selectedDate!.month,
+            _selectedDate!.day,
+            (_selectedTime ?? TimeOfDay.now()).hour,
+            (_selectedTime ?? TimeOfDay.now()).minute,
+          )
+        : null;
+    final String pickedLabel = picked != null
+        ? DateFormat('yyyy-MM-dd HH:mm').format(picked)
+        : 'tapToSet'.tr;
+
     return Row(
       children: [
         Expanded(
@@ -726,7 +766,7 @@ class _ExpensePageState extends State<ExpensePage> {
                 ),
                 child: Center(
                   child: Text(
-                    'feb1520241430'.tr,
+                    defaultLabel,
                     style: GoogleFonts.inter(
                       color: AppColors.text50,
                       fontSize: 12,
@@ -752,18 +792,21 @@ class _ExpensePageState extends State<ExpensePage> {
                 ),
               ),
               const SizedBox(height: 8),
-              Container(
-                padding: AppStyles.buttonPadding,
-                decoration: BoxDecoration(
-                  color: widget.isDarkMode ? const Color(0xFF2A2A2A) : AppColors.grey200,
-                  borderRadius: BorderRadius.circular(AppStyles.defaultRadius),
-                ),
-                child: Center(
-                  child: Text(
-                    'feb152024'.tr,
-                    style: GoogleFonts.inter(
-                      color: widget.isDarkMode ? Colors.white : AppColors.text900,
-                      fontSize: 12,
+              GestureDetector(
+                onTap: _selectDateTime,
+                child: Container(
+                  padding: AppStyles.buttonPadding,
+                  decoration: BoxDecoration(
+                    color: widget.isDarkMode ? const Color(0xFF2A2A2A) : AppColors.grey200,
+                    borderRadius: BorderRadius.circular(AppStyles.defaultRadius),
+                  ),
+                  child: Center(
+                    child: Text(
+                      pickedLabel,
+                      style: GoogleFonts.inter(
+                        color: widget.isDarkMode ? Colors.white : AppColors.text900,
+                        fontSize: 12,
+                      ),
                     ),
                   ),
                 ),
@@ -869,17 +912,32 @@ class _ExpensePageState extends State<ExpensePage> {
         }
         final index = _selectedCategoryIndex.clamp(0, _expenseCategories.length - 1);
         final categoryName = _expenseCategories[index]['name']!;
-
-        final month = DateFormat('yyyy-MM').format(DateTime.now());
+        DateTime effectiveDate;
+        if (_selectedDate != null) {
+          final time = _selectedTime ?? TimeOfDay.now();
+          effectiveDate = DateTime(
+            _selectedDate!.year,
+            _selectedDate!.month,
+            _selectedDate!.day,
+            time.hour,
+            time.minute,
+          );
+        } else {
+          effectiveDate = DateTime.now();
+        }
         final success = await _expenseController.addExpense(
           amount: amount,
           category: categoryName,
           note: categoryName,
-          month: month,
+          date: effectiveDate,
         );
         if (success) {
           Get.snackbar('success'.tr, 'transactionSuccess'.tr, snackPosition: SnackPosition.BOTTOM);
           _amountController.clear();
+          setState(() {
+            _selectedDate = null;
+            _selectedTime = null;
+          });
         } else {
           final msg = _expenseController.errorMessage.value.isNotEmpty
               ? _expenseController.errorMessage.value
@@ -934,6 +992,8 @@ class _IncomePageState extends State<IncomePage> {
   final TextEditingController _incomeAmountController = TextEditingController();
   final ApiBaseService _apiService = Get.find<ApiBaseService>(); // Add API service
   final ConfigService _configService = Get.find<ConfigService>(); // Add config service
+  DateTime? _selectedDate;
+  TimeOfDay? _selectedTime;
 
   // Categories from CategoryModel
   late final List<Map<String, String>> _incomeCategories;
@@ -952,6 +1012,29 @@ class _IncomePageState extends State<IncomePage> {
     _paymentController.dispose();
     _incomeAmountController.dispose();
     super.dispose();
+  }
+
+  Future<void> _selectDateTime() async {
+    final DateTime initialDate = _selectedDate ?? DateTime.now();
+    final TimeOfDay initialTime = _selectedTime ?? TimeOfDay.now();
+    final DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: initialDate,
+      firstDate: DateTime(2020),
+      lastDate: DateTime(2035),
+    );
+    if (pickedDate != null) {
+      final TimeOfDay? pickedTime = await showTimePicker(
+        context: context,
+        initialTime: initialTime,
+      );
+      if (pickedTime != null) {
+        setState(() {
+          _selectedDate = pickedDate;
+          _selectedTime = pickedTime;
+        });
+      }
+    }
   }
 
   Future<void> _handleOcrRaw(String rawText) async {
@@ -1209,6 +1292,21 @@ class _IncomePageState extends State<IncomePage> {
   }
 
   Widget _buildDateTimeSection() {
+    final DateTime now = DateTime.now();
+    final String defaultLabel = DateFormat('yyyy-MM-dd HH:mm').format(now);
+    final DateTime? picked = (_selectedDate != null)
+        ? DateTime(
+            _selectedDate!.year,
+            _selectedDate!.month,
+            _selectedDate!.day,
+            (_selectedTime ?? TimeOfDay.now()).hour,
+            (_selectedTime ?? TimeOfDay.now()).minute,
+          )
+        : null;
+    final String pickedLabel = picked != null
+        ? DateFormat('yyyy-MM-dd HH:mm').format(picked)
+        : 'tapToSet'.tr;
+
     return Row(
       children: [
         Expanded(
@@ -1233,7 +1331,7 @@ class _IncomePageState extends State<IncomePage> {
                 ),
                 child: Center(
                   child: Text(
-                    'feb1520241430'.tr,
+                    defaultLabel,
                     style: GoogleFonts.inter(
                       color: AppColors.text50,
                       fontSize: 12,
@@ -1259,18 +1357,21 @@ class _IncomePageState extends State<IncomePage> {
                 ),
               ),
               const SizedBox(height: 8),
-              Container(
-                padding: AppStyles.buttonPadding,
-                decoration: BoxDecoration(
-                  color: widget.isDarkMode ? const Color(0xFF2A2A2A) : AppColors.grey200,
-                  borderRadius: BorderRadius.circular(AppStyles.defaultRadius),
-                ),
-                child: Center(
-                  child: Text(
-                    'feb152024'.tr,
-                    style: GoogleFonts.inter(
-                      color: widget.isDarkMode ? Colors.white : AppColors.text900,
-                      fontSize: 12,
+              GestureDetector(
+                onTap: _selectDateTime,
+                child: Container(
+                  padding: AppStyles.buttonPadding,
+                  decoration: BoxDecoration(
+                    color: widget.isDarkMode ? const Color(0xFF2A2A2A) : AppColors.grey200,
+                    borderRadius: BorderRadius.circular(AppStyles.defaultRadius),
+                  ),
+                  child: Center(
+                    child: Text(
+                      pickedLabel,
+                      style: GoogleFonts.inter(
+                        color: widget.isDarkMode ? Colors.white : AppColors.text900,
+                        fontSize: 12,
+                      ),
                     ),
                   ),
                 ),
@@ -1376,9 +1477,21 @@ class _IncomePageState extends State<IncomePage> {
         }
         final index = _selectedCategoryIndex.clamp(0, _incomeCategories.length - 1);
         final source = _incomeCategories[index]['name']!;
-        final month = DateFormat('yyyy-MM').format(DateTime.now());
+        DateTime effectiveDate;
+        if (_selectedDate != null) {
+          final time = _selectedTime ?? TimeOfDay.now();
+          effectiveDate = DateTime(
+            _selectedDate!.year,
+            _selectedDate!.month,
+            _selectedDate!.day,
+            time.hour,
+            time.minute,
+          );
+        } else {
+          effectiveDate = DateTime.now();
+        }
         try {
-          await _incomeService.createIncome(source: source, amount: amount, month: month);
+          await _incomeService.createIncome(source: source, amount: amount, date: effectiveDate);
           try {
             final home = Get.find<HomeController>();
             home.addTransaction(source, amount.toStringAsFixed(0), true);
@@ -1387,6 +1500,10 @@ class _IncomePageState extends State<IncomePage> {
           } catch (_) {}
           Get.snackbar('success'.tr, 'transactionSuccess'.tr, snackPosition: SnackPosition.BOTTOM);
           _incomeAmountController.clear();
+          setState(() {
+            _selectedDate = null;
+            _selectedTime = null;
+          });
         } catch (e) {
           Get.snackbar('error'.tr, 'transactionError'.tr, snackPosition: SnackPosition.BOTTOM);
         }

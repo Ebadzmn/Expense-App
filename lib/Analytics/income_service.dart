@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:your_expense/services/api_base_service.dart';
 import 'package:your_expense/services/config_service.dart';
 import 'income_model.dart';
+import 'package:intl/intl.dart';
 
 class IncomeService extends GetxService {
   final ApiBaseService _apiService = Get.find();
@@ -46,11 +47,15 @@ class IncomeService extends GetxService {
   }) async {
     try {
       final effectiveDate = date ?? DateTime.now();
+      final monthStr = DateFormat('yyyy-MM').format(effectiveDate);
+      final isoDate = effectiveDate.toIso8601String();
       final body = {
         'source': source,
         'amount': amount,
-        if (month != null && month.isNotEmpty) 'month': month,
-        if (month == null || month.isEmpty) 'date': effectiveDate.toIso8601String(),
+        // Always include date fields and month derived from date
+        'date': isoDate,
+        'createdAt': isoDate,
+        'month': (month != null && month.isNotEmpty) ? month : monthStr,
       };
 
       final response = await _apiService.request(

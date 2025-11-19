@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:camera/camera.dart';
 import 'dart:async';
+import 'dart:io' show Platform;
 import '../../colors/app_colors.dart';
 import 'face_login_controller.dart';
 import '../../routes/app_routes.dart';
@@ -23,6 +24,7 @@ class _FaceLoginScreenState extends State<FaceLoginScreen>
 
   late AnimationController _animationController;
   late Animation<double> _animation;
+  bool _isAuthenticating = false;
 
   final FaceLoginController controller = Get.put(FaceLoginController());
 
@@ -54,8 +56,9 @@ class _FaceLoginScreenState extends State<FaceLoginScreen>
       );
       _cameraController = CameraController(
         frontCamera,
-        ResolutionPreset.high,
+        ResolutionPreset.low,
         enableAudio: false,
+        imageFormatGroup: ImageFormatGroup.yuv420,
       );
       await _cameraController!.initialize();
       if (mounted) {
@@ -64,7 +67,7 @@ class _FaceLoginScreenState extends State<FaceLoginScreen>
         });
       }
     } catch (e) {
-      print('Error initializing camera: $e');
+      debugPrint('Error initializing camera: $e');
       Get.snackbar(
         'Camera Error',
         'Unable to access camera. Please check permissions.',
@@ -75,7 +78,7 @@ class _FaceLoginScreenState extends State<FaceLoginScreen>
     }
   }
 
-  void _startVerification() {
+  Future<void> _startVerification() async {
     final tokenService = Get.find<TokenService>();
     final faceService = Get.find<FaceIdService>();
     final localAuth = Get.find<LocalAuthService>();
@@ -102,44 +105,64 @@ class _FaceLoginScreenState extends State<FaceLoginScreen>
       return;
     }
 
-    // On mobile platforms where biometrics are supported, gate with local_auth first
-    if (!kIsWeb) {
-      localAuth.isSupported().then((supported) async {
-        if (supported) {
-          final ok = await localAuth.authenticate(
-            reason: 'Authenticate with device biometrics to continue',
-          );
-          if (!ok) {
-            Get.snackbar(
-              'Authentication Failed',
-              'Could not verify your identity with biometrics.',
-              snackPosition: SnackPosition.TOP,
-              backgroundColor: Colors.red,
-              colorText: Colors.white,
-            );
-            return;
-          }
-        }
-        // Proceed with camera-based verification after biometric gate
-        controller.startVerification();
-        _animationController.reset();
-        _animationController.forward();
-        Timer(const Duration(seconds: 5), () {
-          if (mounted) {
-            controller.completeVerification();
-          }
-        });
-      });
-      return;
-    }
+    // Hide UI during authentication
+    setState(() {
+      _isAuthenticating = true;
+    });
 
-    // Web: proceed directly with camera-based verification
-    controller.startVerification();
-    _animationController.reset();
-    _animationController.forward();
-    Timer(const Duration(seconds: 5), () {
-      if (mounted) {
-        controller.completeVerification();
+    // Stop camera to remove overlay UI immediately
+    try {
+      await _cameraController?.dispose();
+    } catch (_) {}
+    _isCameraInitialized = false;
+
+    localAuth.isSupported().then((supported) async {
+      if (!supported) {
+        setState(() => _isAuthenticating = false);
+        Get.snackbar(
+          'Unsupported',
+          'Device biometrics not available.',
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
+        return;
+      }
+
+      // Android: enforce face-only by checking availability before prompting
+      if (!kIsWeb && Platform.isAndroid) {
+        final hasFace = await localAuth.hasFaceBiometrics();
+        if (!hasFace) {
+          setState(() => _isAuthenticating = false);
+          Get.snackbar(
+            'Face Unlock Unavailable',
+            'This device does not support Face biometrics.',
+            snackPosition: SnackPosition.TOP,
+            backgroundColor: Colors.orange,
+            colorText: Colors.white,
+          );
+          // Optionally re-init camera to restore UI
+          _initializeCamera();
+          return;
+        }
+      }
+
+      final ok = await localAuth.authenticate(
+        reason: 'Authenticate to continue',
+      );
+      if (ok) {
+        Get.offNamed(AppRoutes.mainHome);
+      } else {
+        setState(() => _isAuthenticating = false);
+        Get.snackbar(
+          'Authentication Failed',
+          'Could not verify your identity with Face ID.',
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
+        // Re-init camera to restore UI for retry
+        _initializeCamera();
       }
     });
   }
@@ -171,150 +194,130 @@ class _FaceLoginScreenState extends State<FaceLoginScreen>
           ),
         ),
       ),
-      body: GetBuilder<FaceLoginController>(
-        builder: (controller) => Stack(
-          children: [
-            // Camera Preview (Base Layer)
-            if (_isCameraInitialized)
-              Positioned.fill(
-                child: CameraPreview(_cameraController!),
-              )
-            else
-              const Center(
-                child: CircularProgressIndicator(color: AppColors.primary500),
-              ),
-
-            // Face Detection Overlay
-            if (_isCameraInitialized)
-              Positioned.fill(
-                child: AnimatedBuilder(
-                  animation: _animation,
-                  builder: (context, child) {
-                    return FaceOverlayWidget(
-                      screenSize: screenSize,
-                      progress: _animation.value,
-                      isVerifying: controller.isVerifying,
-                    );
-                  },
-                ),
-              ),
-
-            // Top Instructions
-            if (!controller.isVerifying)
-              Positioned(
-                top: 100,
-                left: 20,
-                right: 20,
-                child: Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.7),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: const Text(
-                    'Position your face within the circle and tap the button below to start verification',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontFamily: 'Inter',
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w400,
+      body: _isAuthenticating
+          ? const SizedBox.shrink() // Hide UI during biometric auth
+          : GetBuilder<FaceLoginController>(
+              builder: (controller) => Stack(
+                children: [
+                  // Camera Preview (Base Layer)
+                  if (_isCameraInitialized)
+                    Positioned.fill(
+                      child: CameraPreview(_cameraController!),
+                    )
+                  else
+                    const Center(
+                      child: CircularProgressIndicator(color: AppColors.primary500),
                     ),
-                  ),
-                ),
-              ),
 
-            // Bottom Section
-            Positioned(
-              bottom: 0,
-              left: 0,
-              right: 0,
-              child: Container(
-                padding: const EdgeInsets.all(24),
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [Colors.transparent, Colors.black54, Colors.black87],
-                  ),
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    if (controller.isVerifying)
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 20,
-                          vertical: 12,
-                        ),
+                  // Face Detection Overlay
+                  if (_isCameraInitialized)
+                    Positioned.fill(
+                      child: AnimatedBuilder(
+                        animation: _animation,
+                        builder: (context, child) {
+                          return FaceOverlayWidget(
+                            screenSize: screenSize,
+                            progress: _animation.value,
+                            isVerifying: controller.isVerifying,
+                          );
+                        },
+                      ),
+                    ),
+
+                  // Top Instructions
+                  if (!controller.isVerifying)
+                    Positioned(
+                      top: 100,
+                      left: 20,
+                      right: 20,
+                      child: Container(
+                        padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
-                          color: AppColors.primary500.withOpacity(0.9),
-                          borderRadius: BorderRadius.circular(20),
+                          color: Colors.black.withOpacity(0.7),
+                          borderRadius: BorderRadius.circular(8),
                         ),
                         child: const Text(
-                          'Verifying... Keep your face in the circle',
+                          'Position your face within the circle and tap the button below to start verification',
+                          textAlign: TextAlign.center,
                           style: TextStyle(
                             fontFamily: 'Inter',
                             color: Colors.white,
                             fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                    const SizedBox(height: 20),
-                    if (!controller.isVerifying)
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: _isCameraInitialized ? _startVerification : null,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.primary500,
-                            foregroundColor: Colors.white,
-                            elevation: 0,
-                            padding: const EdgeInsets.symmetric(vertical: 16),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            disabledBackgroundColor: Colors.grey,
-                          ),
-                          child: const Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.face, size: 24),
-                              SizedBox(width: 8),
-                              Text(
-                                'Authenticate Using Face ID',
-                                style: TextStyle(
-                                  fontFamily: 'Inter',
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 16,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    const SizedBox(height: 12),
-                    if (!controller.isVerifying)
-                      TextButton(
-                        onPressed: () => Get.offNamed(AppRoutes.login),
-                        child: const Text(
-                          'Back to Login',
-                          style: TextStyle(
-                            fontFamily: 'Inter',
                             fontWeight: FontWeight.w400,
-                            fontSize: 16,
-                            color: Colors.white70,
                           ),
                         ),
                       ),
-                  ],
-                ),
+                    ),
+
+                  // Bottom Section
+                  Positioned(
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    child: Container(
+                      padding: const EdgeInsets.all(24),
+                      decoration: const BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [Colors.transparent, Colors.black54, Colors.black87],
+                        ),
+                      ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const SizedBox(height: 20),
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(
+                              onPressed: _isCameraInitialized ? _startVerification : null,
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: AppColors.primary500,
+                                foregroundColor: Colors.white,
+                                elevation: 0,
+                                padding: const EdgeInsets.symmetric(vertical: 16),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                disabledBackgroundColor: Colors.grey,
+                              ),
+                              child: const Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.face, size: 24),
+                                  SizedBox(width: 8),
+                                  Text(
+                                    'Authenticate Using Face ID',
+                                    style: TextStyle(
+                                      fontFamily: 'Inter',
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          TextButton(
+                            onPressed: () => Get.offNamed(AppRoutes.login),
+                            child: const Text(
+                              'Back to Login',
+                              style: TextStyle(
+                                fontFamily: 'Inter',
+                                fontWeight: FontWeight.w400,
+                                fontSize: 16,
+                                color: Colors.white70,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
-      ),
     );
   }
 }
@@ -465,3 +468,4 @@ class CircleBorderPainter extends CustomPainter {
         (oldDelegate.progress != progress || oldDelegate.isVerifying != isVerifying);
   }
 }
+// Removed camera-based overlay and progress UI for a direct Face ID flow

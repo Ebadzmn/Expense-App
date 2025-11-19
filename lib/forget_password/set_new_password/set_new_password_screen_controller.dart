@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:your_expense/forget_password/forgot_password_api_service.dart';
 import '../../Settings/appearance/ThemeController.dart';
+import 'package:your_expense/services/token_service.dart';
 
 
 class SetNewPasswordScreen extends StatefulWidget {
@@ -15,6 +17,24 @@ class _SetNewPasswordScreenState extends State<SetNewPasswordScreen> {
   final _confirmPasswordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   final themeController = Get.find<ThemeController>();
+  final RxBool _isSubmitting = false.obs;
+  late final String? _token;
+
+  @override
+  void initState() {
+    super.initState();
+    _token = (Get.arguments is Map) ? (Get.arguments as Map)['token']?.toString() : null;
+    if (_token == null || _token!.isEmpty) {
+      try {
+        final tokenService = Get.isRegistered<TokenService>() ? Get.find<TokenService>() : null;
+        if (tokenService != null) {
+          _token = tokenService.getResetToken();
+        }
+      } catch (e) {
+        print('⚠️ Failed to read reset token from storage: $e');
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -208,8 +228,56 @@ class _SetNewPasswordScreenState extends State<SetNewPasswordScreen> {
                     width: double.infinity,
                     height: 56,
                     child: ElevatedButton(
-                      onPressed: () {
-                        Get.offAllNamed('/mainHome');
+                      onPressed: _isSubmitting.value ? null : () async {
+                        final newPassword = _passwordController.text;
+                        final confirmPassword = _confirmPasswordController.text;
+                        if (newPassword.isEmpty || confirmPassword.isEmpty) {
+                          Get.snackbar('Error'.tr, 'Please fill in all fields'.tr,
+                              snackPosition: SnackPosition.BOTTOM);
+                          return;
+                        }
+                        if (newPassword != confirmPassword) {
+                          Get.snackbar('Error'.tr, 'Passwords do not match'.tr,
+                              snackPosition: SnackPosition.BOTTOM);
+                          return;
+                        }
+                        if (_token == null || _token!.isEmpty) {
+                          Get.snackbar('Error'.tr, 'Token missing. Please verify OTP again.'.tr,
+                              snackPosition: SnackPosition.BOTTOM);
+                          return;
+                        }
+                        _isSubmitting.value = true;
+                        try {
+                          final service = Get.isRegistered<ForgotPasswordApiService>()
+                              ? Get.find<ForgotPasswordApiService>()
+                              : Get.put(ForgotPasswordApiService());
+                          await service.init();
+                          final resp = await service.resetPassword(
+                            token: _token!,
+                            newPassword: newPassword,
+                            confirmPassword: confirmPassword,
+                          );
+                          final success = resp['success'] == true;
+                          final message = resp['message']?.toString() ?? (success ? 'Password reset' : 'Reset failed');
+                          if (success) {
+                            Get.snackbar('Success'.tr, message, snackPosition: SnackPosition.BOTTOM);
+                            // Clear stored reset token after successful reset
+                            try {
+                              final tokenService = Get.isRegistered<TokenService>() ? Get.find<TokenService>() : null;
+                              await tokenService?.clearResetToken();
+                            } catch (e) {
+                              print('⚠️ Failed to clear reset token: $e');
+                            }
+                            Get.offAllNamed('/login');
+                          } else {
+                            Get.snackbar('Error'.tr, message, snackPosition: SnackPosition.BOTTOM);
+                          }
+                        } catch (e) {
+                          Get.snackbar('Error'.tr, e.toString().replaceAll('Exception: ', ''),
+                              snackPosition: SnackPosition.BOTTOM);
+                        } finally {
+                          _isSubmitting.value = false;
+                        }
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Color(0xFF2196F3),
@@ -219,14 +287,23 @@ class _SetNewPasswordScreenState extends State<SetNewPasswordScreen> {
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
-                      child: Text(
-                        'continue'.tr,
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
-                        ),
-                      ),
+                      child: Obx(() => _isSubmitting.value
+                          ? SizedBox(
+                              width: 22,
+                              height: 22,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                              ),
+                            )
+                          : Text(
+                              'continue'.tr,
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white,
+                              ),
+                            )),
                     ),
                   ),
                   const SizedBox(height: 40),

@@ -19,10 +19,10 @@ class BudgetService extends GetxService {
       // Use provided month or default to current month
       final monthParam = month ?? DateFormat('yyyy-MM').format(DateTime.now());
 
+      // Prefer path-style endpoint: /budget/{YYYY-MM}
       final response = await _apiService.request(
         'GET',
-        _configService.monthlyBudgetTotalEndpoint,
-        queryParams: {'Month': monthParam},
+        _configService.getBudgetEndpoint(monthParam),
         requiresAuth: true,
       );
       print("📊 fetchMonthlyBudgetData response: $response");

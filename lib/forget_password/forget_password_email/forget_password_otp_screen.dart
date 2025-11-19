@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:your_expense/routes/app_routes.dart';
+import '../forgot_password_api_service.dart';
 import '../../Settings/appearance/ThemeController.dart';
 import '../../Settings/language/language_controller.dart';
+import 'package:your_expense/services/token_service.dart';
 
 class OtpVerificationScreen extends StatefulWidget {
   const OtpVerificationScreen({super.key});
@@ -14,11 +16,18 @@ class OtpVerificationScreen extends StatefulWidget {
 
 class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
   final List<TextEditingController> _controllers =
-  List.generate(6, (_) => TextEditingController());
-  final List<FocusNode> _focusNodes = List.generate(6, (_) => FocusNode());
+  List.generate(4, (_) => TextEditingController());
+  final List<FocusNode> _focusNodes = List.generate(4, (_) => FocusNode());
   final ThemeController themeController = Get.find<ThemeController>();
   final LanguageController languageController = Get.find<LanguageController>();
   final Color primaryColor = Color(0xFF4A90E2); // Using #4A90E2 as primary color
+  late final String? _email;
+
+  @override
+  void initState() {
+    super.initState();
+    _email = (Get.arguments is Map) ? (Get.arguments as Map)['email']?.toString() : null;
+  }
 
   @override
   void dispose() {
@@ -33,12 +42,12 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
 
   void _onSubmit() {
     String otpCode = _controllers.map((c) => c.text).join();
-    if (otpCode.length == 6) {
-      Get.offNamed(AppRoutes.setNewPassword);
+    if (otpCode.length == 4) {
+      _verifyOtpAndProceed(otpCode);
     } else {
       Get.snackbar(
         'Error'.tr,
-        'Please enter a valid 6-digit OTP'.tr,
+        'Please enter a valid 4-digit OTP'.tr,
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: themeController.isDarkModeActive
             ? Colors.grey[800]
@@ -47,6 +56,42 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
             ? Colors.white
             : Colors.black,
       );
+    }
+  }
+
+  Future<void> _verifyOtpAndProceed(String otp) async {
+    final email = _email ?? (Get.arguments is Map ? (Get.arguments as Map)['email']?.toString() : null);
+    if (email == null || email.isEmpty) {
+      Get.snackbar('Error'.tr, 'Email missing. Please restart flow.'.tr,
+          snackPosition: SnackPosition.BOTTOM);
+      return;
+    }
+    try {
+      final service = Get.isRegistered<ForgotPasswordApiService>()
+          ? Get.find<ForgotPasswordApiService>()
+          : Get.put(ForgotPasswordApiService());
+      await service.init();
+      final resp = await service.verifyEmailOtp(email: email, oneTimeCode: int.parse(otp));
+      final success = resp['success'] == true;
+      final token = resp['data']?.toString();
+      final message = resp['message']?.toString() ?? (success ? 'Verified' : 'Verification failed');
+      if (success && token != null && token.isNotEmpty) {
+        // Persist reset token for later use
+        try {
+          final tokenService = Get.isRegistered<TokenService>() ? Get.find<TokenService>() : Get.put(TokenService());
+          await tokenService.init();
+          await tokenService.saveResetToken(token);
+        } catch (e) {
+          print('⚠️ Failed to persist reset token: $e');
+        }
+        Get.snackbar('Success'.tr, message, snackPosition: SnackPosition.BOTTOM);
+        Get.offNamed(AppRoutes.setNewPassword, arguments: {'token': token});
+      } else {
+        Get.snackbar('Error'.tr, message, snackPosition: SnackPosition.BOTTOM);
+      }
+    } catch (e) {
+      Get.snackbar('Error'.tr, e.toString().replaceAll('Exception: ', ''),
+          snackPosition: SnackPosition.BOTTOM);
     }
   }
 
@@ -115,7 +160,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
               const SizedBox(height: 16),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: List.generate(6, (index) {
+                children: List.generate(4, (index) {
                   return Container(
                     width: 48,
                     height: 56,
@@ -148,7 +193,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                       ),
                       onChanged: (value) {
                         if (value.isNotEmpty) {
-                          if (index < 5) {
+                          if (index < _focusNodes.length - 1) {
                             FocusScope.of(context)
                                 .requestFocus(_focusNodes[index + 1]);
                           } else {
