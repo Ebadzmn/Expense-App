@@ -291,7 +291,12 @@ class ComparisonGraphScreen extends StatelessWidget {
                 height: 48,
                 child: ElevatedButton.icon(
                   onPressed: () {
-                    Get.toNamed(AppRoutes.amazonPurchaseDetails);
+                    final sub = Get.find<SubscriptionService>();
+                    if (sub.isActivePro) {
+                      Get.toNamed(AppRoutes.proSavings);
+                    } else {
+                      Get.toNamed(AppRoutes.nonProSavings);
+                    }
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue,
@@ -306,7 +311,7 @@ class ComparisonGraphScreen extends StatelessWidget {
                     size: 20,
                   ),
                   label: Text(
-                    'purchaseNow'.tr,
+                    'viewAllPurchase'.tr,
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 16,
@@ -393,7 +398,7 @@ class ComparisonGraphScreen extends StatelessWidget {
         backgroundColor: isDarkMode ? const Color(0xFF1E1E1E) : Colors.white,
       ),
       child: Text(
-        'viewAllPurchase'.tr,
+        'view_all'.tr,
         style: TextStyle(
           color: isDarkMode ? Colors.white : Colors.black87,
           fontSize: 16,

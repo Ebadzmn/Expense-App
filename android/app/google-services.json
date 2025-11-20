@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "920150322072",
+    "project_id": "exp-appvd",
+    "storage_bucket": "exp-appvd.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:920150322072:android:2221e8e08a5b57a37e99ed",
+        "android_client_info": {
+          "package_name": "com.mashiur.expenseapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBPtgKrf6UTfHrM3_M76q3Fbg_6mCYa9MU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

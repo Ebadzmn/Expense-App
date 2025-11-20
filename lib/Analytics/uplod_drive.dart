@@ -163,12 +163,399 @@ class UploadToDriveScreen extends StatelessWidget {
         ),
         SizedBox(height: screenHeight * 0.015),
         _buildCheckboxItem('all_files'.tr, controller.allFiles, controller.toggleAllFiles, screenWidth, isDark),
-        _buildCheckboxItem('monthly_reports'.tr, controller.monthlyReports, controller.toggleMonthlyReports, screenWidth, isDark),
-        _buildCheckboxItem('income_reports'.tr, controller.incomeReports, controller.toggleIncomeReports, screenWidth, isDark),
-        _buildCheckboxItem('expense_reports'.tr, controller.expenseReports, controller.toggleExpenseReports, screenWidth, isDark),
-        _buildCheckboxItem('savings_reports'.tr, controller.savingsReports, controller.toggleSavingsReports, screenWidth, isDark),
+        _buildMonthlyReportsItem(controller, screenWidth, screenHeight, isDark),
+        _buildIncomeReportsItem(controller, screenWidth, screenHeight, isDark),
+        _buildExpenseReportsItem(controller, screenWidth, screenHeight, isDark),
+        _buildSavingsReportsItem(controller, screenWidth, screenHeight, isDark),
       ],
     );
+  }
+
+  Widget _buildMonthlyReportsItem(UploadToDriveController controller, double screenWidth, double screenHeight, bool isDark) {
+    return Obx(() {
+      final isSelected = controller.monthlyReports.value;
+      return GestureDetector(
+        onTap: controller.toggleMonthlyReports,
+        child: Container(
+          margin: EdgeInsets.only(bottom: screenWidth * 0.02),
+          padding: EdgeInsets.all(screenWidth * 0.04),
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: isDark ? Colors.grey.shade600 : Colors.grey.shade300,
+            ),
+            borderRadius: BorderRadius.circular(screenWidth * 0.02),
+            color: isDark ? const Color(0xFF2A2A2A) : Colors.white,
+          ),
+          child: Row(
+            children: [
+              Container(
+                width: screenWidth * 0.05,
+                height: screenWidth * 0.05,
+                decoration: BoxDecoration(
+                  color: isSelected ? const Color(0xFF2196F3) : Colors.transparent,
+                  border: Border.all(
+                    color: isSelected ? const Color(0xFF2196F3) : (isDark ? Colors.grey.shade500 : Colors.grey.shade400),
+                    width: 2,
+                  ),
+                  borderRadius: BorderRadius.circular(screenWidth * 0.01),
+                ),
+                child: isSelected
+                    ? Icon(
+                        Icons.check,
+                        color: Colors.white,
+                        size: screenWidth * 0.035,
+                      )
+                    : null,
+              ),
+              SizedBox(width: screenWidth * 0.03),
+              Expanded(
+                child: Text(
+                  'monthly_reports'.tr,
+                  style: TextStyle(
+                    fontSize: screenWidth * 0.035,
+                    color: isDark ? Colors.white : Colors.black,
+                  ),
+                ),
+              ),
+              SizedBox(width: screenWidth * 0.02),
+              // Month dropdown placed beside the report selector
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.02),
+                decoration: BoxDecoration(
+                  border: Border.all(color: isDark ? Colors.grey.shade600 : Colors.grey.shade300),
+                  borderRadius: BorderRadius.circular(screenWidth * 0.015),
+                  color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
+                ),
+                child: DropdownButtonHideUnderline(
+                  child: Obx(() => DropdownButton<String>(
+                        value: controller.selectedMonth.value.isNotEmpty
+                            ? controller.selectedMonth.value
+                            : null,
+                        hint: Text(
+                          'select_month'.tr,
+                          style: TextStyle(
+                            fontSize: screenWidth * 0.03,
+                            color: isDark ? Colors.grey.shade300 : Colors.grey.shade600,
+                          ),
+                        ),
+                        items: controller.monthOptions
+                            .map(
+                              (m) => DropdownMenuItem<String>(
+                                value: m,
+                                child: Text(
+                                  m,
+                                  style: TextStyle(
+                                    fontSize: screenWidth * 0.032,
+                                    color: isDark ? Colors.white : Colors.black,
+                                  ),
+                                ),
+                              ),
+                            )
+                            .toList(),
+                        onChanged: (val) {
+                          if (val != null) {
+                            controller.setMonth(val);
+                          }
+                        },
+                        icon: Icon(
+                          Icons.keyboard_arrow_down,
+                          color: isDark ? Colors.white : Colors.black,
+                          size: screenWidth * 0.045,
+                        ),
+                        dropdownColor: isDark ? const Color(0xFF2A2A2A) : Colors.white,
+                      )),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    });
+  }
+
+  Widget _buildIncomeReportsItem(UploadToDriveController controller, double screenWidth, double screenHeight, bool isDark) {
+    return Obx(() {
+      final isSelected = controller.incomeReports.value;
+      return GestureDetector(
+        onTap: controller.toggleIncomeReports,
+        child: Container(
+          margin: EdgeInsets.only(bottom: screenWidth * 0.02),
+          padding: EdgeInsets.all(screenWidth * 0.04),
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: isDark ? Colors.grey.shade600 : Colors.grey.shade300,
+            ),
+            borderRadius: BorderRadius.circular(screenWidth * 0.02),
+            color: isDark ? const Color(0xFF2A2A2A) : Colors.white,
+          ),
+          child: Row(
+            children: [
+              Container(
+                width: screenWidth * 0.05,
+                height: screenWidth * 0.05,
+                decoration: BoxDecoration(
+                  color: isSelected ? const Color(0xFF2196F3) : Colors.transparent,
+                  border: Border.all(
+                    color: isSelected ? const Color(0xFF2196F3) : (isDark ? Colors.grey.shade500 : Colors.grey.shade400),
+                    width: 2,
+                  ),
+                  borderRadius: BorderRadius.circular(screenWidth * 0.01),
+                ),
+                child: isSelected
+                    ? Icon(
+                        Icons.check,
+                        color: Colors.white,
+                        size: screenWidth * 0.035,
+                      )
+                    : null,
+              ),
+              SizedBox(width: screenWidth * 0.03),
+              Expanded(
+                child: Text(
+                  'income_reports'.tr,
+                  style: TextStyle(
+                    fontSize: screenWidth * 0.035,
+                    color: isDark ? Colors.white : Colors.black,
+                  ),
+                ),
+              ),
+              SizedBox(width: screenWidth * 0.02),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.02),
+                decoration: BoxDecoration(
+                  border: Border.all(color: isDark ? Colors.grey.shade600 : Colors.grey.shade300),
+                  borderRadius: BorderRadius.circular(screenWidth * 0.015),
+                  color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
+                ),
+                child: DropdownButtonHideUnderline(
+                  child: Obx(() => DropdownButton<String>(
+                        value: controller.selectedIncomeMonth.value.isNotEmpty ? controller.selectedIncomeMonth.value : null,
+                        hint: Text(
+                          'select_month'.tr,
+                          style: TextStyle(
+                            fontSize: screenWidth * 0.03,
+                            color: isDark ? Colors.grey.shade300 : Colors.grey.shade600,
+                          ),
+                        ),
+                        items: controller.monthOptions
+                            .map((m) => DropdownMenuItem<String>(
+                                  value: m,
+                                  child: Text(
+                                    m,
+                                    style: TextStyle(
+                                      fontSize: screenWidth * 0.032,
+                                      color: isDark ? Colors.white : Colors.black,
+                                    ),
+                                  ),
+                                ))
+                            .toList(),
+                        onChanged: (val) {
+                          if (val != null) controller.setIncomeMonth(val);
+                        },
+                        icon: Icon(
+                          Icons.keyboard_arrow_down,
+                          color: isDark ? Colors.white : Colors.black,
+                          size: screenWidth * 0.045,
+                        ),
+                        dropdownColor: isDark ? const Color(0xFF2A2A2A) : Colors.white,
+                      )),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    });
+  }
+
+  Widget _buildExpenseReportsItem(UploadToDriveController controller, double screenWidth, double screenHeight, bool isDark) {
+    return Obx(() {
+      final isSelected = controller.expenseReports.value;
+      return GestureDetector(
+        onTap: controller.toggleExpenseReports,
+        child: Container(
+          margin: EdgeInsets.only(bottom: screenWidth * 0.02),
+          padding: EdgeInsets.all(screenWidth * 0.04),
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: isDark ? Colors.grey.shade600 : Colors.grey.shade300,
+            ),
+            borderRadius: BorderRadius.circular(screenWidth * 0.02),
+            color: isDark ? const Color(0xFF2A2A2A) : Colors.white,
+          ),
+          child: Row(
+            children: [
+              Container(
+                width: screenWidth * 0.05,
+                height: screenWidth * 0.05,
+                decoration: BoxDecoration(
+                  color: isSelected ? const Color(0xFF2196F3) : Colors.transparent,
+                  border: Border.all(
+                    color: isSelected ? const Color(0xFF2196F3) : (isDark ? Colors.grey.shade500 : Colors.grey.shade400),
+                    width: 2,
+                  ),
+                  borderRadius: BorderRadius.circular(screenWidth * 0.01),
+                ),
+                child: isSelected
+                    ? Icon(
+                        Icons.check,
+                        color: Colors.white,
+                        size: screenWidth * 0.035,
+                      )
+                    : null,
+              ),
+              SizedBox(width: screenWidth * 0.03),
+              Expanded(
+                child: Text(
+                  'expense_reports'.tr,
+                  style: TextStyle(
+                    fontSize: screenWidth * 0.035,
+                    color: isDark ? Colors.white : Colors.black,
+                  ),
+                ),
+              ),
+              SizedBox(width: screenWidth * 0.02),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.02),
+                decoration: BoxDecoration(
+                  border: Border.all(color: isDark ? Colors.grey.shade600 : Colors.grey.shade300),
+                  borderRadius: BorderRadius.circular(screenWidth * 0.015),
+                  color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
+                ),
+                child: DropdownButtonHideUnderline(
+                  child: Obx(() => DropdownButton<String>(
+                        value: controller.selectedExpenseMonth.value.isNotEmpty ? controller.selectedExpenseMonth.value : null,
+                        hint: Text(
+                          'select_month'.tr,
+                          style: TextStyle(
+                            fontSize: screenWidth * 0.03,
+                            color: isDark ? Colors.grey.shade300 : Colors.grey.shade600,
+                          ),
+                        ),
+                        items: controller.monthOptions
+                            .map((m) => DropdownMenuItem<String>(
+                                  value: m,
+                                  child: Text(
+                                    m,
+                                    style: TextStyle(
+                                      fontSize: screenWidth * 0.032,
+                                      color: isDark ? Colors.white : Colors.black,
+                                    ),
+                                  ),
+                                ))
+                            .toList(),
+                        onChanged: (val) {
+                          if (val != null) controller.setExpenseMonth(val);
+                        },
+                        icon: Icon(
+                          Icons.keyboard_arrow_down,
+                          color: isDark ? Colors.white : Colors.black,
+                          size: screenWidth * 0.045,
+                        ),
+                        dropdownColor: isDark ? const Color(0xFF2A2A2A) : Colors.white,
+                      )),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    });
+  }
+
+  Widget _buildSavingsReportsItem(UploadToDriveController controller, double screenWidth, double screenHeight, bool isDark) {
+    return Obx(() {
+      final isSelected = controller.savingsReports.value;
+      return GestureDetector(
+        onTap: controller.toggleSavingsReports,
+        child: Container(
+          margin: EdgeInsets.only(bottom: screenWidth * 0.02),
+          padding: EdgeInsets.all(screenWidth * 0.04),
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: isDark ? Colors.grey.shade600 : Colors.grey.shade300,
+            ),
+            borderRadius: BorderRadius.circular(screenWidth * 0.02),
+            color: isDark ? const Color(0xFF2A2A2A) : Colors.white,
+          ),
+          child: Row(
+            children: [
+              Container(
+                width: screenWidth * 0.05,
+                height: screenWidth * 0.05,
+                decoration: BoxDecoration(
+                  color: isSelected ? const Color(0xFF2196F3) : Colors.transparent,
+                  border: Border.all(
+                    color: isSelected ? const Color(0xFF2196F3) : (isDark ? Colors.grey.shade500 : Colors.grey.shade400),
+                    width: 2,
+                  ),
+                  borderRadius: BorderRadius.circular(screenWidth * 0.01),
+                ),
+                child: isSelected
+                    ? Icon(
+                        Icons.check,
+                        color: Colors.white,
+                        size: screenWidth * 0.035,
+                      )
+                    : null,
+              ),
+              SizedBox(width: screenWidth * 0.03),
+              Expanded(
+                child: Text(
+                  'savings_reports'.tr,
+                  style: TextStyle(
+                    fontSize: screenWidth * 0.035,
+                    color: isDark ? Colors.white : Colors.black,
+                  ),
+                ),
+              ),
+              SizedBox(width: screenWidth * 0.02),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.02),
+                decoration: BoxDecoration(
+                  border: Border.all(color: isDark ? Colors.grey.shade600 : Colors.grey.shade300),
+                  borderRadius: BorderRadius.circular(screenWidth * 0.015),
+                  color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
+                ),
+                child: DropdownButtonHideUnderline(
+                  child: Obx(() => DropdownButton<String>(
+                        value: controller.selectedSavingsMonth.value.isNotEmpty ? controller.selectedSavingsMonth.value : null,
+                        hint: Text(
+                          'select_month'.tr,
+                          style: TextStyle(
+                            fontSize: screenWidth * 0.03,
+                            color: isDark ? Colors.grey.shade300 : Colors.grey.shade600,
+                          ),
+                        ),
+                        items: controller.monthOptions
+                            .map((m) => DropdownMenuItem<String>(
+                                  value: m,
+                                  child: Text(
+                                    m,
+                                    style: TextStyle(
+                                      fontSize: screenWidth * 0.032,
+                                      color: isDark ? Colors.white : Colors.black,
+                                    ),
+                                  ),
+                                ))
+                            .toList(),
+                        onChanged: (val) {
+                          if (val != null) controller.setSavingsMonth(val);
+                        },
+                        icon: Icon(
+                          Icons.keyboard_arrow_down,
+                          color: isDark ? Colors.white : Colors.black,
+                          size: screenWidth * 0.045,
+                        ),
+                        dropdownColor: isDark ? const Color(0xFF2A2A2A) : Colors.white,
+                      )),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    });
   }
 
   Widget _buildCheckboxItem(String title, RxBool value, VoidCallback onTap, double screenWidth, bool isDark) {

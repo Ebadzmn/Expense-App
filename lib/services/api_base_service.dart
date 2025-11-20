@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:your_expense/services/token_service.dart';
 import 'dart:convert';
+import 'dart:typed_data';
 
 class ApiBaseService extends GetxService {
   final TokenService _tokenService = Get.find();
@@ -137,6 +138,84 @@ User ID: ${_tokenService.getUserId()}
           throw Exception('Unauthorized. Please login if your session expired.');
         }
 
+        throw HttpException(response.statusCode, response.body);
+      }
+    } catch (e) {
+      _logError(method, endpoint, e);
+      rethrow;
+    }
+  }
+
+  /// Binary request helper for downloading files (PDF/CSV/Excel, etc.).
+  /// Returns raw `Uint8List` bytes without attempting JSON decoding.
+  Future<Uint8List> requestBytes(
+      String method,
+      String endpoint, {
+        Map<String, String>? headers,
+        Map<String, dynamic>? queryParams,
+        bool requiresAuth = true,
+      }) async {
+    try {
+      print('=== 🔐 TOKEN STATUS (bytes) ===');
+      print('Token exists: ${_tokenService.getToken() != null}');
+      print('Token valid: ${_tokenService.isTokenValid()}');
+      print('User ID: ${_tokenService.getUserId()}');
+      print('==============================');
+
+      if (requiresAuth && !_tokenService.isTokenValid()) {
+        print('❌ Auth required but token is invalid!');
+        throw Exception('Authentication required. Please login again.');
+      }
+
+      Uri uri = Uri.parse(endpoint);
+      if (queryParams != null) {
+        uri = uri.replace(queryParameters: queryParams.map((key, value) =>
+            MapEntry(key, value.toString())));
+      }
+      print('=== 🚀 Final API URL (bytes) ===');
+      print('URL: $uri');
+      print('=== End URL ===');
+
+      final requestHeaders = {
+        // Prefer binary-friendly accept header set; leave content-type unspecified for GET
+        'Accept': 'application/pdf, text/csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/octet-stream',
+        ...?headers,
+      };
+
+      if (requiresAuth && _tokenService.isTokenValid()) {
+        requestHeaders['Authorization'] = 'Bearer ${_tokenService.getToken()}';
+        print('🔐 Added auth token to bytes request');
+      }
+
+      http.Response response;
+      switch (method.toUpperCase()) {
+        case 'GET':
+          response = await _client.get(uri, headers: requestHeaders);
+          break;
+        default:
+          throw Exception('Unsupported HTTP method for bytes: $method');
+      }
+
+      print('=== 📤 Raw Bytes Response ===');
+      print('Status: ${response.statusCode}');
+      print('Headers: ${response.headers}');
+      print('Content-Type: ${response.headers['content-type']}');
+      print('Content-Length: ${response.headers['content-length'] ?? response.bodyBytes.length}');
+      print('============================');
+
+      _logResponse(method, endpoint, response);
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        final bytes = response.bodyBytes;
+        if (bytes.isEmpty) {
+          throw Exception('Empty file response');
+        }
+        return bytes;
+      } else {
+        print('❌ HTTP Error - Status: ${response.statusCode}');
+        if (response.statusCode == 401) {
+          throw Exception('Unauthorized. Please login if your session expired.');
+        }
         throw HttpException(response.statusCode, response.body);
       }
     } catch (e) {

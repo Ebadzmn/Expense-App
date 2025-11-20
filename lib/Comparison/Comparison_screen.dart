@@ -8,29 +8,49 @@ import '../home/home_controller.dart';
 import '../reuseablenav/reuseablenavui.dart';
 import 'ComparisonPageController.dart';
 
-class ComparisonPageScreen extends StatelessWidget {
+class ComparisonPageScreen extends StatefulWidget {
   final bool isFromExpense;
 
   const ComparisonPageScreen({super.key, required this.isFromExpense});
 
   @override
-  Widget build(BuildContext context) {
-    final themeController = Get.find<ThemeController>();
-    final homeCtrl = Get.find<HomeController>();
-    final comparisonCtrl = Get.put(ComparisonPageController());
+  State<ComparisonPageScreen> createState() => _ComparisonPageScreenState();
+}
 
-    final double screenWidth = MediaQuery.of(context).size.width;
-    final double screenHeight = MediaQuery.of(context).size.height;
+class _ComparisonPageScreenState extends State<ComparisonPageScreen> {
+  late final TextEditingController productNameController;
+  late final TextEditingController maxPriceController;
+  late final ComparisonPageController comparisonCtrl;
 
-    // TextEditing controllers
-    final productNameController = TextEditingController();
-    final maxPriceController = TextEditingController();
+  @override
+  void initState() {
+    super.initState();
+    productNameController = TextEditingController();
+    maxPriceController = TextEditingController();
+    // Ensure a single instance across rebuilds
+    comparisonCtrl = Get.put(ComparisonPageController());
 
+    // Position nav selection after first frame
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      final homeCtrl = Get.find<HomeController>();
       if (homeCtrl.selectedNavIndex.value != 2) {
         homeCtrl.selectedNavIndex.value = 2;
       }
     });
+  }
+
+  @override
+  void dispose() {
+    productNameController.dispose();
+    maxPriceController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final themeController = Get.find<ThemeController>();
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final double screenHeight = MediaQuery.of(context).size.height;
 
     final bool isDarkMode = themeController.isDarkModeActive;
     final Color backgroundColor = isDarkMode ? Color(0xFF121212) : Colors.white;
@@ -248,7 +268,49 @@ class ComparisonPageScreen extends StatelessWidget {
             // Results Section
             Obx(() {
               if (comparisonCtrl.deals.isEmpty && !comparisonCtrl.isLoading.value) {
-                return SizedBox();
+                // Empty state message when no deals are found
+                return Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: isDarkMode ? const Color(0xFF1E1E1E) : Colors.white,
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(
+                      color: isDarkMode ? const Color(0xFF333333) : Colors.grey[300]!,
+                    ),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.info_outline,
+                            color: isDarkMode ? Colors.white : Colors.black54,
+                            size: 20,
+                          ),
+                          SizedBox(width: 8),
+                          Text(
+                            'No deals found',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: isDarkMode ? Colors.white : Colors.black,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 8),
+                      Text(
+                        'Try a different product name or increase max price.',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
+                        ),
+                      ),
+                    ],
+                  ),
+                );
               }
 
               return Column(
@@ -642,7 +704,7 @@ class ComparisonPageScreen extends StatelessWidget {
   Widget _buildCopyLinkIcon(bool isDarkMode) {
     try {
       return Image.asset(
-        'assets/icons/copy_link.png',
+        'assets/icons/attachment-02.png',
         width: 20,
         height: 20,
         color: isDarkMode ? Colors.white : Colors.black54,
@@ -993,10 +1055,10 @@ class ComparisonPageScreen extends StatelessWidget {
                           ),
                         )
                             : Text(
-                          'View Savings Graph',
+                          'Purchase Confirm and show graph',
                           style: TextStyle(
                             color: Colors.white,
-                            fontSize: 16,
+                            fontSize: 12,
                             fontWeight: FontWeight.w600,
                           ),
                         ),

@@ -71,6 +71,31 @@ class ConfigService extends GetxService {
   String getMonthlyBudgetTotalEndpoint(String month) => '$baseUrl/budget/monthly?Month=$month';
   String get notificationsEndpoint => '$baseUrl/notifications';
 
+  // Expense report generate endpoints (by month)
+  // These return binary files (PDF/CSV/Excel) for the selected month.
+  // The backend is expected to accept `Month=yyyy-MM` as a query parameter.
+  String getExpensePdfEndpoint(String month) => '$baseUrl/expense/generate/pdf?month=$month';
+  String getExpenseCsvEndpoint(String month) => '$baseUrl/expense/generate/csv?month=$month';
+  String getExpenseExcelEndpoint(String month) => '$baseUrl/expense/generate/excel?month=$month';
+
+  // Income report generate endpoints (by month)
+  // Mirrors expense endpoints; adjust base paths if backend differs.
+  String getIncomePdfEndpoint(String month) => '$baseUrl/income/pdf?month=$month';
+  String getIncomeCsvEndpoint(String month) => '$baseUrl/income/csv?month=$month';
+  String getIncomeExcelEndpoint(String month) => '$baseUrl/income/excel?month=$month';
+
+  // Savings report generate endpoints (by month)
+  // Savings typically computed server-side as income - expense.
+  String getSavingsPdfEndpoint(String month) => '$baseUrl/savings/pdf?month=$month';
+  String getSavingsCsvEndpoint(String month) => '$baseUrl/savings/csv?month=$month';
+  String getSavingsExcelEndpoint(String month) => '$baseUrl/savings/excel?month=$month';
+
+  // Monthly consolidated report (explicit format endpoints to mirror others)
+  // As per request: /reports/{format}?month=YYYY-MM
+  String getMonthlyPdfEndpoint(String month) => '$baseUrl/reports/pdf?month=$month';
+  String getMonthlyCsvEndpoint(String month) => '$baseUrl/reports/csv?month=$month';
+  String getMonthlyExcelEndpoint(String month) => '$baseUrl/reports/excel?month=$month';
+
   String getCurrentMonth() {
     final now = DateTime.now();
     return DateFormat('yyyy-MM').format(now);

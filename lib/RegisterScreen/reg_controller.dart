@@ -4,6 +4,7 @@ import 'package:your_expense/RegisterScreen/registration_api_service.dart';
 import 'dart:convert';
 import 'package:your_expense/services/api_base_service.dart';
 import 'package:your_expense/services/token_service.dart';
+import 'package:your_expense/services/push_notification_service.dart';
 
 class RegistrationController extends GetxController {
   final fullNameController = TextEditingController();
@@ -45,6 +46,18 @@ class RegistrationController extends GetxController {
     isLoading.value = true;
 
     try {
+      // Try to get FCM token from PushNotificationService
+      String? fcmToken;
+      try {
+        final notificationService = Get.isRegistered<PushNotificationService>()
+            ? Get.find<PushNotificationService>()
+            : null;
+        fcmToken = notificationService?.getToken();
+        print('📲 Resolved FCM token for registration: ${fcmToken ?? 'null'}');
+      } catch (e) {
+        print('⚠️ Unable to get FCM token before registration: $e');
+      }
+
       final userData = {
         "name": fullNameController.text.trim(),
         "email": emailController.text.trim(),
@@ -53,6 +66,11 @@ class RegistrationController extends GetxController {
         "contact": "",
         "role": "USER"
       };
+
+      // Attach FCM token if available
+      if (fcmToken != null && fcmToken.isNotEmpty) {
+        userData['fcmToken'] = fcmToken;
+      }
       print('📤 Sending request with body: $userData');
 
       final response = await _registrationApiService.registerUser(userData);
