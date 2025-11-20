@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:your_expense/services/api_base_service.dart';
 import 'package:your_expense/services/config_service.dart';
+import 'package:your_expense/services/subscription_service.dart';
+import 'package:your_expense/routes/app_routes.dart';
 
 class BudgetController extends GetxController {
   final ApiBaseService _apiService = Get.find<ApiBaseService>();
@@ -214,6 +216,22 @@ class BudgetController extends GetxController {
 
   Future<void> updateMonthlyBudget(double newBudget) async {
     try {
+      // Pro gating: Non-Pro users can add budget only once per month.
+      // If a budget already exists and user is not active Pro, block second add/edit.
+      final sub = Get.find<SubscriptionService>();
+      if (!sub.isActivePro && budgetExists.value == true) {
+        Get.snackbar(
+          'upgrade_title'.tr,
+          'upgrade_subtitle'.tr,
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.blue,
+          colorText: Colors.white,
+        );
+        // Navigate to non-pro upsell page for monthly budget
+        Get.toNamed(AppRoutes.monthlyBudgetNonPro);
+        return;
+      }
+
       isLoading(true);
       errorMessage.value = '';
 

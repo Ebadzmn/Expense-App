@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:your_expense/services/api_base_service.dart';
 import 'package:your_expense/services/config_service.dart';
+import 'dart:async';
 
 class SubscriptionService extends GetxService {
   static SubscriptionService get to => Get.find();
@@ -13,12 +14,18 @@ class SubscriptionService extends GetxService {
   final RxBool serverIsPremium = false.obs;
   final Rxn<int> serverDaysLeft = Rxn<int>();
 
+  // Ephemeral Pro unlock (e.g., watch-ad unlock). This is NOT persisted.
+  // It resets when the app process exits.
+  final Rxn<DateTime> temporaryProExpiry = Rxn<DateTime>();
+  Timer? _tempProTimer;
+
   Future<SubscriptionService> init() async {
     // Start with default non-premium state; API reconcile on launch will update.
     isPro.value = false;
     expiryDate.value = null;
     serverIsPremium.value = false;
     serverDaysLeft.value = null;
+    temporaryProExpiry.value = null;
     // Enforce expiry policy immediately on app launch (no-op with defaults)
     await _enforceExpiryPolicyOnLaunch();
     isInitialized.value = true;
@@ -49,6 +56,9 @@ class SubscriptionService extends GetxService {
       expiryDate.value = null;
       serverIsPremium.value = false;
       serverDaysLeft.value = null;
+      temporaryProExpiry.value = null;
+      _tempProTimer?.cancel();
+      _tempProTimer = null;
       _logSnapshot('reset');
     } catch (e) {
       print('[SUB][WARN] reset failed: ' + e.toString());
@@ -68,10 +78,19 @@ class SubscriptionService extends GetxService {
   }
 
   bool get isActivePro {
-    if (!isPro.value) return false;
-    final exp = expiryDate.value;
-    if (exp == null) return true; // lifetime pro
-    return exp.isAfter(DateTime.now());
+    // Active via paid subscription
+    final paidActive = () {
+      if (!isPro.value) return false;
+      final exp = expiryDate.value;
+      if (exp == null) return true; // lifetime pro
+      return exp.isAfter(DateTime.now());
+    }();
+
+    // Active via temporary unlock (watch ad)
+    final tempExp = temporaryProExpiry.value;
+    final tempActive = tempExp != null && tempExp.isAfter(DateTime.now());
+
+    return paidActive || tempActive;
   }
 
   int? get remainingDays {
@@ -89,6 +108,10 @@ class SubscriptionService extends GetxService {
     if (isPro.value && isExpiredNow) {
       await setSubscriptionStatus(pro: false, expiry: expiryDate.value);
     }
+    // Temporary unlock is ephemeral; do not carry over across launches
+    temporaryProExpiry.value = null;
+    _tempProTimer?.cancel();
+    _tempProTimer = null;
   }
 
   Future<void> recheckAndPersist() async {
@@ -143,5 +166,27 @@ class SubscriptionService extends GetxService {
     } catch (e) {
       print('[SUB][WARN] reconcileWithServer failed: ' + e.toString());
     }
+  }
+
+  // ---- Temporary unlock management (e.g., Watch Ad) ----
+  void grantTemporaryPro(Duration duration) {
+    try {
+      final until = DateTime.now().add(duration);
+      temporaryProExpiry.value = until;
+      _tempProTimer?.cancel();
+      _tempProTimer = Timer(duration, () {
+        clearTemporaryPro();
+      });
+      _logSnapshot('grantTemporaryPro(' + duration.inSeconds.toString() + 's)');
+    } catch (e) {
+      print('[SUB][WARN] grantTemporaryPro failed: ' + e.toString());
+    }
+  }
+
+  void clearTemporaryPro() {
+    temporaryProExpiry.value = null;
+    _tempProTimer?.cancel();
+    _tempProTimer = null;
+    _logSnapshot('clearTemporaryPro');
   }
 }

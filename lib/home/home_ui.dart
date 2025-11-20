@@ -7,6 +7,7 @@ import 'package:your_expense/homepage/MonthlyBudgetPage.dart';
 import 'package:your_expense/homepage/edit/MonthlyBudgetNonPro/MonthlyBudgetNonPro.dart';
 import 'package:your_expense/Settings/userprofile/profile_services.dart';
 import 'package:your_expense/services/config_service.dart';
+import 'package:your_expense/services/subscription_service.dart';
 
 import 'home_controller.dart';
 
@@ -199,12 +200,17 @@ class MainHomeScreen extends StatelessWidget {
                       ),
                       SizedBox(height: screenHeight * 0.02),
                       Center(
-                        child: Obx(() => Text(
-                          '\$${controller.availableBalance.value.toStringAsFixed(2)}',
-                          style: TextStyle(
-                            fontSize: screenWidth * 0.1,
-                            fontWeight: FontWeight.w700,
-                            color: Colors.white,
+                        child: Obx(() => FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            '\$${controller.availableBalance.value.toStringAsFixed(2)}',
+                            maxLines: 1,
+                            overflow: TextOverflow.visible,
+                            style: TextStyle(
+                              fontSize: screenWidth * 0.1,
+                              fontWeight: FontWeight.w700,
+                              color: Colors.white,
+                            ),
                           ),
                         )),
                       ),
@@ -270,17 +276,40 @@ class MainHomeScreen extends StatelessWidget {
                       ),
                       SizedBox(height: screenHeight * 0.02),
                       GestureDetector(
-                        onTap: () => Get.to(() => MonthlyBudgetPage()), // Simple navigation
+                        onTap: () {
+                          final sub = Get.find<SubscriptionService>();
+                          // Non‑Pro users: allow first use, block second and send to payment page
+                          final hasBudget = controller.monthlyBudget.value > 0.0;
+                          if (!sub.isActivePro && hasBudget) {
+                            Get.snackbar(
+                              'upgradeToProToView'.tr,
+                              'upgrade_subtitle'.tr,
+                              snackPosition: SnackPosition.BOTTOM,
+                            );
+                            Get.toNamed(AppRoutes.premiumPlans);
+                            return;
+                          }
+                          Get.to(() => MonthlyBudgetPage());
+                        },
                         child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Obx(() => Text(
-                              '\$${controller.monthlyBudget.value.toStringAsFixed(2)}',
-                              style: TextStyle(
-                                fontSize: screenWidth * 0.06,
-                                fontWeight: FontWeight.w700,
-                                color: primaryColor,
-                              ),
-                            )),
+                            Expanded(
+                              child: Obx(() => FittedBox(
+                                fit: BoxFit.scaleDown,
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  '\$${controller.monthlyBudget.value.toStringAsFixed(2)}',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    fontSize: screenWidth * 0.06,
+                                    fontWeight: FontWeight.w700,
+                                    color: primaryColor,
+                                  ),
+                                ),
+                              )),
+                            ),
                             SizedBox(width: screenWidth * 0.02),
                             Icon(Icons.arrow_forward_ios, size: screenWidth * 0.04, color: iconColor),
                           ],
@@ -448,7 +477,7 @@ class MainHomeScreen extends StatelessWidget {
 
   Widget _buildStatCard(String title, String amount, IconData icon, Color color, double screenWidth) {
     return Container(
-      height: screenWidth * 0.23,
+      constraints: BoxConstraints(minHeight: screenWidth * 0.20),
       decoration: BoxDecoration(
         color: const Color(0xFF2A6EBB).withOpacity(0.5),
         borderRadius: BorderRadius.circular(screenWidth * 0.02),
@@ -456,6 +485,7 @@ class MainHomeScreen extends StatelessWidget {
       ),
       padding: EdgeInsets.symmetric(vertical: screenWidth * 0.02, horizontal: screenWidth * 0.03),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           // Fixed text overflow with FittedBox
@@ -463,6 +493,8 @@ class MainHomeScreen extends StatelessWidget {
             fit: BoxFit.scaleDown,
             child: Text(
               title,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
               style: TextStyle(
                 fontSize: screenWidth * 0.03,
                 color: Colors.white,
@@ -476,6 +508,8 @@ class MainHomeScreen extends StatelessWidget {
             fit: BoxFit.scaleDown,
             child: Text(
               amount,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
               style: TextStyle(
                 fontSize: screenWidth * 0.045,
                 fontWeight: FontWeight.w700,
@@ -498,6 +532,8 @@ class MainHomeScreen extends StatelessWidget {
                 fit: BoxFit.scaleDown,
                 child: Text(
                   '+15%',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     color: color,
                     fontSize: screenWidth * 0.035,

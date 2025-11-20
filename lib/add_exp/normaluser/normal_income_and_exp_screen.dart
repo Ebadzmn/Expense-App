@@ -190,6 +190,13 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
   final themeController = Get.find<ThemeController>();
 
   @override
+  void initState() {
+    super.initState();
+    final args = Get.arguments as Map<String, dynamic>?;
+    _selectedIndex = args != null ? (args['initialIndex'] ?? 0) : 0;
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Obx(() => DefaultTabController(
       length: 2,

@@ -34,6 +34,7 @@ import '../Settings/userprofile/PersonalInformationScreen.dart';
 import '../Settings/userprofile/EditNameScreen.dart';
 import '../Settings/userprofile/changeemail.dart';
 import 'package:your_expense/middleware/pro_user_middleware.dart';
+import 'package:your_expense/middleware/comparison_pro_middleware.dart';
 
 import '../add_exp/category/add_category_ui.dart';
 import '../add_exp/category/category_demo_screen.dart';
@@ -218,6 +219,7 @@ class AppRoutes {
       name: comparison,
       page: () => const ComparisonPageScreen(isFromExpense: true),
       transition: Transition.noTransition,
+      middlewares: [ComparisonProMiddleware()],
       binding: BindingsBuilder(() {
         // Ensure MarketplaceService is available for ComparisonPageController
         if (!Get.isRegistered<MarketplaceService>()) {
@@ -228,6 +230,7 @@ class AppRoutes {
     GetPage(
       name: comparisonGraph,
       page: () => const ComparisonGraphScreen(),
+      middlewares: [ComparisonProMiddleware()],
     ),
     GetPage(
       name: amazonPurchaseDetails,

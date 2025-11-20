@@ -23,7 +23,7 @@ class PremiumPlansScreen extends StatefulWidget {
 class _PremiumPlansScreenState extends State<PremiumPlansScreen> {
   late final ThemeController themeController;
   late final IapService iap;
-  String selectedProductId = IapService.yearlyId; // default yearly selected
+  String? selectedProductId; // require explicit user selection
 
   @override
   void initState() {
@@ -33,6 +33,15 @@ class _PremiumPlansScreenState extends State<PremiumPlansScreen> {
     // init IAP (will also query products and listen for purchases)
     print('[IAP] PremiumPlansScreen init: calling iap.init()');
     iap.init();
+    // mark UI as active so IAP can gate auto-processing appropriately
+    iap.paymentUiActive.value = true;
+  }
+
+  @override
+  void dispose() {
+    // mark UI inactive
+    iap.paymentUiActive.value = false;
+    super.dispose();
   }
 
   @override
@@ -120,7 +129,7 @@ class _PremiumPlansScreenState extends State<PremiumPlansScreen> {
                       return GestureDetector(
                         onTap: () {
                           setState(() => selectedProductId = IapService.monthlyId);
-                          debugPrint('Selected product id: ' + selectedProductId);
+                          debugPrint('Selected product id: ' + (selectedProductId ?? 'null'));
                         },
                         child: _buildPlanCard(
                           title: displayTitle,
@@ -164,7 +173,7 @@ class _PremiumPlansScreenState extends State<PremiumPlansScreen> {
                             return;
                           }
                           setState(() => selectedProductId = IapService.yearlyId);
-                          debugPrint('Selected product id: ' + selectedProductId);
+                          debugPrint('Selected product id: ' + (selectedProductId ?? 'null'));
                         },
                         child: _buildPlanCard(
                           title: displayTitle,
@@ -302,29 +311,10 @@ class _PremiumPlansScreenState extends State<PremiumPlansScreen> {
                                   return;
                                 }
 
-                                // If selected is null, try re-query once and proceed if found
+                                // If no plan selected, block and prompt selection
                                 if (selected == null) {
-                                  Get.snackbar('Retrying', 'Trying to refresh product list...'.tr,
-                                      snackPosition: SnackPosition.BOTTOM);
-                                  await iap.queryProducts({IapService.monthlyId, IapService.yearlyId});
-                                  ProductDetails? retrySelected;
-                                  try {
-                                    retrySelected = iap.products.value.firstWhere((p) => p.id == selectedProductId);
-                                  } catch (_) {
-                                    retrySelected = null;
-                                  }
-                                  if (retrySelected == null) {
-                                    Get.snackbar(
-                                      'Not available',
-                                      'Product not available yet. Try reinstalling the app from Play Store or wait a few minutes.'.tr,
-                                      snackPosition: SnackPosition.BOTTOM,
-                                    );
-                                    return;
-                                  } else {
-                                    debugPrint('Upgrade pressed for product id: ' + (retrySelected.id));
-                                    await iap.buy(retrySelected);
-                                    return;
-                                  }
+                                  Get.snackbar('Select a plan', 'Please choose Monthly or Yearly before upgrading.', snackPosition: SnackPosition.BOTTOM);
+                                  return;
                                 }
 
                                 // normal flow
@@ -345,7 +335,7 @@ class _PremiumPlansScreenState extends State<PremiumPlansScreen> {
                                       child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
                                     )
                                   : Text(
-                                      selected == null ? 'retry_products'.tr : 'upgrade_now'.tr,
+                                      selected == null ? 'Select a plan' : 'upgrade_now'.tr,
                                       style: TextStyle(
                                         color: Colors.white,
                                         fontSize: screenWidth * 0.04,

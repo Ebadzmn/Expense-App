@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'dart:math' as math;
 import 'package:intl/intl.dart';
+import 'package:your_expense/services/subscription_service.dart';
+import 'package:your_expense/routes/app_routes.dart';
 
 
 import '../home/home_controller.dart';
@@ -624,6 +626,7 @@ class AnalyticsScreen extends StatelessWidget {
   }
 
   Widget _buildActionsSection(AnalyticsController controller, double screenWidth, double screenHeight, Color cardColor, Color textColor) {
+    final sub = Get.find<SubscriptionService>();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -645,8 +648,20 @@ class AnalyticsScreen extends StatelessWidget {
           child: _buildActionItem('income'.tr, screenWidth, cardColor, textColor),
         ),
         GestureDetector(
-          onTap: controller.onExportReportClick,
-          child: _buildActionItem('export_report'.tr, screenWidth, cardColor, textColor),
+          onTap: () {
+            if (!sub.isActivePro) {
+              Get.snackbar('Pro Required', 'Export report is only available for Pro users.', snackPosition: SnackPosition.BOTTOM);
+              Get.toNamed(AppRoutes.premiumPlans);
+            } else {
+              controller.onExportReportClick();
+            }
+          },
+          child: _buildActionItem(
+            'export_report'.tr + (!sub.isActivePro ? '  🔒' : ''),
+            screenWidth,
+            cardColor,
+            textColor,
+          ),
         ),
       ],
     );

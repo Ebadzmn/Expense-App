@@ -13,6 +13,7 @@ import 'package:your_expense/routes/app_routes.dart';
 import 'package:your_expense/services/api_base_service.dart';
 import 'package:your_expense/services/config_service.dart';
 import 'package:your_expense/services/subscription_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class IapService {
   // Top-level load indicator to confirm service is loaded
@@ -34,6 +35,8 @@ class IapService {
 
   // Prevent duplicate POSTs/navigations when sandbox auto-renews or stream replays
   final Set<String> _submittedTxIds = <String>{};
+  // Persisted dedup across sessions
+  final Set<String> _persistedProcessedTxIds = <String>{};
   // Prevent repeated snackbars per session/transaction
   final Set<String> _shownSnackKeys = <String>{};
 
@@ -42,6 +45,8 @@ class IapService {
   final ValueNotifier<String?> error = ValueNotifier(null);
   final ValueNotifier<List<ProductDetails>> products = ValueNotifier(const []);
   final ValueNotifier<bool> isEntitled = ValueNotifier(false);
+  // Track whether PremiumPlansScreen is currently visible
+  final ValueNotifier<bool> paymentUiActive = ValueNotifier(false);
 
   // Track last manual buy attempt to distinguish user-initiated flow from passive restore
   DateTime? _lastBuyAttemptAt;
@@ -51,6 +56,7 @@ class IapService {
     print('[IAP] init() starting');
     isLoading.value = true;
     try {
+      await _loadProcessedTxIds();
       final available = await _iap.isAvailable();
       isAvailable.value = available;
       print('[IAP] Store availability: ' + available.toString());
@@ -143,9 +149,40 @@ class IapService {
                 await _iap.completePurchase(purchase);
                 debugPrint('[IAP] Completed pending purchase: ${purchase.purchaseID}');
               }
+              // Determine if this was initiated by user from this screen recently
+              bool initiatedRecently = false;
+              try {
+                initiatedRecently = _lastBuyProductId == purchase.productID &&
+                    _lastBuyAttemptAt != null &&
+                    DateTime.now().difference(_lastBuyAttemptAt!) < const Duration(minutes: 2);
+              } catch (_) {}
 
-              // Only process server submission and navigation for active purchases
-              await _postPaymentAndNavigate(purchase);
+              if (initiatedRecently) {
+                // User-initiated purchase flow: proceed automatically
+                await _postPaymentAndNavigate(purchase);
+              } else if (paymentUiActive.value) {
+                // UI visible: confirm with user
+                try {
+                  await Get.defaultDialog(
+                    title: 'Confirm Purchase',
+                    middleText: 'Purchase detected. Do you want to submit and activate premium now?'.tr,
+                    textConfirm: 'Submit',
+                    textCancel: 'Cancel',
+                    onConfirm: () async {
+                      Get.back();
+                      await _postPaymentAndNavigate(purchase);
+                    },
+                    onCancel: () {
+                      _showSnackOnce('iap:cancel:auto', 'IAP', 'Purchase detected but processing was cancelled');
+                    },
+                  );
+                } catch (_) {
+                  _showSnackOnce('iap:auto:block', 'IAP', 'Purchase detected. Please tap Upgrade to complete.');
+                }
+              } else {
+                // UI not visible: do not auto-process; only inform once
+                _showSnackOnce('iap:auto:block:hidden', 'IAP', 'Purchase detected. Open Premium Plans to complete.');
+              }
               break;
             case PurchaseStatus.restored:
               // Restored events should not auto-post to server or block new purchases.
@@ -175,9 +212,9 @@ class IapService {
               } else {
                 try {
                   if (active) {
-                    Get.snackbar('Subscription Active', 'Your previous subscription is active.', snackPosition: SnackPosition.BOTTOM);
+                    _showSnackOnce('iap:active:notice', 'Subscription Active', 'Your previous subscription is active.', snackPosition: SnackPosition.BOTTOM);
                   } else {
-                    Get.snackbar('Subscription Expired', 'Previous subscription expired. You can subscribe again.', snackPosition: SnackPosition.BOTTOM);
+                    _showSnackOnce('iap:expired:notice', 'Subscription Expired', 'Previous subscription expired. You can subscribe again.', snackPosition: SnackPosition.BOTTOM);
                   }
                 } catch (_) {}
               }
@@ -244,7 +281,7 @@ class IapService {
       _showSnackOnce('iap:details:' + transactionId, 'Purchase Details', 'Product: ' + productId + '\nTransaction: ' + transactionId, duration: const Duration(seconds: 5));
 
       // Dedup: skip if this transactionId was already submitted in this session
-      if (_submittedTxIds.contains(transactionId)) {
+      if (_submittedTxIds.contains(transactionId) || _persistedProcessedTxIds.contains(transactionId)) {
         print('[IAP][DEDUP] Already submitted transactionId=' + transactionId + ', skipping POST.');
         _showSnackOnce('iap:dedup:' + transactionId, 'IAP', 'Payment already recorded for this transaction');
         return;
@@ -267,6 +304,9 @@ class IapService {
       print('[IAP] Payment POST success: ' + (resp is Map<String, dynamic> ? jsonEncode(resp) : resp.toString()));
       _showSnackOnce('iap:post_success:' + transactionId, 'IAP', 'Payment POST success');
 
+      // Persist dedup to avoid re-posting across app restarts
+      await _saveProcessedTxId(transactionId);
+
       // IMPORTANT: Do not locally flip premium. Rely on server confirmation.
       // Immediately reconcile with server to reflect true entitlement.
       await _sub.reconcileWithServer();
@@ -288,6 +328,32 @@ class IapService {
       if (purchase.purchaseID != null && purchase.purchaseID!.isNotEmpty) {
         _submittedTxIds.remove(purchase.purchaseID);
       }
+    }
+  }
+
+  // ---------------- Persistence helpers ----------------
+  Future<void> _loadProcessedTxIds() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final list = prefs.getStringList('iap_processed_tx_ids') ?? const [];
+      _persistedProcessedTxIds
+        ..clear()
+        ..addAll(list);
+      debugPrint('[IAP] Loaded persisted processed tx ids count=${_persistedProcessedTxIds.length}');
+    } catch (e) {
+      debugPrint('[IAP][WARN] _loadProcessedTxIds error: $e');
+    }
+  }
+
+  Future<void> _saveProcessedTxId(String txId) async {
+    try {
+      if (txId.isEmpty) return;
+      _persistedProcessedTxIds.add(txId);
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setStringList('iap_processed_tx_ids', _persistedProcessedTxIds.toList());
+      debugPrint('[IAP] Persisted processed tx id: ' + txId);
+    } catch (e) {
+      debugPrint('[IAP][WARN] _saveProcessedTxId error: $e');
     }
   }
 

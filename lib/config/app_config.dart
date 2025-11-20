@@ -5,6 +5,7 @@ import '../Settings/appearance/ThemeController.dart' show ThemeController;
 import '../Settings/language/language_controller.dart';
 import '../routes/app_routes.dart';
 import '../translation_rag.dart';
+import 'initial_bindings.dart';
 
 
 class AppColors {
@@ -25,6 +26,7 @@ class AppConfig {
     return GetMaterialApp(
       title: 'Your Expense',
       debugShowCheckedModeBanner: false,
+      initialBinding: InitialBindings(),
 
       // Multi-language support
       translations: AppTranslations(),

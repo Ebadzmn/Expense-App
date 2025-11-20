@@ -56,46 +56,30 @@ Future<void> main() async {
   // Background handler register
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
 
-  // Initialize Mobile Ads only on supported platforms (Android/iOS), skip web/desktop
-  if (!kIsWeb &&
-      (defaultTargetPlatform == TargetPlatform.android ||
-          defaultTargetPlatform == TargetPlatform.iOS)) {
-    try {
-      await MobileAds.instance.initialize();
-    } catch (e) {
-      debugPrint('⚠️ MobileAds initialization skipped: $e');
-    }
-  }
-
   // Essential services before UI
   await Get.putAsync(() => ConfigService().init());
   await Get.putAsync(() => TokenService().init());
   await Get.putAsync(() => ApiBaseService().init());
   await Get.putAsync(() => SubscriptionService().init());
-  await Get.putAsync(() => CategoryService().init());
-  await Get.putAsync(() => FaceIdService().init());
-  await Get.putAsync(() => PushNotificationService().init());
-  await Get.putAsync(() => MarketplaceService().init());
+  // Critical services used by HomeController/UI must exist before first build
   await Get.putAsync(() => TransactionService().init());
   await Get.putAsync(() => BudgetService().init());
+  await Get.putAsync(() => CategoryService().init());
   await Get.putAsync(() => ExpenseService().init());
-  await Get.putAsync(() => IncomeService().init());
-  await Get.putAsync(() => LoginService().init());
-
-  try {
-    await SubscriptionService.to.reconcileWithServer();
-  } catch (e) {
-    debugPrint('[Startup] Subscription reconcile failed: $e');
-  }
-
+  await Get.putAsync(() => FaceIdService().init());
   await Get.putAsync(() => ProfileService().init());
 
+  // Start UI ASAP
+  
   // Controllers before UI
-  Get.put(ThemeController(), permanent: true);
-  Get.put(LanguageController(), permanent: true);
-  Get.put(HomeController(), permanent: true);
-  Get.put(LoginController(), permanent: true);
-  Get.put(MonthlyBudgetController(), permanent: true);
+  // Ensure Theme/Language controllers exist before building GetMaterialApp
+  if (!Get.isRegistered<ThemeController>()) {
+    Get.put(ThemeController(), permanent: true);
+  }
+  if (!Get.isRegistered<LanguageController>()) {
+    Get.put(LanguageController(), permanent: true);
+  }
+
   if (!Get.isRegistered<LocalAuthService>()) {
     Get.put(LocalAuthService(), permanent: true);
   }
@@ -105,6 +89,20 @@ Future<void> main() async {
 
   // Async init (non-blocking)
   Future(() async {
+    // Initialize remaining heavy services in background
+    await Future.wait([
+      Get.putAsync(() => MarketplaceService().init()),
+      Get.putAsync(() => IncomeService().init()),
+      Get.putAsync(() => LoginService().init()),
+    ]);
+
+    // Push notifications quickly after UI starts
+    try {
+      await Get.putAsync(() => PushNotificationService().init());
+    } catch (e) {
+      debugPrint('[Startup] PushNotificationService init failed: $e');
+    }
+
     await Future.wait([
       Get.putAsync(() => RegistrationApiService().init()),
       Get.putAsync(() => VerificationApiService().init()),
@@ -133,6 +131,12 @@ Future<void> main() async {
     } catch (e) {
       debugPrint('[Startup] Token check failed: $e');
     }
+
+    try {
+      await SubscriptionService.to.reconcileWithServer();
+    } catch (e) {
+      debugPrint('[Startup] Subscription reconcile failed: $e');
+    }
   });
 
   // Android storage permission (non-blocking)
@@ -143,6 +147,19 @@ Future<void> main() async {
         debugPrint('[Startup] Storage permission status: $status');
       } catch (e) {
         debugPrint('[Startup] Storage permission request failed: $e');
+      }
+    }
+  });
+
+  // Mobile Ads init moved to background after UI to avoid blocking
+  Future(() async {
+    if (!kIsWeb &&
+        (defaultTargetPlatform == TargetPlatform.android ||
+            defaultTargetPlatform == TargetPlatform.iOS)) {
+      try {
+        await MobileAds.instance.initialize();
+      } catch (e) {
+        debugPrint('⚠️ MobileAds initialization skipped: $e');
       }
     }
   });

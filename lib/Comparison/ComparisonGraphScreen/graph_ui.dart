@@ -295,7 +295,8 @@ class ComparisonGraphScreen extends StatelessWidget {
                     if (sub.isActivePro) {
                       Get.toNamed(AppRoutes.proSavings);
                     } else {
-                      Get.toNamed(AppRoutes.nonProSavings);
+                      // Strict Pro-only: send non-Pro to Premium Plans (no ads)
+                      Get.toNamed(AppRoutes.premiumPlans);
                     }
                   },
                   style: ElevatedButton.styleFrom(
@@ -385,7 +386,8 @@ class ComparisonGraphScreen extends StatelessWidget {
         if (sub.isActivePro) {
           Get.toNamed(AppRoutes.proSavings);
         } else {
-          Get.toNamed(AppRoutes.nonProSavings);
+          // Strict Pro-only: send non-Pro to Premium Plans (no ads)
+          Get.toNamed(AppRoutes.premiumPlans);
         }
       },
       style: OutlinedButton.styleFrom(

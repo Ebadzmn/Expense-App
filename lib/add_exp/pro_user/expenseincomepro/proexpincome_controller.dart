@@ -91,6 +91,7 @@ class ProExpensesIncomeController extends GetxController {
     _applyProSubscriptionUnlock();
     ever(_subscriptionService.isPro, (_) => _applyProSubscriptionUnlock());
     ever<DateTime?>(_subscriptionService.expiryDate, (_) => _applyProSubscriptionUnlock());
+    ever<DateTime?>(_subscriptionService.temporaryProExpiry, (_) => _applyProSubscriptionUnlock());
   }
 
   // Map category names to appropriate icons
@@ -170,9 +171,9 @@ class ProExpensesIncomeController extends GetxController {
   }
 
   Future<void> _loadUnlockStatus() async {
-    final prefs = await SharedPreferences.getInstance();
-    isExpenseProUnlocked.value = prefs.getBool('isExpenseProUnlocked') ?? false;
-    isIncomeProUnlocked.value = prefs.getBool('isIncomeProUnlocked') ?? false;
+    // Do not persist ad-based unlocks across app restarts
+    isExpenseProUnlocked.value = false;
+    isIncomeProUnlocked.value = false;
   }
 
   void _applyProSubscriptionUnlock() {
@@ -187,12 +188,9 @@ class ProExpensesIncomeController extends GetxController {
   }
 
   Future<void> unlockProFeatures(bool isExpense) async {
-    final prefs = await SharedPreferences.getInstance();
-    // Unlock both features when watching ad
+    // Unlock both features while temporary/premium is active; do NOT persist
     isExpenseProUnlocked.value = true;
     isIncomeProUnlocked.value = true;
-    await prefs.setBool('isExpenseProUnlocked', true);
-    await prefs.setBool('isIncomeProUnlocked', true);
   }
 
   void switchToTab(int tab) {

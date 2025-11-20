@@ -7,6 +7,8 @@ import '../Settings/appearance/ThemeController.dart';
 import '../home/home_controller.dart';
 import '../reuseablenav/reuseablenavui.dart';
 import 'ComparisonPageController.dart';
+import 'package:your_expense/services/subscription_service.dart';
+import 'package:your_expense/routes/app_routes.dart';
 
 class ComparisonPageScreen extends StatefulWidget {
   final bool isFromExpense;
@@ -49,6 +51,7 @@ class _ComparisonPageScreenState extends State<ComparisonPageScreen> {
   @override
   Widget build(BuildContext context) {
     final themeController = Get.find<ThemeController>();
+    final SubscriptionService sub = Get.find<SubscriptionService>();
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
 
@@ -78,7 +81,9 @@ class _ComparisonPageScreenState extends State<ComparisonPageScreen> {
         ),
         centerTitle: true,
       ),
-      body: SingleChildScrollView(
+      body: Stack(
+        children: [
+          SingleChildScrollView(
         padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -172,6 +177,17 @@ class _ComparisonPageScreenState extends State<ComparisonPageScreen> {
                 onPressed: comparisonCtrl.isLoading.value
                     ? null
                     : () async {
+                  // Gate search for non-pro users
+                  final SubscriptionService sub = Get.find<SubscriptionService>();
+                  if (!sub.isActivePro) {
+                    Get.snackbar(
+                      'upgradeToProToView'.tr,
+                      'graphsAndReports'.tr,
+                      snackPosition: SnackPosition.BOTTOM,
+                    );
+                    Get.toNamed(AppRoutes.premiumPlans);
+                    return;
+                  }
                   if (productNameController.text.isEmpty) {
                     Get.snackbar(
                       'Error',
@@ -359,8 +375,71 @@ class _ComparisonPageScreenState extends State<ComparisonPageScreen> {
           ],
         ),
       ),
+          if (!sub.isActivePro) _buildProGateOverlay(screenWidth, screenHeight, isDarkMode),
+        ],
+      ),
       bottomNavigationBar: CustomBottomNavBar(
         isDarkMode: isDarkMode,
+      ),
+    );
+  }
+
+  Widget _buildProGateOverlay(double screenWidth, double screenHeight, bool isDark) {
+    return Positioned.fill(
+      child: Container(
+        color: Colors.black.withOpacity(0.45),
+        child: Center(
+          child: Container(
+            width: screenWidth * 0.85,
+            padding: EdgeInsets.all(screenWidth * 0.06),
+            decoration: BoxDecoration(
+              color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
+              borderRadius: BorderRadius.circular(screenWidth * 0.03),
+              border: Border.all(color: isDark ? Colors.grey.shade700 : Colors.grey.shade300),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.lock, size: screenWidth * 0.12, color: const Color(0xFF2196F3)),
+                SizedBox(height: screenWidth * 0.04),
+                Text(
+                  'upgradeToProToView'.tr,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: screenWidth * 0.05,
+                    fontWeight: FontWeight.w700,
+                    color: isDark ? Colors.white : Colors.black,
+                  ),
+                ),
+                SizedBox(height: screenWidth * 0.02),
+                Text(
+                  'graphsAndReports'.tr,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: screenWidth * 0.04,
+                    color: isDark ? Colors.grey.shade400 : Colors.grey.shade700,
+                  ),
+                ),
+                SizedBox(height: screenWidth * 0.05),
+                SizedBox(
+                  width: double.infinity,
+                  height: screenWidth * 0.12,
+                  child: ElevatedButton(
+                    onPressed: () => Get.toNamed(AppRoutes.premiumPlans),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF2196F3),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(screenWidth * 0.02)),
+                    ),
+                    child: Text(
+                      'upgrade_now'.tr,
+                      style: TextStyle(color: Colors.white, fontSize: screenWidth * 0.045, fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -777,10 +856,16 @@ class _ComparisonPageScreenState extends State<ComparisonPageScreen> {
             builder: (context, setState) {
               return Padding(
                 padding: const EdgeInsets.all(24),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    // Prevent dialog content from exceeding viewport height
+                    maxHeight: MediaQuery.of(context).size.height * 0.85,
+                  ),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
                     // Header
                     Text(
                       'Compare ${deal['siteName']}',
@@ -1065,6 +1150,8 @@ class _ComparisonPageScreenState extends State<ComparisonPageScreen> {
                       ),
                     )),
                   ],
+                    ),
+                  ),
                 ),
               );
             },

@@ -49,7 +49,9 @@ class MonthlyBudgetPage extends StatelessWidget {
       )
           : Padding(
         padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.06),
-        child: Column(
+        child: SingleChildScrollView(
+          padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom + screenHeight * 0.02),
+          child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(height: screenHeight * 0.03),
@@ -97,13 +99,18 @@ class MonthlyBudgetPage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    _monthlyBudgetController.formatCurrency(
-                        _monthlyBudgetController.currentBudget.value['totalBudget'] ?? 0.0),
-                    style: TextStyle(
-                      fontSize: screenWidth * 0.08,
-                      fontWeight: FontWeight.bold,
-                      color: textColor,
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      _monthlyBudgetController.formatCurrency(
+                          _monthlyBudgetController.currentBudget.value['totalBudget'] ?? 0.0),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: screenWidth * 0.08,
+                        fontWeight: FontWeight.bold,
+                        color: textColor,
+                      ),
                     ),
                   ),
                   SizedBox(height: screenHeight * 0.01),
@@ -251,6 +258,7 @@ class MonthlyBudgetPage extends StatelessWidget {
               ),
             ),
           ],
+        ),
         ),
       )),
     );

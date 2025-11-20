@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:your_expense/routes/app_routes.dart';
+import 'package:your_expense/services/subscription_service.dart';
 import 'package:intl/intl.dart';
 import '../services/api_base_service.dart';
 import '../services/config_service.dart';
@@ -398,6 +400,16 @@ class AnalyticsController extends GetxController {
   }
 
   void onExportReportClick() {
+    final sub = Get.find<SubscriptionService>();
+    if (!sub.isActivePro) {
+      Get.snackbar(
+        'Pro Required',
+        'Export report is only available for Pro users.',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+      Get.toNamed(AppRoutes.premiumPlans);
+      return;
+    }
     Get.toNamed(AppRoutes.uploadToDrive);
   }
 

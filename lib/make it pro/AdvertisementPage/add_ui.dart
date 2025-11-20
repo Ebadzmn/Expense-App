@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:your_expense/Settings/appearance/ThemeController.dart';
 import 'package:your_expense/add_exp/pro_user/expenseincomepro/proexpincome_controller.dart';
 import 'package:your_expense/routes/app_routes.dart';
+import 'package:your_expense/services/subscription_service.dart';
 
 import '../../ad_helper.dart';
 
@@ -57,11 +58,14 @@ class _AdvertisementPageState extends State<AdvertisementPage> {
 
     await AdHelper.showInterstitialAd(
       onAdDismissed: () async {
+        // For testing: grant temporary Pro for 1 minute
+        SubscriptionService.to.grantTemporaryPro(const Duration(minutes: 1));
         await proController.unlockProFeatures(widget.isFromExpense);
-        Get.offNamed(
-          AppRoutes.proExpensesIncome,
-          arguments: {'defaultTab': widget.isFromExpense ? 0 : 1},
-        );
+        if (mounted) {
+          setState(() {
+            _isAdLoading = false;
+          });
+        }
         Get.snackbar(
           'proUnlockedTitle'.tr,
           'proUnlockedMessage'.tr,
@@ -70,24 +74,23 @@ class _AdvertisementPageState extends State<AdvertisementPage> {
           colorText: AppColors.text50,
           duration: const Duration(seconds: 2),
         );
-        if (mounted) {
-          setState(() {
-            _isAdLoading = false;
-          });
-        }
+        // Navigate to Home after ad
+        Get.offAllNamed(AppRoutes.mainHome);
       },
       onAdFailed: () {
-        // Navigate even if ad fails to ensure UX continuity
-        proController.unlockProFeatures(widget.isFromExpense);
-        Get.offNamed(
-          AppRoutes.proExpensesIncome,
-          arguments: {'defaultTab': widget.isFromExpense ? 0 : 1},
-        );
+        // Keep user on this screen and let them retry
         if (mounted) {
           setState(() {
             _isAdLoading = false;
           });
         }
+        Get.snackbar(
+          'error'.tr,
+          'Ad failed. Please try again.',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.redAccent,
+          colorText: Colors.white,
+        );
       },
     );
   }

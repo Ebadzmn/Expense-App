@@ -5,8 +5,10 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import 'package:your_expense/firebase_options.dart';
+import 'package:your_expense/routes/app_routes.dart';
 
 class PushNotificationService extends GetxService {
   final RxString _fcmToken = ''.obs;
@@ -32,6 +34,21 @@ class PushNotificationService extends GetxService {
       debugPrint('[Push] iOS authorizationStatus: ${settings.authorizationStatus}');
     } catch (e) {
       debugPrint('[Push] requestPermission error: $e');
+    }
+
+    // 1b) Permission (Android 13+): Request runtime notification permission
+    if (!kIsWeb && Platform.isAndroid) {
+      try {
+        final status = await Permission.notification.status;
+        if (!status.isGranted) {
+          final result = await Permission.notification.request();
+          debugPrint('[Push] Android notification permission: $result');
+        } else {
+          debugPrint('[Push] Android notification permission already granted');
+        }
+      } catch (e) {
+        debugPrint('[Push] Android notification permission request error: $e');
+      }
     }
 
     // 2) Foreground presentation options (iOS)
@@ -60,6 +77,11 @@ class PushNotificationService extends GetxService {
       debugPrint('[Push] getToken error: $e');
     }
 
+    // If iOS APNs was slow and FCM token is still empty, retry in background.
+    if (Platform.isIOS && (_fcmToken.value.isEmpty)) {
+      Future.microtask(() => _retryFetchTokenIfApnsReady());
+    }
+
     // 4) Token refresh listener
     FirebaseMessaging.instance.onTokenRefresh.listen((newToken) {
       _fcmToken.value = newToken;
@@ -82,10 +104,64 @@ class PushNotificationService extends GetxService {
         );
 
         debugPrint('[Push] onMessage data: ${message.data}');
+
+        // Navigate for monthly report even when app is in foreground
+        final type = message.data['type'];
+        if (type == 'monthly_report') {
+          final String? month = message.data['month'];
+          Get.toNamed(
+            AppRoutes.uploadToDrive,
+            arguments: {
+              'prefill': 'monthly_report',
+              if (month != null) 'month': month,
+            },
+          );
+        }
       } catch (e) {
         debugPrint('[Push] onMessage handler error: $e');
       }
     });
+
+    // 6) Tap-from-background/terminated handler
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      try {
+        debugPrint('[Push] onMessageOpenedApp data: ${message.data}');
+        final type = message.data['type'];
+        if (type == 'monthly_report') {
+          final String? month = message.data['month'];
+          Get.toNamed(
+            AppRoutes.uploadToDrive,
+            arguments: {
+              'prefill': 'monthly_report',
+              if (month != null) 'month': month,
+            },
+          );
+        }
+      } catch (e) {
+        debugPrint('[Push] onMessageOpenedApp error: $e');
+      }
+    });
+
+    // 7) Cold-start notification when app opened by tapping a notification
+    try {
+      final initialMessage = await FirebaseMessaging.instance.getInitialMessage();
+      if (initialMessage != null) {
+        debugPrint('[Push] getInitialMessage data: ${initialMessage.data}');
+        final type = initialMessage.data['type'];
+        if (type == 'monthly_report') {
+          final String? month = initialMessage.data['month'];
+          Get.toNamed(
+            AppRoutes.uploadToDrive,
+            arguments: {
+              'prefill': 'monthly_report',
+              if (month != null) 'month': month,
+            },
+          );
+        }
+      }
+    } catch (e) {
+      debugPrint('[Push] getInitialMessage error: $e');
+    }
 
     debugPrint('[Push] init() done');
     return this;
@@ -93,7 +169,7 @@ class PushNotificationService extends GetxService {
 
   /// iOS: APNs token ready হওয়া পর্যন্ত poll করি, তারপর FCM token নিবো
   Future<String?> _waitForApnsToken({
-    Duration timeout = const Duration(seconds: 10),
+    Duration timeout = const Duration(seconds: 60),
     Duration pollInterval = const Duration(milliseconds: 500),
   }) async {
     if (!Platform.isIOS) return null;
@@ -120,6 +196,33 @@ class PushNotificationService extends GetxService {
 
     debugPrint('[Push] APNs token NOT ready within ${timeout.inSeconds}s');
     return null;
+  }
+
+  /// If APNs arrives late, retry fetching FCM token for a limited time.
+  Future<void> _retryFetchTokenIfApnsReady({
+    Duration overallTimeout = const Duration(minutes: 2),
+    Duration pollInterval = const Duration(seconds: 1),
+  }) async {
+    if (!Platform.isIOS) return;
+
+    final sw = Stopwatch()..start();
+    while (sw.elapsed < overallTimeout && (_fcmToken.value.isEmpty)) {
+      try {
+        final apns = await FirebaseMessaging.instance.getAPNSToken();
+        if (apns != null && apns.isNotEmpty) {
+          debugPrint('[Push] APNs token arrived late: $apns');
+          final token = await FirebaseMessaging.instance.getToken();
+          if (token != null && token.isNotEmpty) {
+            _fcmToken.value = token;
+            debugPrint('[Push] FCM token fetched after APNs ready: $token');
+            break;
+          }
+        }
+      } catch (e) {
+        debugPrint('[Push] late APNs/FCM fetch error: $e');
+      }
+      await Future.delayed(pollInterval);
+    }
   }
 }
 

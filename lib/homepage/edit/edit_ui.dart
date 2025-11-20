@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../Settings/appearance/ThemeController.dart';
 import 'edit_controller.dart';
+import 'package:your_expense/services/subscription_service.dart';
+import 'package:your_expense/routes/app_routes.dart';
 
 class MonthlyBudgetScreen extends StatelessWidget {
   MonthlyBudgetScreen({super.key});
@@ -13,6 +15,7 @@ class MonthlyBudgetScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final ThemeController themeController = Get.find<ThemeController>();
     final BudgetController budgetController = Get.put(BudgetController());
+    final SubscriptionService sub = Get.find<SubscriptionService>();
     final bool isDarkMode = themeController.isDarkModeActive;
 
     final Color backgroundColor = isDarkMode ? Color(0xFF121212) : Color(0xFFF8F9FA);
@@ -80,6 +83,7 @@ class MonthlyBudgetScreen extends StatelessWidget {
               // Edit Budget Section
               _buildEditBudgetSection(
                 budgetController,
+                sub,
                 cardColor,
                 borderColor,
                 textColor,
@@ -224,6 +228,7 @@ class MonthlyBudgetScreen extends StatelessWidget {
 
   Widget _buildEditBudgetSection(
       BudgetController budgetController,
+      SubscriptionService sub,
       Color cardColor,
       Color borderColor,
       Color textColor,
@@ -231,6 +236,7 @@ class MonthlyBudgetScreen extends StatelessWidget {
       Color secondaryTextColor,
       Color primaryColor,
       ) {
+    final bool isBlocked = (!sub.isActivePro && budgetController.budgetExists.value);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -271,6 +277,8 @@ class MonthlyBudgetScreen extends StatelessWidget {
             onChanged: (value) {
               budgetController.setEditBudgetAmount(value);
             },
+            readOnly: isBlocked,
+            enabled: !isBlocked,
           ),
         ),
         const SizedBox(height: 8),
@@ -304,6 +312,49 @@ class MonthlyBudgetScreen extends StatelessWidget {
             ),
           ],
         ),
+        if (isBlocked) ...[
+          const SizedBox(height: 12),
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: cardColor,
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: borderColor),
+            ),
+            child: Row(
+              children: [
+                Icon(Icons.lock_outline, color: primaryColor),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'upgrade_title'.tr,
+                        style: TextStyle(
+                          fontFamily: 'Inter',
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14,
+                          color: textColor,
+                        ),
+                      ),
+                      Text(
+                        'upgrade_subtitle'.tr,
+                        style: TextStyle(
+                          fontFamily: 'Inter',
+                          fontWeight: FontWeight.w400,
+                          fontSize: 12,
+                          color: secondaryTextColor,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
         const SizedBox(height: 16),
         // Confirm Button
         Obx(() => SizedBox(
@@ -313,19 +364,32 @@ class MonthlyBudgetScreen extends StatelessWidget {
             onPressed: budgetController.isLoading.value
                 ? null
                 : () {
-              final amount = double.tryParse(_budgetController.text);
-              if (amount != null && amount > 0) {
-                budgetController.updateMonthlyBudget(amount);
-              } else {
-                Get.snackbar(
-                  'Error'.tr,
-                  'Please enter a valid amount'.tr,
-                  snackPosition: SnackPosition.BOTTOM,
-                  backgroundColor: Colors.red,
-                  colorText: Colors.white,
-                );
-              }
-            },
+                    final blocked = (!sub.isActivePro && budgetController.budgetExists.value);
+                    if (blocked) {
+                      Get.snackbar(
+                        'upgrade_title'.tr,
+                        'upgrade_subtitle'.tr,
+                        snackPosition: SnackPosition.BOTTOM,
+                        backgroundColor: Colors.blue,
+                        colorText: Colors.white,
+                      );
+                      Get.toNamed(AppRoutes.monthlyBudgetNonPro);
+                      return;
+                    }
+
+                    final amount = double.tryParse(_budgetController.text);
+                    if (amount != null && amount > 0) {
+                      budgetController.updateMonthlyBudget(amount);
+                    } else {
+                      Get.snackbar(
+                        'Error'.tr,
+                        'Please enter a valid amount'.tr,
+                        snackPosition: SnackPosition.BOTTOM,
+                        backgroundColor: Colors.red,
+                        colorText: Colors.white,
+                      );
+                    }
+                  },
             style: ElevatedButton.styleFrom(
               backgroundColor: primaryColor,
               shape: RoundedRectangleBorder(
@@ -342,15 +406,18 @@ class MonthlyBudgetScreen extends StatelessWidget {
                 valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
               ),
             )
-                : Text(
-              'confirm'.tr,
-              style: TextStyle(
-                fontFamily: 'Inter',
-                fontWeight: FontWeight.w600,
-                fontSize: 16,
-                color: Colors.white,
-              ),
-            ),
+                : Obx(() {
+                    final blocked = (!sub.isActivePro && budgetController.budgetExists.value);
+                    return Text(
+                      blocked ? ('upgrade_now'.tr + '  🔒') : 'confirm'.tr,
+                      style: TextStyle(
+                        fontFamily: 'Inter',
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16,
+                        color: Colors.white,
+                      ),
+                    );
+                  }),
           ),
         )),
       ],

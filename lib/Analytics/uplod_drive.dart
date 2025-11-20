@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:your_expense/routes/app_routes.dart';
+import 'package:your_expense/services/subscription_service.dart';
 import 'package:your_expense/Analytics/uplode_drive_controller.dart';
 
 class UploadToDriveScreen extends StatelessWidget {
@@ -8,6 +10,7 @@ class UploadToDriveScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(UploadToDriveController());
+    final sub = Get.find<SubscriptionService>();
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -38,11 +41,75 @@ class UploadToDriveScreen extends StatelessWidget {
               ),
             ),
           ),
+          if (!sub.isActivePro) _buildProGateOverlay(screenWidth, screenHeight, isDark),
           // Success Dialog Overlay
           if (controller.showSuccessDialog.value)
             _buildSuccessDialog(controller, screenWidth, screenHeight, isDark),
         ],
       )),
+    );
+  }
+
+  Widget _buildProGateOverlay(double screenWidth, double screenHeight, bool isDarkMode) {
+    return Positioned.fill(
+      child: Container(
+        color: (isDarkMode ? Colors.black : Colors.white).withOpacity(0.88),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.lock_outline, size: screenWidth * 0.12, color: isDarkMode ? Colors.white70 : Colors.black54),
+              SizedBox(height: screenHeight * 0.02),
+              Text(
+                'upgradeToProToView'.tr,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: screenWidth * 0.045,
+                  fontWeight: FontWeight.w600,
+                  color: isDarkMode ? Colors.white : Colors.black87,
+                ),
+              ),
+              SizedBox(height: screenHeight * 0.008),
+              Text(
+                'graphsAndReports'.tr,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: screenWidth * 0.04,
+                  fontWeight: FontWeight.w500,
+                  color: isDarkMode ? Colors.white70 : Colors.black54,
+                ),
+              ),
+              SizedBox(height: screenHeight * 0.03),
+              ElevatedButton(
+                onPressed: () {
+                  Get.toNamed(AppRoutes.premiumPlans);
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF4A90E2),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.12, vertical: screenHeight * 0.016),
+                  elevation: 0,
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.workspace_premium, color: Colors.white, size: screenWidth * 0.05),
+                    SizedBox(width: screenWidth * 0.02),
+                    Text(
+                      'upgradeNow'.tr,
+                      style: TextStyle(
+                        fontSize: screenWidth * 0.04,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 

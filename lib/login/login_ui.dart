@@ -213,7 +213,8 @@ class LoginScreen extends StatelessWidget {
                     ),
                     child: IconButton(
                       onPressed: () {
-                        Get.offNamed(AppRoutes.faceLogin);
+                        // Use push so user can go back to Login
+                        Get.toNamed(AppRoutes.faceLogin);
                       },
                       icon: Image.asset(
                         'assets/icons/face.png',
@@ -274,7 +275,7 @@ class LoginScreen extends StatelessWidget {
                         // Handle Facebook login
                       },
                       icon: Image.asset(
-                        'assets/icons/ic_baseline-facebook.png',
+                        'assets/icons/facebook.png',
                         width: 24,
                         height: 24,
                       ),
@@ -297,7 +298,7 @@ class LoginScreen extends StatelessWidget {
                         // Handle Google login
                       },
                       icon: Image.asset(
-                        'assets/icons/devicon_google.png',
+                        'assets/icons/google.png',
                         width: 24,
                         height: 24,
                       ),

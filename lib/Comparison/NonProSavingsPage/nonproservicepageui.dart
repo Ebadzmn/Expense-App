@@ -165,7 +165,8 @@ class NonProSavingsPage extends StatelessWidget {
                                 SizedBox(height: 20),
                                 ElevatedButton(
                                   onPressed: () {
-                                    Get.toNamed(AppRoutes.totalSavingAdvertisement);
+                                    // No ads: route directly to Premium Plans
+                                    Get.toNamed(AppRoutes.premiumPlans);
                                   },
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: Color(0xFF4A90E2),

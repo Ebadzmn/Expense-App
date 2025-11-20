@@ -8,7 +8,6 @@ import 'package:your_expense/services/config_service.dart';
 import 'package:your_expense/Analytics/ExpenseService.dart';
 import 'package:your_expense/services/subscription_service.dart';
 
-import '../ad_helper.dart';
 import '../homepage/model/transaction.dart';
 import '../login/login_service.dart';
 import '../routes/app_routes.dart';
@@ -312,18 +311,38 @@ class HomeController extends GetxController {
         ? Get.find<SubscriptionService>()
         : Get.put(SubscriptionService());
     if (sub.isActivePro) {
-      Get.toNamed(AppRoutes.proExpensesIncome);
+      Get.toNamed(
+        AppRoutes.proExpensesIncome,
+        arguments: {
+          'defaultTab': isExpense ? 0 : 1,
+        },
+      );
     } else {
-      Get.toNamed(AppRoutes.addTransaction);
+      Get.toNamed(
+        AppRoutes.addTransaction,
+        arguments: {
+          'initialIndex': isExpense ? 0 : 1,
+        },
+      );
     }
   }
 
   void navigateToAddProExpense() {
-    // Implementation
+    Get.toNamed(
+      AppRoutes.proExpensesIncome,
+      arguments: {
+        'defaultTab': 0,
+      },
+    );
   }
 
   void navigateToAddProIncome() {
-    // Implementation
+    Get.toNamed(
+      AppRoutes.proExpensesIncome,
+      arguments: {
+        'defaultTab': 1,
+      },
+    );
   }
 
   void shareExperience() {
@@ -350,32 +369,22 @@ class HomeController extends GetxController {
       switch (index) {
         case 0: // Home
           if (Get.currentRoute != AppRoutes.mainHome) {
-            Get.offAllNamed(AppRoutes.mainHome);
+            Get.toNamed(AppRoutes.mainHome);
           }
           break;
         case 1: // Analytics
           if (Get.currentRoute != AppRoutes.analytics) {
-            Get.offAllNamed(AppRoutes.analytics);
+            Get.toNamed(AppRoutes.analytics);
           }
           break;
-        case 2: // Comparison (show ad first, then navigate)
-          AdHelper.showInterstitialAd(
-            onAdDismissed: () {
-              if (Get.currentRoute != AppRoutes.comparison) {
-                Get.offAllNamed(AppRoutes.comparison);
-              }
-            },
-            onAdFailed: () {
-              // Navigate even if ad fails
-              if (Get.currentRoute != AppRoutes.comparison) {
-                Get.offAllNamed(AppRoutes.comparison);
-              }
-            },
-          );
+        case 2: // Comparison (no ads)
+          if (Get.currentRoute != AppRoutes.comparison) {
+            Get.toNamed(AppRoutes.comparison);
+          }
           break;
         case 3: // Settings
           if (Get.currentRoute != AppRoutes.settings) {
-            Get.offAllNamed(AppRoutes.settings);
+            Get.toNamed(AppRoutes.settings);
           }
           break;
         default:
