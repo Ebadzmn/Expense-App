@@ -188,9 +188,7 @@ class ProExpensesIncomeScreen extends StatelessWidget {
           const SizedBox(height: 20),
           _buildAmountSection(controller, isDarkMode),
           const SizedBox(height: 20),
-          _buildTextBoxSection(controller, isDarkMode),
-          const SizedBox(height: 20),
-          _buildPaymentMethodSection(controller, isDarkMode),
+          const SizedBox.shrink(),
           const SizedBox(height: 20),
           _buildDateTimeSection(controller, isDarkMode),
           const SizedBox(height: 20),
@@ -214,9 +212,7 @@ class ProExpensesIncomeScreen extends StatelessWidget {
           const SizedBox(height: 20),
           _buildAmountSection(controller, isDarkMode),
           const SizedBox(height: 20),
-          _buildTextBoxSection(controller, isDarkMode),
-          const SizedBox(height: 20),
-          _buildPaymentMethodSection(controller, isDarkMode),
+          const SizedBox.shrink(),
           const SizedBox(height: 20),
           _buildDateTimeSection(controller, isDarkMode),
           const SizedBox(height: 20),
@@ -596,121 +592,9 @@ class ProExpensesIncomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildTextBoxSection(ProExpensesIncomeController controller, bool isDarkMode) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'textBox'.tr,
-          style: GoogleFonts.inter(
-            fontWeight: FontWeight.bold,
-            fontSize: 16,
-            color: isDarkMode ? Colors.white : Colors.black,
-          ),
-        ),
-        const SizedBox(height: 10),
-        TextField(
-          controller: controller.descriptionController,
-          style: GoogleFonts.inter(
-            fontSize: 16,
-            color: isDarkMode ? Colors.white : Colors.black,
-          ),
-          decoration: InputDecoration(
-            hintText: 'optional'.tr,
-            hintStyle: TextStyle(color: isDarkMode ? Colors.grey[400] : Colors.grey[600]),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: isDarkMode ? Colors.grey[700]! : Colors.grey),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: Colors.blue),
-            ),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            filled: isDarkMode,
-            fillColor: isDarkMode ? const Color(0xFF2A2A2A) : Colors.transparent,
-          ),
-        ),
-      ],
-    );
-  }
+  // Text Box section removed per request
 
-  Widget _buildPaymentMethodSection(ProExpensesIncomeController controller, bool isDarkMode) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'paymentMethod'.tr,
-          style: GoogleFonts.inter(
-            fontWeight: FontWeight.bold,
-            fontSize: 16,
-            color: isDarkMode ? Colors.white : Colors.black,
-          ),
-        ),
-        const SizedBox(height: 10),
-        Obx(() => Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: controller.paymentMethods.map((method) {
-            String methodName = method['name'];
-            bool isSelected = controller.selectedPaymentMethod.value == methodName;
-
-            return Expanded(
-              child: GestureDetector(
-                onTap: () => controller.selectPaymentMethod(methodName),
-                child: Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 4),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: isSelected ? Colors.blue : (isDarkMode ? const Color(0xFF2A2A2A) : Colors.grey[200]),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: method['iconPath'] != null
-                            ? Image.asset(
-                          method['iconPath'],
-                          width: 24,
-                          height: 24,
-                          color: isSelected ? Colors.white : (isDarkMode ? Colors.white : Colors.black),
-                          errorBuilder: (context, error, stackTrace) {
-                            return Icon(
-                              method['icon'],
-                              color: isSelected ? Colors.white : (isDarkMode ? Colors.white : Colors.black),
-                              size: 24,
-                            );
-                          },
-                        )
-                            : Icon(
-                          method['icon'],
-                          color: isSelected ? Colors.white : (isDarkMode ? Colors.white : Colors.black),
-                          size: 24,
-                        ),
-                      ),
-                      const SizedBox(height: 5),
-                      Text(
-                        methodName.tr,
-                        style: GoogleFonts.inter(
-                          fontSize: 12,
-                          color: isDarkMode ? Colors.white : Colors.black,
-                        ),
-                        textAlign: TextAlign.center,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            );
-          }).toList(),
-        )),
-      ],
-    );
-  }
+  // Payment method section removed per request
 
   Widget _buildDateTimeSection(ProExpensesIncomeController controller, bool isDarkMode) {
     final DateTime now = DateTime.now();

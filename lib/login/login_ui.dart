@@ -9,9 +9,8 @@ import '../../colors/app_colors.dart';
 import 'login_controller.dart';
 
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends GetView<LoginController> {
   final RxBool isPasswordVisible = false.obs;
-  final LoginController loginController = Get.find();
 
   LoginScreen({super.key});
 
@@ -57,7 +56,7 @@ class LoginScreen extends StatelessWidget {
               const SizedBox(height: 40),
 
               // Error message
-              Obx(() => loginController.errorMessage.value.isNotEmpty
+              Obx(() => controller.errorMessage.value.isNotEmpty
                   ? Container(
                 padding: const EdgeInsets.all(12),
                 margin: const EdgeInsets.only(bottom: 16),
@@ -71,7 +70,7 @@ class LoginScreen extends StatelessWidget {
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
-                        loginController.errorMessage.value,
+                        controller.errorMessage.value,
                         style: TextStyle(
                           color: Colors.red[800],
                           fontSize: 14,
@@ -89,7 +88,7 @@ class LoginScreen extends StatelessWidget {
               )),
               const SizedBox(height: 8),
               TextField(
-                controller: loginController.emailController,
+                controller: controller.emailController,
                 decoration: InputDecoration(
                   hintText: 'enterEmail'.tr,
                   hintStyle: AppTextStyles.inputHint.copyWith(
@@ -120,7 +119,7 @@ class LoginScreen extends StatelessWidget {
               )),
               const SizedBox(height: 8),
               Obx(() => TextField(
-                controller: loginController.passwordController,
+                controller: controller.passwordController,
                 obscureText: !isPasswordVisible.value,
                 decoration: InputDecoration(
                   hintText: 'enterPassword'.tr,
@@ -176,10 +175,10 @@ class LoginScreen extends StatelessWidget {
                 children: [
                   Expanded(
                     child: Obx(() => ElevatedButton(
-                      onPressed: loginController.isLoading.value
+                      onPressed: controller.isLoading.value
                           ? null
                           : () {
-                        loginController.login();
+                        controller.login();
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.primary500,
@@ -188,7 +187,7 @@ class LoginScreen extends StatelessWidget {
                           borderRadius: BorderRadius.circular(8),
                         ),
                       ),
-                      child: loginController.isLoading.value
+                      child: controller.isLoading.value
                           ? const SizedBox(
                         width: 20,
                         height: 20,
@@ -231,7 +230,7 @@ class LoginScreen extends StatelessWidget {
               Center(
                 child: TextButton(
                   onPressed: () {
-                    loginController.loginAsGuest();
+                    controller.loginAsGuest();
                   },
                   child: Text(
                     'loginAsGuest'.tr,
@@ -243,70 +242,8 @@ class LoginScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 24),
-
-              // Or continue with text
-              Center(
-                child: Text(
-                  'orContinueWith'.tr,
-                  style: AppTextStyles.bodyMedium.copyWith(
-                    color: themeController.isDarkModeActive ? Colors.grey[400] : AppColors.text500,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
-
-              // Social Login Buttons
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  // Facebook Button
-                  Container(
-                    width: 50,
-                    height: 50,
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: themeController.isDarkModeActive ? Colors.grey[700]! : AppColors.text200,
-                      ),
-                      borderRadius: BorderRadius.circular(8),
-                      color: themeController.isDarkModeActive ? const Color(0xFF1E1E1E) : Colors.white,
-                    ),
-                    child: IconButton(
-                      onPressed: () {
-                        // Handle Facebook login
-                      },
-                      icon: Image.asset(
-                        'assets/icons/facebook.png',
-                        width: 24,
-                        height: 24,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  // Google Button
-                  Container(
-                    width: 50,
-                    height: 50,
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: themeController.isDarkModeActive ? Colors.grey[700]! : AppColors.text200,
-                      ),
-                      borderRadius: BorderRadius.circular(8),
-                      color: themeController.isDarkModeActive ? const Color(0xFF1E1E1E) : Colors.white,
-                    ),
-                    child: IconButton(
-                      onPressed: () {
-                        // Handle Google login
-                      },
-                      icon: Image.asset(
-                        'assets/icons/google.png',
-                        width: 24,
-                        height: 24,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 24),
+              // Social login UI removed
+              const SizedBox.shrink(),
 
               // Register Link
               Center(

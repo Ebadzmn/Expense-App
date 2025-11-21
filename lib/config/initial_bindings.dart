@@ -22,7 +22,11 @@ class InitialBindings extends Bindings {
 
     // Lazily create other controllers when first used
     Get.lazyPut(() => HomeController(), fenix: true);
-    Get.lazyPut(() => LoginController(), fenix: true);
+    // Keep LoginController permanent to avoid disposing TextEditingControllers
+    // while LoginScreen remains in the navigation stack.
+    if (!Get.isRegistered<LoginController>()) {
+      Get.put(LoginController(), permanent: true);
+    }
     Get.lazyPut(() => MonthlyBudgetController(), fenix: true);
     Get.lazyPut(() => ExpenseController(), fenix: true);
     Get.lazyPut(() => ProExpensesIncomeController(), fenix: true);

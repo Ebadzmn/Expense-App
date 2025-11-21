@@ -40,12 +40,18 @@ class MainHomeScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: backgroundColor,
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.06),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+        child: RefreshIndicator(
+          onRefresh: () async {
+            await controller.fetchBudgetData();
+            await controller.fetchRecentTransactions();
+          },
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.06),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
                 SizedBox(height: screenHeight * 0.02),
                 // Header with Profile, Greeting, Location, and Notification
                 Row(
@@ -465,6 +471,7 @@ class MainHomeScreen extends StatelessWidget {
                 ),
                 SizedBox(height: screenHeight * 0.03),
               ],
+            ),
             ),
           ),
         ),

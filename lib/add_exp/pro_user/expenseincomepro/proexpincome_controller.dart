@@ -346,7 +346,7 @@ class ProExpensesIncomeController extends GetxController {
       );
       isLoading.value = false;
       if (success) {
-        Get.snackbar('Success', 'Expense added');
+        Get.snackbar('Success', 'Expense added', snackPosition: SnackPosition.TOP);
         amountController.clear();
         descriptionController.clear();
         clearSelections();
@@ -389,7 +389,7 @@ class ProExpensesIncomeController extends GetxController {
           await home.fetchBudgetData();
           await home.fetchRecentTransactions();
         } catch (_) {}
-        Get.snackbar('Success', 'Income added');
+        Get.snackbar('Success', 'Income added', snackPosition: SnackPosition.TOP);
         amountController.clear();
         descriptionController.clear();
         clearSelections();

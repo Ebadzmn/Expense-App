@@ -42,27 +42,34 @@ class AnalyticsScreen extends StatelessWidget {
       appBar: _buildAppBar(screenWidth, textColor, backgroundColor),
       body: Obx(() => controller.isLoading.value
           ? _buildLoadingIndicator()
-          : SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.all(screenWidth * 0.05),
-          child: Column(
-            children: [
-              _buildChartTypeButtons(controller, screenWidth, iconBackgroundColor, textColor),
-              SizedBox(height: screenHeight * 0.03),
-              _buildMonthSelector(controller, screenWidth, screenHeight),
-              SizedBox(height: screenHeight * 0.04),
-              _buildChartsSection(controller, screenWidth, screenHeight, iconBackgroundColor, textColor),
-              SizedBox(height: screenHeight * 0.03),
-              _buildLegend(controller, screenWidth, textColor, secondaryTextColor),
-              SizedBox(height: screenHeight * 0.04),
-              _buildSummaryCards(controller, screenWidth, screenHeight, cardColor, textColor, secondaryTextColor),
-              SizedBox(height: screenHeight * 0.04),
-              _buildActionsSection(controller, screenWidth, screenHeight, cardColor, textColor),
-              SizedBox(height: screenHeight * 0.02),
-            ],
-          ),
-        ),
-      )),
+          : RefreshIndicator(
+              onRefresh: () async {
+                await controller.fetchIncomeSummary();
+                await controller.fetchExpenseSummary();
+              },
+              child: SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                child: Padding(
+                  padding: EdgeInsets.all(screenWidth * 0.05),
+                  child: Column(
+                    children: [
+                      _buildChartTypeButtons(controller, screenWidth, iconBackgroundColor, textColor),
+                      SizedBox(height: screenHeight * 0.03),
+                      _buildMonthSelector(controller, screenWidth, screenHeight),
+                      SizedBox(height: screenHeight * 0.04),
+                      _buildChartsSection(controller, screenWidth, screenHeight, iconBackgroundColor, textColor),
+                      SizedBox(height: screenHeight * 0.03),
+                      _buildLegend(controller, screenWidth, textColor, secondaryTextColor),
+                      SizedBox(height: screenHeight * 0.04),
+                      _buildSummaryCards(controller, screenWidth, screenHeight, cardColor, textColor, secondaryTextColor),
+                      SizedBox(height: screenHeight * 0.04),
+                      _buildActionsSection(controller, screenWidth, screenHeight, cardColor, textColor),
+                      SizedBox(height: screenHeight * 0.02),
+                    ],
+                  ),
+                ),
+              ),
+            )),
       bottomNavigationBar: CustomBottomNavBar(
         isDarkMode: isDarkMode,
       ),

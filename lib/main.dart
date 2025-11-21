@@ -61,6 +61,8 @@ Future<void> main() async {
   await Get.putAsync(() => TokenService().init());
   await Get.putAsync(() => ApiBaseService().init());
   await Get.putAsync(() => SubscriptionService().init());
+  // Ensure LoginService is available before any controller tries to Get.find()
+  await Get.putAsync(() => LoginService().init());
   // Critical services used by HomeController/UI must exist before first build
   await Get.putAsync(() => TransactionService().init());
   await Get.putAsync(() => BudgetService().init());
@@ -93,7 +95,6 @@ Future<void> main() async {
     await Future.wait([
       Get.putAsync(() => MarketplaceService().init()),
       Get.putAsync(() => IncomeService().init()),
-      Get.putAsync(() => LoginService().init()),
     ]);
 
     // Push notifications quickly after UI starts

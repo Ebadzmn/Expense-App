@@ -68,57 +68,9 @@ class _AppUnlockScreenState extends State<AppUnlockScreen> {
           padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
           child: Column(
             children: [
-              SizedBox(height: screenHeight * 0.03),
+              
 
-              // PIN Code Option
-              _buildUnlockOptionCard(
-                'pin_code'.tr,
-                'pin_code_desc'.tr,
-                'assets/icons/lockis.png',
-                'pin',
-                const Color(0xFF2196F3),
-                screenWidth,
-                screenHeight,
-                themeController.isDarkModeActive,
-                onTap: () => Get.toNamed('/setPin'),
-              ),
-
-              // Face ID Option - Updated to navigate to setup screen
-              _buildUnlockOptionCard(
-                'face_id'.tr,
-                'face_id_desc'.tr,
-                'assets/icons/face-id (1).png',
-                'faceid',
-                const Color(0xFF9C27B0),
-                screenWidth,
-                screenHeight,
-                themeController.isDarkModeActive,
-                onTap: () {
-                  setState(() {
-                    selectedOption = 'faceid';
-                  });
-                  // Navigate to FaceID setup screen
-                  Get.toNamed('/setupFaceID');
-                },
-              ),
-
-              // None Option
-              _buildUnlockOptionCard(
-                'none_option'.tr,
-                'none_option_desc'.tr,
-                'assets/icons/user (1).png',
-                'none',
-                const Color(0xFF757575),
-                screenWidth,
-                screenHeight,
-                themeController.isDarkModeActive,
-                onTap: () {
-                  setState(() {
-                    selectedOption = 'none';
-                  });
-                  print("Set to None");
-                },
-              ),
+  
 
               SizedBox(height: screenHeight * 0.04),
 
