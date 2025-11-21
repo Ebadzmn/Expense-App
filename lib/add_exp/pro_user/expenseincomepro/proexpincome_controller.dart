@@ -170,6 +170,29 @@ class ProExpensesIncomeController extends GetxController {
     super.onClose();
   }
 
+  // Helper to show Scaffold-based SnackBar messages with graceful fallback
+  void _showScaffoldMessage(String message, {bool isError = false}) {
+    final ctx = Get.context;
+    if (ctx != null) {
+      ScaffoldMessenger.of(ctx).clearSnackBars();
+      ScaffoldMessenger.of(ctx).showSnackBar(
+        SnackBar(
+          content: Text(message),
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: isError ? Colors.red : Colors.green,
+          duration: const Duration(seconds: 2),
+        ),
+      );
+    } else {
+      // Fallback to Get.snackbar if no context available
+      Get.snackbar(
+        isError ? 'Error' : 'Success',
+        message,
+        snackPosition: SnackPosition.TOP,
+      );
+    }
+  }
+
   Future<void> _loadUnlockStatus() async {
     // Do not persist ad-based unlocks across app restarts
     isExpenseProUnlocked.value = false;
@@ -321,16 +344,16 @@ class ProExpensesIncomeController extends GetxController {
       // Expense
       final text = amountController.text.trim();
       if (text.isEmpty) {
-        Get.snackbar('Error', 'Please enter an amount');
+        _showScaffoldMessage('Please enter an amount', isError: true);
         return;
       }
       final amount = double.tryParse(text);
       if (amount == null || amount <= 0) {
-        Get.snackbar('Error', 'Enter a valid positive amount');
+        _showScaffoldMessage('Enter a valid positive amount', isError: true);
         return;
       }
       if (selectedExpenseCategory.value.isEmpty) {
-        Get.snackbar('Error', 'Please select a category');
+        _showScaffoldMessage('Please select a category', isError: true);
         return;
       }
       isLoading.value = true;
@@ -346,30 +369,33 @@ class ProExpensesIncomeController extends GetxController {
       );
       isLoading.value = false;
       if (success) {
-        Get.snackbar('Success', 'Expense added', snackPosition: SnackPosition.TOP);
+        _showScaffoldMessage('Expense added');
         amountController.clear();
         descriptionController.clear();
         clearSelections();
         Get.back();
       } else {
-        Get.snackbar('Error', _expenseController.errorMessage.value.isNotEmpty
-            ? _expenseController.errorMessage.value
-            : 'Failed to add expense');
+        _showScaffoldMessage(
+          _expenseController.errorMessage.value.isNotEmpty
+              ? _expenseController.errorMessage.value
+              : 'Failed to add expense',
+          isError: true,
+        );
       }
     } else {
       // Income: Wire to IncomeService
       final text = amountController.text.trim();
       if (text.isEmpty) {
-        Get.snackbar('Error', 'Please enter an amount');
+        _showScaffoldMessage('Please enter an amount', isError: true);
         return;
       }
       final amount = double.tryParse(text);
       if (amount == null || amount <= 0) {
-        Get.snackbar('Error', 'Enter a valid positive amount');
+        _showScaffoldMessage('Enter a valid positive amount', isError: true);
         return;
       }
       if (selectedIncomeCategory.value.isEmpty) {
-        Get.snackbar('Error', 'Please select an income source');
+        _showScaffoldMessage('Please select an income source', isError: true);
         return;
       }
       isLoading.value = true;
@@ -389,13 +415,13 @@ class ProExpensesIncomeController extends GetxController {
           await home.fetchBudgetData();
           await home.fetchRecentTransactions();
         } catch (_) {}
-        Get.snackbar('Success', 'Income added', snackPosition: SnackPosition.TOP);
+        _showScaffoldMessage('Income added');
         amountController.clear();
         descriptionController.clear();
         clearSelections();
         Get.back();
       } catch (e) {
-        Get.snackbar('Error', 'Failed to add income');
+        _showScaffoldMessage('Failed to add income', isError: true);
       } finally {
         isLoading.value = false;
       }

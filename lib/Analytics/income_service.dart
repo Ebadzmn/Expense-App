@@ -85,8 +85,9 @@ class IncomeService extends GetxService {
         if (date != null) 'date': date.toIso8601String(),
       };
 
+      // Use PATCH and dynamically inject the income ID into the URL
       final response = await _apiService.request(
-        'PUT',
+        'PATCH',
         '${_config.incomeEndpoint}/$id',
         body: body,
         requiresAuth: true,

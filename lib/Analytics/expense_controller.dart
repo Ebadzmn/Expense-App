@@ -7,6 +7,7 @@ import 'package:your_expense/services/config_service.dart';
 import 'package:your_expense/services/token_service.dart';
 
 import 'package:your_expense/Analytics/analytics_controller.dart';
+import 'package:your_expense/homepage/notification/notification_controller.dart';
 
 class ExpenseController extends GetxController {
   final ExpenseService _expenseService = Get.find();
@@ -198,6 +199,17 @@ class ExpenseController extends GetxController {
         // Refresh home data to reflect new totals
         await home.fetchBudgetData();
         await home.fetchRecentTransactions();
+      }
+
+      // Immediately hit Notification API so local notifications arrive on time
+      try {
+        final notifController = Get.isRegistered<NotificationController>()
+            ? Get.find<NotificationController>()
+            : Get.put(NotificationController());
+        await notifController.fetchNotifications();
+      } catch (e) {
+        // Soft fail; do not block expense flow
+        print('ExpenseController: failed to fetch notifications post-expense: $e');
       }
 
       return true;

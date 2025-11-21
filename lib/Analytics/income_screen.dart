@@ -268,17 +268,68 @@ class IncomeListScreen extends StatelessWidget {
   }
 
   void _showEditIncomeDialog(Income income, IncomeController incomeController) {
+    final amountController = TextEditingController(text: income.amount.toString());
+    String selectedSource = income.source;
+
     Get.defaultDialog(
       title: 'edit_income'.tr,
-      content: Text('edit_functionality_to_be_implemented'.tr),
+      content: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          TextField(
+            controller: amountController,
+            keyboardType: TextInputType.numberWithOptions(decimal: true),
+            decoration: InputDecoration(
+              labelText: 'amount'.tr,
+              border: OutlineInputBorder(),
+            ),
+          ),
+          SizedBox(height: 12),
+          DropdownButtonFormField<String>(
+            value: selectedSource.isNotEmpty ? selectedSource : null,
+            items: const [
+              DropdownMenuItem(value: 'salary', child: Text('Salary')),
+              DropdownMenuItem(value: 'rent', child: Text('Rent')),
+              DropdownMenuItem(value: 'business', child: Text('Business')),
+              DropdownMenuItem(value: 'gift', child: Text('Gift')),
+            ],
+            onChanged: (val) {
+              if (val != null) selectedSource = val;
+            },
+            decoration: InputDecoration(
+              labelText: 'source'.tr,
+              border: OutlineInputBorder(),
+            ),
+          ),
+        ],
+      ),
       actions: [
         TextButton(
           onPressed: () => Get.back(),
           child: Text('cancel'.tr),
         ),
         TextButton(
-          onPressed: () {
-            Get.back();
+          onPressed: () async {
+            // Validate and submit edits
+            final amtStr = amountController.text.trim();
+            final amt = double.tryParse(amtStr);
+            if (amt == null) {
+              Get.snackbar('invalid_amount'.tr, 'please_enter_valid_number'.tr);
+              return;
+            }
+
+            try {
+              await incomeController.editIncome(
+                id: income.id,
+                source: selectedSource,
+                amount: amt,
+              );
+              Get.back();
+              Get.snackbar('success'.tr, 'income_updated_successfully'.tr);
+            } catch (e) {
+              Get.snackbar('error'.tr, e.toString());
+            }
           },
           child: Text('save_action'.tr),
         ),

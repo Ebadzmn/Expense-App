@@ -4,6 +4,8 @@ import 'package:intl/intl.dart';
 
 import '../../services/api_base_service.dart';
 import '../../services/config_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../../services/local_notifications_service.dart';
 
 
 class NotificationController extends GetxController {
@@ -72,6 +74,9 @@ class NotificationController extends GetxController {
       }).toList();
 
       _groupNotifications();
+
+      // Trigger local notifications for newly arrived items
+      await _triggerLocalNotificationsForNewItems();
     } catch (e) {
       print('Error fetching notifications: $e');
       Get.snackbar('Error', 'Failed to load notifications: ${e.toString()}');
@@ -172,6 +177,44 @@ class NotificationController extends GetxController {
       return DateTime.now();
     } catch (_) {
       return DateTime.now();
+    }
+  }
+
+  Future<void> _triggerLocalNotificationsForNewItems() async {
+    try {
+      if (!Get.isRegistered<LocalNotificationsService>()) return;
+      final notifier = Get.find<LocalNotificationsService>();
+      final prefs = await SharedPreferences.getInstance();
+      final lastSeenMillis = prefs.getInt('notifications_last_seen_ts') ?? 0;
+      final lastSeen = lastSeenMillis > 0
+          ? DateTime.fromMillisecondsSinceEpoch(lastSeenMillis)
+          : DateTime.fromMillisecondsSinceEpoch(0);
+
+      // Find new items after last seen
+      final newItems = notifications
+          .where((n) => (n['dateTime'] as DateTime).isAfter(lastSeen))
+          .toList()
+        ..sort((a, b) => (a['dateTime'] as DateTime).compareTo(b['dateTime'] as DateTime));
+
+      // Limit to avoid notification flood
+      final int limit = newItems.length > 3 ? 3 : newItems.length;
+      for (int i = 0; i < limit; i++) {
+        final item = newItems[i];
+        final title = (item['title'] as String?) ?? 'New notification';
+        final timeAgo = (item['time'] as String?) ?? '';
+        await notifier.showNotification(title: title, body: timeAgo);
+      }
+
+      // Update last seen to newest notification timestamp
+      if (notifications.isNotEmpty) {
+        final newest = notifications
+            .map((n) => n['dateTime'] as DateTime)
+            .reduce((a, b) => a.isAfter(b) ? a : b);
+        await prefs.setInt('notifications_last_seen_ts', newest.millisecondsSinceEpoch);
+      }
+    } catch (e) {
+      // Soft fail — never block UI
+      print('NotificationController: local notification trigger failed: $e');
     }
   }
 }

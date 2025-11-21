@@ -7,6 +7,7 @@ import 'package:your_expense/services/api_base_service.dart';
 import 'package:your_expense/services/config_service.dart';
 import 'package:your_expense/Analytics/ExpenseService.dart';
 import 'package:your_expense/services/subscription_service.dart';
+import 'package:your_expense/services/local_notifications_service.dart';
 
 import '../homepage/model/transaction.dart';
 import '../login/login_service.dart';
@@ -289,6 +290,9 @@ class HomeController extends GetxController {
       } catch (e) {
         print('Expense list sum refresh failed: $e');
       }
+
+      // After all values updated, consider triggering budget alerts
+      _maybeTriggerBudgetNotifications(currentMonth);
     } catch (e) {
       print('Error in fetchBudgetData: $e');
       // Error is already handled in BudgetService with Get.snackbar
@@ -436,9 +440,11 @@ class HomeController extends GetxController {
               '${e.createdAt.year}-${e.createdAt.month.toString().padLeft(2, '0')}';
           if (ym == month) total += e.amount;
         }
-        expense.value = total;
-        availableBalance.value = income.value - expense.value;
-        return;
+      expense.value = total;
+      availableBalance.value = income.value - expense.value;
+      // Re-evaluate notifications after expense recompute
+      _maybeTriggerBudgetNotifications(month);
+      return;
       }
 
       // Fallback: direct API call if ExpenseService not registered
@@ -489,6 +495,7 @@ class HomeController extends GetxController {
 
       expense.value = total;
       availableBalance.value = income.value - expense.value;
+      _maybeTriggerBudgetNotifications(month);
     } catch (e) {
       print('⚠️ _refreshExpenseFromListForMonth failed: $e');
     }
@@ -558,6 +565,25 @@ class HomeController extends GetxController {
       }
     } finally {
       Get.offAllNamed(AppRoutes.login);
+    }
+  }
+
+  void _maybeTriggerBudgetNotifications(String currentMonth) {
+    try {
+      if (!Get.isRegistered<LocalNotificationsService>()) return;
+      final notifier = Get.find<LocalNotificationsService>();
+      final mb = monthlyBudget.value;
+      if (mb <= 0) return;
+      final spent = expense.value; // use authoritative monthly expense
+      final percent = ((spent / mb) * 100).clamp(0.0, 150.0);
+      notifier.checkBudgetThresholds(
+        month: currentMonth,
+        spentPercentage: percent,
+        monthlyBudget: mb,
+        leftAmount: (mb - spent),
+      );
+    } catch (e) {
+      print('Budget notification check failed: $e');
     }
   }
 }

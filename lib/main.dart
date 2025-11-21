@@ -20,6 +20,7 @@ import 'package:your_expense/services/category_service.dart';
 import 'package:your_expense/services/face_id_service.dart';
 import 'package:your_expense/services/local_auth_service.dart';
 import 'package:your_expense/services/push_notification_service.dart';
+import 'package:your_expense/services/local_notifications_service.dart';
 
 // Feature services
 import 'package:your_expense/homepage/service/transaction_service.dart';
@@ -61,6 +62,7 @@ Future<void> main() async {
   await Get.putAsync(() => TokenService().init());
   await Get.putAsync(() => ApiBaseService().init());
   await Get.putAsync(() => SubscriptionService().init());
+  await Get.putAsync(() => LocalNotificationsService().init());
   // Ensure LoginService is available before any controller tries to Get.find()
   await Get.putAsync(() => LoginService().init());
   // Critical services used by HomeController/UI must exist before first build
