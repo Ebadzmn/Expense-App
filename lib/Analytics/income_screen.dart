@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:your_expense/Settings/appearance/ThemeController.dart';
 import 'income_controller.dart';
@@ -269,69 +270,176 @@ class IncomeListScreen extends StatelessWidget {
 
   void _showEditIncomeDialog(Income income, IncomeController incomeController) {
     final amountController = TextEditingController(text: income.amount.toString());
+    // Auto-select existing amount text for quick editing
+    amountController.selection = TextSelection(baseOffset: 0, extentOffset: amountController.text.length);
     String selectedSource = income.source;
+    // Build source options dynamically to ensure the current value is present
+    final List<String> baseSources = ['salary', 'rent', 'business', 'gift'];
+    final List<String> sources = List<String>.from(baseSources);
+    if (selectedSource.isNotEmpty && !sources.contains(selectedSource)) {
+      sources.insert(0, selectedSource);
+    }
+    // Theme-aware colors for nicer dropdown visuals
+    final themeController = Get.find<ThemeController>();
+    final isDark = themeController.isDarkModeActive;
+    final cardColor = isDark ? const Color(0xFF1E1E1E) : Colors.white;
+    final textColor = isDark ? Colors.white : Colors.black;
+    final iconColor = isDark ? Colors.grey.shade300 : Colors.grey.shade600;
+    final fieldFillColor = isDark ? const Color(0xFF1A1A1A) : Colors.grey.shade100;
+    final borderColor = isDark ? Colors.grey.shade700 : Colors.grey.shade300;
+    final focusedColor = Theme.of(Get.context!).colorScheme.primary;
 
     Get.defaultDialog(
       title: 'edit_income'.tr,
-      content: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          TextField(
-            controller: amountController,
-            keyboardType: TextInputType.numberWithOptions(decimal: true),
-            decoration: InputDecoration(
-              labelText: 'amount'.tr,
-              border: OutlineInputBorder(),
+      titleStyle: TextStyle(
+        color: textColor,
+        fontWeight: FontWeight.w600,
+      ),
+      backgroundColor: cardColor,
+      barrierDismissible: true,
+      radius: 16,
+      content: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: cardColor,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'amount'.tr,
+              style: TextStyle(color: textColor, fontWeight: FontWeight.w500),
             ),
-          ),
-          SizedBox(height: 12),
-          DropdownButtonFormField<String>(
-            value: selectedSource.isNotEmpty ? selectedSource : null,
-            items: const [
-              DropdownMenuItem(value: 'salary', child: Text('Salary')),
-              DropdownMenuItem(value: 'rent', child: Text('Rent')),
-              DropdownMenuItem(value: 'business', child: Text('Business')),
-              DropdownMenuItem(value: 'gift', child: Text('Gift')),
-            ],
-            onChanged: (val) {
-              if (val != null) selectedSource = val;
-            },
-            decoration: InputDecoration(
-              labelText: 'source'.tr,
-              border: OutlineInputBorder(),
+            SizedBox(height: 8),
+            TextField(
+              controller: amountController,
+              autofocus: true,
+              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+              textInputAction: TextInputAction.done,
+              inputFormatters: [
+                FilteringTextInputFormatter.allow(RegExp(r'[0-9\.]')),
+              ],
+              onTap: () {
+                amountController.selection = TextSelection(baseOffset: 0, extentOffset: amountController.text.length);
+              },
+              decoration: InputDecoration(
+                prefixIcon: Icon(Icons.attach_money, color: iconColor),
+                filled: true,
+                fillColor: fieldFillColor,
+                contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: borderColor),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: borderColor),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: focusedColor, width: 1.5),
+                ),
+              ),
             ),
-          ),
-        ],
+            SizedBox(height: 16),
+            Text(
+              'source'.tr,
+              style: TextStyle(color: textColor, fontWeight: FontWeight.w500),
+            ),
+            SizedBox(height: 8),
+            DropdownButtonFormField<String>(
+              value: sources.contains(selectedSource) ? selectedSource : null,
+              isExpanded: true,
+              style: TextStyle(color: textColor, fontSize: 14),
+              icon: Icon(Icons.arrow_drop_down_circle_outlined, color: iconColor),
+              dropdownColor: cardColor,
+              menuMaxHeight: 240,
+              items: sources
+                  .map(
+                    (s) => DropdownMenuItem(
+                      value: s,
+                      child: Text(
+                        s,
+                        style: TextStyle(color: textColor),
+                      ),
+                    ),
+                  )
+                  .toList(),
+              onChanged: (val) {
+                if (val != null) selectedSource = val;
+              },
+              decoration: InputDecoration(
+                prefixIcon: Icon(Icons.category_outlined, color: iconColor),
+                filled: true,
+                fillColor: fieldFillColor,
+                contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: borderColor),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: borderColor),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: focusedColor, width: 1.5),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
       actions: [
-        TextButton(
-          onPressed: () => Get.back(),
-          child: Text('cancel'.tr),
-        ),
-        TextButton(
-          onPressed: () async {
-            // Validate and submit edits
-            final amtStr = amountController.text.trim();
-            final amt = double.tryParse(amtStr);
-            if (amt == null) {
-              Get.snackbar('invalid_amount'.tr, 'please_enter_valid_number'.tr);
-              return;
-            }
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            OutlinedButton(
+              style: OutlinedButton.styleFrom(
+                foregroundColor: textColor,
+                side: BorderSide(color: borderColor),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              ),
+              onPressed: () => Get.back(),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6.0),
+                child: Text('cancel'.tr),
+              ),
+            ),
+            SizedBox(width: 12),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              ),
+              onPressed: () async {
+                final amtStr = amountController.text.trim();
+                final amt = double.tryParse(amtStr);
+                if (amt == null) {
+                  Get.snackbar('invalid_amount'.tr, 'please_enter_valid_number'.tr);
+                  return;
+                }
 
-            try {
-              await incomeController.editIncome(
-                id: income.id,
-                source: selectedSource,
-                amount: amt,
-              );
-              Get.back();
-              Get.snackbar('success'.tr, 'income_updated_successfully'.tr);
-            } catch (e) {
-              Get.snackbar('error'.tr, e.toString());
-            }
-          },
-          child: Text('save_action'.tr),
+                try {
+                  await incomeController.editIncome(
+                    id: income.id,
+                    source: selectedSource,
+                    amount: amt,
+                  );
+                  Get.back();
+                  Get.snackbar('success'.tr, 'income_updated_successfully'.tr);
+                } catch (e) {
+                  Get.snackbar('error'.tr, e.toString());
+                }
+              },
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
+                child: Text('save_action'.tr),
+              ),
+            ),
+          ],
         ),
       ],
     );

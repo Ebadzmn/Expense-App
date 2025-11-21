@@ -144,37 +144,37 @@ class MainHomeScreen extends StatelessWidget {
                     ),
                   ],
                 ),
-                SizedBox(height: screenHeight * 0.03),
+                SizedBox(height: screenHeight * 0.01),
                 // Month Dropdown Simulation
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.03, vertical: screenHeight * 0.01),
-                      decoration: BoxDecoration(
-                        border: Border.all(color: primaryColor),
-                        borderRadius: BorderRadius.circular(screenWidth * 0.03),
-                      ),
-                      child: Row(
-                        children: [
-                          Text(
-                            controller.getCurrentMonth(),
-                            style: TextStyle(
-                              fontSize: screenWidth * 0.035,
-                              color: primaryColor,
-                            ),
-                          ),
-                          SizedBox(width: screenWidth * 0.01),
-                          Icon(
-                            Icons.arrow_drop_down,
-                            color: primaryColor,
-                            size: screenWidth * 0.04,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
+                // Row(
+                //   mainAxisAlignment: MainAxisAlignment.center,
+                //   children: [
+                //     Container(
+                //       padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.03, vertical: screenHeight * 0.01),
+                //       decoration: BoxDecoration(
+                //         border: Border.all(color: primaryColor),
+                //         borderRadius: BorderRadius.circular(screenWidth * 0.03),
+                //       ),
+                //       child: Row(
+                //         children: [
+                //           Text(
+                //             controller.getCurrentMonth(),
+                //             style: TextStyle(
+                //               fontSize: screenWidth * 0.035,
+                //               color: primaryColor,
+                //             ),
+                //           ),
+                //           SizedBox(width: screenWidth * 0.01),
+                //           Icon(
+                //             Icons.arrow_drop_down,
+                //             color: primaryColor,
+                //             size: screenWidth * 0.04,
+                //           ),
+                //         ],
+                //       ),
+                //     ),
+                //   ],
+                // ),
                 SizedBox(height: screenHeight * 0.03),
                 // Available Balance Card
                 Container(

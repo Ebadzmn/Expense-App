@@ -239,12 +239,10 @@ class ExpenseService extends GetxService {
       final Map<String, dynamic> body = {};
       if (amount != null) body['amount'] = amount;
       if (category != null) {
-        // update with all known keys for compatibility
+        // send only 'source' per backend contract
         body['source'] = category;
-        body['category'] = category;
-        body['categoryName'] = category;
       }
-      if (note != null) body['note'] = note;
+      // do not send note in edit per requirement
 
       print('📦 Sending payload (update): $body');
 

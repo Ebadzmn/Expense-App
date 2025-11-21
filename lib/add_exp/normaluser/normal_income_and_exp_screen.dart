@@ -274,6 +274,7 @@ class _ExpensePageState extends State<ExpensePage> {
   final TextEditingController _amountController = TextEditingController();
   final ApiBaseService _apiService = Get.find<ApiBaseService>(); // Add API service
   final ConfigService _configService = Get.find<ConfigService>(); // Add config service
+  bool _isSavingExpense = false;
   DateTime? _selectedDate;
   TimeOfDay? _selectedTime;
 
@@ -907,6 +908,7 @@ class _ExpensePageState extends State<ExpensePage> {
   Widget _buildAddButton() {
     return GestureDetector(
       onTap: () async {
+        if (_isSavingExpense) return;
         final text = _amountController.text.trim();
         if (text.isEmpty) {
           Get.snackbar('error'.tr, 'enterAmountError'.tr, snackPosition: SnackPosition.BOTTOM);
@@ -932,24 +934,29 @@ class _ExpensePageState extends State<ExpensePage> {
         } else {
           effectiveDate = DateTime.now();
         }
-        final success = await _expenseController.addExpense(
-          amount: amount,
-          category: categoryName,
-          note: categoryName,
-          date: effectiveDate,
-        );
-        if (success) {
-          Get.snackbar('success'.tr, 'transactionSuccess'.tr, snackPosition: SnackPosition.BOTTOM);
-          _amountController.clear();
-          setState(() {
-            _selectedDate = null;
-            _selectedTime = null;
-          });
-        } else {
-          final msg = _expenseController.errorMessage.value.isNotEmpty
-              ? _expenseController.errorMessage.value
-              : 'transactionError'.tr;
-          Get.snackbar('error'.tr, msg, snackPosition: SnackPosition.BOTTOM);
+        setState(() { _isSavingExpense = true; });
+        try {
+          final success = await _expenseController.addExpense(
+            amount: amount,
+            category: categoryName,
+            note: categoryName,
+            date: effectiveDate,
+          );
+          if (success) {
+            Get.snackbar('success'.tr, 'transactionSuccess'.tr, snackPosition: SnackPosition.BOTTOM);
+            _amountController.clear();
+            setState(() {
+              _selectedDate = null;
+              _selectedTime = null;
+            });
+          } else {
+            final msg = _expenseController.errorMessage.value.isNotEmpty
+                ? _expenseController.errorMessage.value
+                : 'transactionError'.tr;
+            Get.snackbar('error'.tr, msg, snackPosition: SnackPosition.BOTTOM);
+          }
+        } finally {
+          setState(() { _isSavingExpense = false; });
         }
       },
       child: Container(
@@ -962,18 +969,26 @@ class _ExpensePageState extends State<ExpensePage> {
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.add, color: AppColors.green),
-            const SizedBox(width: 8),
-            Text(
-              'add'.tr,
-              style: GoogleFonts.inter(
-                color: AppColors.green,
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-              ),
-            ),
-          ],
+          children: _isSavingExpense
+              ? [
+                  const SizedBox(
+                    height: 20,
+                    width: 20,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  ),
+                ]
+              : [
+                  Icon(Icons.add, color: AppColors.green),
+                  const SizedBox(width: 8),
+                  Text(
+                    'add'.tr,
+                    style: GoogleFonts.inter(
+                      color: AppColors.green,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                  ),
+                ],
         ),
       ),
     );
@@ -999,6 +1014,7 @@ class _IncomePageState extends State<IncomePage> {
   final TextEditingController _incomeAmountController = TextEditingController();
   final ApiBaseService _apiService = Get.find<ApiBaseService>(); // Add API service
   final ConfigService _configService = Get.find<ConfigService>(); // Add config service
+  bool _isSavingIncome = false;
   DateTime? _selectedDate;
   TimeOfDay? _selectedTime;
 
@@ -1472,6 +1488,7 @@ class _IncomePageState extends State<IncomePage> {
   Widget _buildAddButton() {
     return GestureDetector(
       onTap: () async {
+        if (_isSavingIncome) return;
         final text = _incomeAmountController.text.trim();
         if (text.isEmpty) {
           Get.snackbar('error'.tr, 'enterAmountError'.tr, snackPosition: SnackPosition.BOTTOM);
@@ -1497,6 +1514,7 @@ class _IncomePageState extends State<IncomePage> {
         } else {
           effectiveDate = DateTime.now();
         }
+        setState(() { _isSavingIncome = true; });
         try {
           await _incomeService.createIncome(source: source, amount: amount, date: effectiveDate);
           try {
@@ -1513,6 +1531,8 @@ class _IncomePageState extends State<IncomePage> {
           });
         } catch (e) {
           Get.snackbar('error'.tr, 'transactionError'.tr, snackPosition: SnackPosition.BOTTOM);
+        } finally {
+          setState(() { _isSavingIncome = false; });
         }
       },
       child: Container(
@@ -1525,18 +1545,26 @@ class _IncomePageState extends State<IncomePage> {
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.add, color: AppColors.green),
-            const SizedBox(width: 8),
-            Text(
-              'add'.tr, // Make sure you have this translation key
-              style: GoogleFonts.inter(
-                color: AppColors.green,
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-              ),
-            ),
-          ],
+          children: _isSavingIncome
+              ? [
+                  const SizedBox(
+                    height: 20,
+                    width: 20,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  ),
+                ]
+              : [
+                  Icon(Icons.add, color: AppColors.green),
+                  const SizedBox(width: 8),
+                  Text(
+                    'add'.tr, // Make sure you have this translation key
+                    style: GoogleFonts.inter(
+                      color: AppColors.green,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                  ),
+                ],
         ),
       ),
     );

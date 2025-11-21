@@ -40,7 +40,8 @@ class ExpenseItem {
       id: json['_id']?.toString() ?? '',
       userId: json['userId']?.toString() ?? '',
       amount: parsedAmount,
-      category: (json['category'] ?? json['categoryName'] ?? json['source'] ?? '').toString(),
+      // Prefer backend 'source' first, then 'categoryName', then 'category'
+      category: (json['source'] ?? json['categoryName'] ?? json['category'] ?? '').toString(),
       note: json['note']?.toString() ?? '',
       createdAt: parsedDate,
     );

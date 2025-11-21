@@ -13,7 +13,9 @@ class ProExpensesIncomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(ProExpensesIncomeController());
+    final controller = Get.isRegistered<ProExpensesIncomeController>()
+        ? Get.find<ProExpensesIncomeController>()
+        : Get.put(ProExpensesIncomeController(), permanent: true);
     final themeController = Get.find<ThemeController>();
 
     return Obx(() => Scaffold(

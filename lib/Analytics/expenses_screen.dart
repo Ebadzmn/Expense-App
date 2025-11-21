@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 import 'package:your_expense/Settings/appearance/ThemeController.dart';
@@ -48,6 +49,7 @@ class ExpenseListScreen extends StatelessWidget {
             itemBuilder: (context, index) {
               final expense = _expenseController.expenses[index];
               return _buildExpenseItem(
+                context,
                 expense,
                 screenWidth,
                 screenHeight,
@@ -98,6 +100,7 @@ class ExpenseListScreen extends StatelessWidget {
   }
 
   Widget _buildExpenseItem(
+      BuildContext context,
       ExpenseItem expense,
       double screenWidth,
       double screenHeight,
@@ -215,8 +218,7 @@ class ExpenseListScreen extends StatelessWidget {
                 IconButton(
                   icon: Icon(Icons.edit, size: screenWidth * 0.05, color: iconColor),
                   onPressed: () {
-                    // Handle edit action
-                    print('Edit expense: ${expense.id}');
+                    _showEditExpenseDialog(context, expense);
                   },
                 ),
               ],
@@ -273,6 +275,227 @@ class ExpenseListScreen extends StatelessWidget {
             style: TextStyle(color: secondaryTextColor, fontSize: 12),
           ),
         ],
+      ),
+    );
+  }
+
+  void _showEditExpenseDialog(BuildContext context, ExpenseItem expense) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
+    final isDark = _themeController.isDarkModeActive;
+    final dialogBg = isDark ? const Color(0xFF1E1E1E) : Colors.white;
+    final titleColor = isDark ? Colors.white : Colors.black87;
+    final labelColor = isDark ? Colors.grey.shade300 : Colors.grey.shade700;
+    final fieldBg = isDark ? const Color(0xFF2A2A2A) : Colors.grey.shade100;
+    final borderColor = isDark ? Colors.grey.shade700 : Colors.grey.shade300;
+    final focusBorderColor = isDark ? Colors.tealAccent.shade200 : Colors.blueAccent;
+    final errorColor = Colors.redAccent;
+
+    final amountController = TextEditingController(text: expense.amount.toStringAsFixed(2));
+    String? selectedCategory = expense.category.isNotEmpty ? expense.category : null;
+
+    final baseCategories = <String>['Food', 'Transport', 'Groceries', 'Eating out', 'Other'];
+    final Set<String> categories = {...baseCategories};
+    if ((expense.category).isNotEmpty) {
+      categories.add(expense.category);
+    }
+    final categoryOptions = categories.toList();
+
+    Get.defaultDialog(
+      title: 'edit_expense'.tr,
+      titleStyle: TextStyle(
+        color: titleColor,
+        fontSize: screenWidth * 0.045,
+        fontWeight: FontWeight.w700,
+      ),
+      backgroundColor: dialogBg,
+      barrierDismissible: true,
+      radius: screenWidth * 0.03,
+      content: Container(
+        width: double.infinity,
+        padding: EdgeInsets.symmetric(
+          horizontal: screenWidth * 0.04,
+          vertical: screenHeight * 0.01,
+        ),
+        decoration: BoxDecoration(
+          color: dialogBg,
+          borderRadius: BorderRadius.circular(screenWidth * 0.02),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'amount'.tr,
+              style: TextStyle(
+                color: labelColor,
+                fontSize: screenWidth * 0.035,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            SizedBox(height: screenHeight * 0.008),
+            TextField(
+              controller: amountController,
+              autofocus: true,
+              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+              textInputAction: TextInputAction.done,
+              inputFormatters: [
+                FilteringTextInputFormatter.allow(RegExp(r'[0-9.]')),
+              ],
+              onTap: () => amountController.selection = TextSelection(
+                baseOffset: 0,
+                extentOffset: amountController.text.length,
+              ),
+              style: TextStyle(color: titleColor, fontSize: screenWidth * 0.04),
+              decoration: InputDecoration(
+                prefixIcon: Icon(Icons.attach_money, color: labelColor),
+                filled: true,
+                fillColor: fieldBg,
+                contentPadding: EdgeInsets.symmetric(
+                  horizontal: screenWidth * 0.04,
+                  vertical: screenHeight * 0.018,
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: borderColor),
+                  borderRadius: BorderRadius.circular(screenWidth * 0.02),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: focusBorderColor),
+                  borderRadius: BorderRadius.circular(screenWidth * 0.02),
+                ),
+                errorBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: errorColor),
+                  borderRadius: BorderRadius.circular(screenWidth * 0.02),
+                ),
+              ),
+            ),
+
+            SizedBox(height: screenHeight * 0.02),
+
+            Text(
+              'source'.tr,
+              style: TextStyle(
+                color: labelColor,
+                fontSize: screenWidth * 0.035,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            SizedBox(height: screenHeight * 0.008),
+            DropdownButtonFormField<String>(
+              isExpanded: true,
+              value: (selectedCategory != null && categoryOptions.contains(selectedCategory))
+                  ? selectedCategory
+                  : null,
+              icon: Icon(Icons.category, color: labelColor),
+              dropdownColor: dialogBg,
+              menuMaxHeight: screenHeight * 0.4,
+              items: categoryOptions
+                  .map((c) => DropdownMenuItem<String>(
+                        value: c,
+                        child: Text(
+                          c,
+                          style: TextStyle(
+                            color: titleColor,
+                            fontSize: screenWidth * 0.04,
+                          ),
+                        ),
+                      ))
+                  .toList(),
+              onChanged: (val) => selectedCategory = val,
+              decoration: InputDecoration(
+                filled: true,
+                fillColor: fieldBg,
+                contentPadding: EdgeInsets.symmetric(
+                  horizontal: screenWidth * 0.04,
+                  vertical: screenHeight * 0.018,
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: borderColor),
+                  borderRadius: BorderRadius.circular(screenWidth * 0.02),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: focusBorderColor),
+                  borderRadius: BorderRadius.circular(screenWidth * 0.02),
+                ),
+                errorBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: errorColor),
+                  borderRadius: BorderRadius.circular(screenWidth * 0.02),
+                ),
+              ),
+            ),
+
+            SizedBox(height: screenHeight * 0.02),
+
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                OutlinedButton(
+                  onPressed: () => Get.back(),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: labelColor,
+                    side: BorderSide(color: borderColor),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(screenWidth * 0.02),
+                    ),
+                  ),
+                  child: Text('cancel'.tr),
+                ),
+                SizedBox(width: screenWidth * 0.03),
+                ElevatedButton(
+                  onPressed: () async {
+                    final amt = double.tryParse(amountController.text.trim());
+                    if (amt == null) {
+                      Get.snackbar(
+                        'invalid_amount'.tr,
+                        'please_enter_valid_number'.tr,
+                        backgroundColor: Colors.redAccent,
+                        colorText: Colors.white,
+                      );
+                      return;
+                    }
+                    if ((selectedCategory ?? '').isEmpty) {
+                      Get.snackbar(
+                        'invalid_category'.tr,
+                        'please_select_category'.tr,
+                        backgroundColor: Colors.redAccent,
+                        colorText: Colors.white,
+                      );
+                      return;
+                    }
+
+                    final ok = await _expenseController.updateExpenseItem(
+                      id: expense.id,
+                      amount: amt,
+                      category: selectedCategory,
+                    );
+                    if (ok) {
+                      Get.back();
+                      Get.snackbar(
+                        'updated'.tr,
+                        'expense_updated_successfully'.tr,
+                        backgroundColor: Colors.green,
+                        colorText: Colors.white,
+                      );
+                    } else {
+                      Get.snackbar(
+                        'failed'.tr,
+                        _expenseController.errorMessage.value,
+                        backgroundColor: Colors.redAccent,
+                        colorText: Colors.white,
+                      );
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(screenWidth * 0.02),
+                    ),
+                  ),
+                  child: Text('save'.tr),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

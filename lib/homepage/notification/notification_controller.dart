@@ -196,10 +196,9 @@ class NotificationController extends GetxController {
           .toList()
         ..sort((a, b) => (a['dateTime'] as DateTime).compareTo(b['dateTime'] as DateTime));
 
-      // Limit to avoid notification flood
-      final int limit = newItems.length > 3 ? 3 : newItems.length;
-      for (int i = 0; i < limit; i++) {
-        final item = newItems[i];
+      // Show only the latest single notification to avoid flood
+      if (newItems.isNotEmpty) {
+        final item = newItems.last; // newest after ascending sort
         final title = (item['title'] as String?) ?? 'New notification';
         final timeAgo = (item['time'] as String?) ?? '';
         await notifier.showNotification(title: title, body: timeAgo);
