@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../routes/app_routes.dart';
 import '../../services/token_service.dart';
 import '../../services/face_id_service.dart';
@@ -11,8 +12,8 @@ class OnboardingController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    final tokenService = Get.find<TokenService>();
-    if (tokenService.isAuthenticated) {
+    final tokenService = Get.isRegistered<TokenService>() ? Get.find<TokenService>() : null;
+    if (tokenService?.isAuthenticated == true) {
       // If authenticated, decide gate based on Face ID settings
       bool gateToFaceLogin = false;
       if (Get.isRegistered<FaceIdService>()) {
@@ -34,17 +35,25 @@ class OnboardingController extends GetxController {
         curve: Curves.easeIn,
       );
     } else {
-      Get.offAllNamed('/login');
+      _markOnboardingSeenAndGoLogin();
     }
   }
 
   void skipToLogin() {
-    Get.offAllNamed('/login');
+    _markOnboardingSeenAndGoLogin();
   }
 
   @override
   void onClose() {
     pageController.dispose();
     super.onClose();
+  }
+
+  Future<void> _markOnboardingSeenAndGoLogin() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('has_seen_onboarding', true);
+    } catch (_) {}
+    Get.offAllNamed(AppRoutes.login);
   }
 }

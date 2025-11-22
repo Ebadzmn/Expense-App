@@ -38,6 +38,20 @@ class ForgotPasswordApiService extends ApiBaseService {
     return resp as Map<String, dynamic>;
   }
 
+  /// Resend OTP for the given email (no auth required).
+  Future<Map<String, dynamic>> resendOtp(String email) async {
+    final body = {
+      'email': email,
+    };
+    final resp = await request(
+      'POST',
+      _config.resendOtpEndpoint,
+      body: body,
+      requiresAuth: false,
+    );
+    return resp as Map<String, dynamic>;
+  }
+
   /// Step 3: Reset password using the received token.
   /// Token is provided via Authorization header (raw token, no Bearer) and also in body.
   Future<Map<String, dynamic>> resetPassword({

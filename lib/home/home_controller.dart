@@ -17,10 +17,15 @@ import 'package:your_expense/Analytics/analytics_controller.dart';
 
 
 class HomeController extends GetxController {
-  final TransactionService _transactionService = Get.find();
-  final BudgetService _budgetService = Get.find();
-  final ApiBaseService _apiService = Get.find();
-  final ConfigService _configService = Get.find();
+  // Core services are registered early in main(); resolve via getters
+  ApiBaseService get _apiService => Get.find<ApiBaseService>();
+  ConfigService get _configService => Get.find<ConfigService>();
+
+  // Feature services may register after UI starts; resolve lazily
+  TransactionService? get _transactionService =>
+      Get.isRegistered<TransactionService>() ? Get.find<TransactionService>() : null;
+  BudgetService? get _budgetService =>
+      Get.isRegistered<BudgetService>() ? Get.find<BudgetService>() : null;
   ExpenseService? _expenseService;
 
   var selectedNavIndex = 0.obs;
@@ -152,7 +157,12 @@ class HomeController extends GetxController {
   Future<void> fetchRecentTransactions() async {
     try {
       isLoading.value = true;
-      final transactions = await _transactionService.fetchRecentTransactions();
+      final txService = _transactionService;
+      if (txService == null) {
+        print('HomeController: TransactionService not ready. Skipping recent transactions fetch.');
+        return;
+      }
+      final transactions = await txService.fetchRecentTransactions();
       recentTransactions.assignAll(transactions);
 
       // Do not recalculate totals here; monthly totals fetched separately.
@@ -172,22 +182,63 @@ class HomeController extends GetxController {
       final currentMonth = month ?? getCurrentMonthForApi();
 
       // Fetch simple monthly budget amount using `simple-monthly-budget?Month=`
-      final simpleBudgetAmount = await _budgetService
-          .fetchSimpleMonthlyBudgetAmount(month: currentMonth);
-      monthlyBudget.value = simpleBudgetAmount;
+      try {
+        final simpleBudgetAmount = await (_budgetService != null
+            ? _budgetService!.fetchSimpleMonthlyBudgetAmount(month: currentMonth)
+            : _fetchSimpleMonthlyBudgetAmountFallback(currentMonth));
+        monthlyBudget.value = simpleBudgetAmount;
+      } catch (e) {
+        print('Simple budget amount fetch failed: $e');
+      }
 
-      // Fetch budget data using the new endpoint with month parameter
-      final budget = await _budgetService.fetchMonthlyBudgetData(
-        month: currentMonth,
-      );
-      print(budget);
-
-      // Update budget-related values (prefer server-provided totalBudget)
-      monthlyBudget.value = budget.totalBudget;
-      spentAmount.value = budget.totalExpense;
-      spentPercentage.value = budget.totalPercentageUsed;
-      leftAmount.value = budget.totalRemaining;
-      leftPercentage.value = budget.totalPercentageLeft;
+      // Fetch budget data using the endpoint with month parameter
+      try {
+        if (_budgetService != null) {
+          final budget = await _budgetService!.fetchMonthlyBudgetData(
+            month: currentMonth,
+          );
+          // Prefer server-provided totals
+          monthlyBudget.value = budget.totalBudget;
+          spentAmount.value = budget.totalExpense;
+          spentPercentage.value = budget.totalPercentageUsed;
+          leftAmount.value = budget.totalRemaining;
+          leftPercentage.value = budget.totalPercentageLeft;
+        } else {
+          // Fallback: direct API request
+          final resp = await _apiService.request(
+            'GET',
+            _configService.getBudgetEndpoint(currentMonth),
+            requiresAuth: true,
+          );
+          Map<String, dynamic> data = {};
+          if (resp is Map<String, dynamic>) {
+            if (resp['data'] is Map<String, dynamic>) {
+              data = resp['data'] as Map<String, dynamic>;
+            } else {
+              data = resp;
+            }
+          }
+          // Update values from response map with robust parsing
+          monthlyBudget.value = _toDouble(data['totalBudget']);
+          spentAmount.value = _toDouble(data['totalExpense']);
+          leftAmount.value = _toDouble(data['totalRemaining']);
+          spentPercentage.value = _toDouble(data['totalPercentageUsed']);
+          leftPercentage.value = _toDouble(data['totalPercentageLeft']);
+        }
+      } on HttpException catch (e) {
+        if (e.statusCode == 404) {
+          // No budget set for this month; zero values
+          monthlyBudget.value = 0.0;
+          spentAmount.value = 0.0;
+          spentPercentage.value = 0.0;
+          leftAmount.value = 0.0;
+          leftPercentage.value = 0.0;
+        } else {
+          print('Budget data fetch failed: ${e.message}');
+        }
+      } catch (e) {
+        print('Budget data fetch failed: $e');
+      }
 
       // Derive fallbacks when API omits remaining/percentage fields
       try {
@@ -432,7 +483,8 @@ class HomeController extends GetxController {
     try {
       List<dynamic> rawList = [];
 
-      if (_expenseService != null) {
+      if (_expenseService != null || Get.isRegistered<ExpenseService>()) {
+        _expenseService ??= Get.find<ExpenseService>();
         final items = await _expenseService!.getExpenses();
         double total = 0.0;
         for (final e in items) {
@@ -555,7 +607,9 @@ class HomeController extends GetxController {
         final loginService = Get.find<LoginService>();
         await loginService.logout();
       } else {
-        Get.find<TokenService>().clearToken();
+        if (Get.isRegistered<TokenService>()) {
+          Get.find<TokenService>().clearToken();
+        }
       }
     } catch (e) {
       print('Logout encountered an error: $e');
@@ -585,5 +639,32 @@ class HomeController extends GetxController {
     } catch (e) {
       print('Budget notification check failed: $e');
     }
+  }
+
+  // Fallback path: fetch simple monthly budget amount directly via API
+  Future<double> _fetchSimpleMonthlyBudgetAmountFallback(String month) async {
+    try {
+      final url = _configService.getMonthlyBudgetSimpleEndpoint(month);
+      final response = await _apiService.request(
+        'GET',
+        url,
+        requiresAuth: true,
+      );
+      if (response is Map<String, dynamic> && response['success'] == true) {
+        final data = response['data'];
+        final amount = (data is Map<String, dynamic>) ? data['amount'] : null;
+        return _toDouble(amount);
+      }
+      return 0.0;
+    } on HttpException catch (e) {
+      if (e.statusCode == 404) return 0.0;
+      rethrow;
+    }
+  }
+
+  double _toDouble(dynamic v) {
+    if (v is num) return v.toDouble();
+    if (v is String) return double.tryParse(v) ?? 0.0;
+    return 0.0;
   }
 }

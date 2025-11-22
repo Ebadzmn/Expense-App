@@ -35,7 +35,7 @@ class VerificationApiService extends ApiBaseService {
       'POST',
       _config.resendOtpEndpoint,
       body: requestBody,
-      requiresAuth: false, // Resend should not require auth
+      requiresAuth: false, // Resend OTP should not require auth
     );
 
     return ResendOtpResponse.fromJson(response);

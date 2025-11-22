@@ -23,21 +23,27 @@ class FaceIdService extends GetxService {
     return 'face_id_launch_gate_$userId';
   }
 
+  String? _currentUserId() {
+    try {
+      final tokenService = Get.isRegistered<TokenService>() ? Get.find<TokenService>() : null;
+      return tokenService?.getUserId();
+    } catch (_) {
+      return null;
+    }
+  }
+
   Future<void> enableForCurrentUser() async {
-    final tokenService = Get.find<TokenService>();
-    final userId = tokenService.getUserId();
+    final userId = _currentUserId();
     await _prefs?.setBool(_keyForUser(userId), true);
   }
 
   Future<void> disableForCurrentUser() async {
-    final tokenService = Get.find<TokenService>();
-    final userId = tokenService.getUserId();
+    final userId = _currentUserId();
     await _prefs?.setBool(_keyForUser(userId), false);
   }
 
   bool isEnabledForCurrentUser() {
-    final tokenService = Get.find<TokenService>();
-    final userId = tokenService.getUserId();
+    final userId = _currentUserId();
     return _prefs?.getBool(_keyForUser(userId)) ?? false;
   }
 
@@ -63,14 +69,12 @@ class FaceIdService extends GetxService {
 
   // App-launch gate persistence
   Future<void> setLaunchGateForCurrentUser(bool enabled) async {
-    final tokenService = Get.find<TokenService>();
-    final userId = tokenService.getUserId();
+    final userId = _currentUserId();
     await _prefs?.setBool(_launchGateKeyForUser(userId), enabled);
   }
 
   bool isLaunchGateEnabledForCurrentUser() {
-    final tokenService = Get.find<TokenService>();
-    final userId = tokenService.getUserId();
+    final userId = _currentUserId();
     return _prefs?.getBool(_launchGateKeyForUser(userId)) ?? false;
   }
 

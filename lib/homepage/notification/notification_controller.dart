@@ -15,6 +15,7 @@ class NotificationController extends GetxController {
   var notifications = <Map<String, dynamic>>[].obs;
   var groupedNotifications = <String, List<Map<String, dynamic>>>{}.obs;
   var isLoading = true.obs;
+  String? _lastShownFingerprintInSession;
 
   @override
   void onInit() {
@@ -185,31 +186,31 @@ class NotificationController extends GetxController {
       if (!Get.isRegistered<LocalNotificationsService>()) return;
       final notifier = Get.find<LocalNotificationsService>();
       final prefs = await SharedPreferences.getInstance();
-      final lastSeenMillis = prefs.getInt('notifications_last_seen_ts') ?? 0;
-      final lastSeen = lastSeenMillis > 0
-          ? DateTime.fromMillisecondsSinceEpoch(lastSeenMillis)
-          : DateTime.fromMillisecondsSinceEpoch(0);
+      // Sort by newest first
+      final sorted = List<Map<String, dynamic>>.from(notifications)
+        ..sort((a, b) => (b['dateTime'] as DateTime).compareTo(a['dateTime'] as DateTime));
 
-      // Find new items after last seen
-      final newItems = notifications
-          .where((n) => (n['dateTime'] as DateTime).isAfter(lastSeen))
-          .toList()
-        ..sort((a, b) => (a['dateTime'] as DateTime).compareTo(b['dateTime'] as DateTime));
-
-      // Show only the latest single notification to avoid flood
-      if (newItems.isNotEmpty) {
-        final item = newItems.last; // newest after ascending sort
+      // Show only the first (top-most, newest) notification from API
+      if (sorted.isNotEmpty) {
+        final item = sorted.first;
+        final ts = (item['dateTime'] as DateTime).millisecondsSinceEpoch;
         final title = (item['title'] as String?) ?? 'New notification';
-        final timeAgo = (item['time'] as String?) ?? '';
-        await notifier.showNotification(title: title, body: timeAgo);
-      }
-
-      // Update last seen to newest notification timestamp
-      if (notifications.isNotEmpty) {
-        final newest = notifications
-            .map((n) => n['dateTime'] as DateTime)
-            .reduce((a, b) => a.isAfter(b) ? a : b);
-        await prefs.setInt('notifications_last_seen_ts', newest.millisecondsSinceEpoch);
+        final fingerprint = '$title|$ts';
+        final lastShownFp = prefs.getString('notifications_last_shown_fp');
+        // Cooldown: if a push notification was received very recently, skip local API echo
+        final nowMs = DateTime.now().millisecondsSinceEpoch;
+        final lastPushTs = prefs.getInt('last_push_ts') ?? 0;
+        if (lastPushTs > 0 && (nowMs - lastPushTs) < 30000) {
+          print('[NotificationController] Skipping local notification due to recent push (cooldown)');
+          return;
+        }
+        // Avoid re-showing if unchanged (persisted) or already shown this session
+        if (fingerprint != lastShownFp && fingerprint != _lastShownFingerprintInSession) {
+          final timeAgo = (item['time'] as String?) ?? '';
+          await notifier.showNotification(title: title, body: timeAgo);
+          await prefs.setString('notifications_last_shown_fp', fingerprint);
+          _lastShownFingerprintInSession = fingerprint;
+        }
       }
     } catch (e) {
       // Soft fail — never block UI

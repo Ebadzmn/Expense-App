@@ -19,7 +19,7 @@ class VerificationController extends GetxController {
 
   var isVerifyEnabled = false.obs;
   var canResend = true.obs;
-  var resendCountdown = 60.obs;
+  var resendCountdown = 10.obs;
   var isVerifying = false.obs; // Add loading state for verification
 
   Timer? _countdownTimer;
@@ -75,7 +75,7 @@ class VerificationController extends GetxController {
 
   void startResendCountdown() {
     canResend.value = false;
-    resendCountdown.value = 60;
+    resendCountdown.value = 10;
 
     _countdownTimer?.cancel();
     _countdownTimer = Timer.periodic(Duration(seconds: 1), (timer) {

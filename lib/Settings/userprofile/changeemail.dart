@@ -67,7 +67,7 @@ class ChangeEmailScreen extends StatelessWidget {
         'POST',
         '${configService.baseUrl}/user/send-otp',
         body: {'email': profileService.email.value},
-        requiresAuth: true,
+        requiresAuth: false,
       );
 
       Get.back();
@@ -114,7 +114,7 @@ class ChangeEmailScreen extends StatelessWidget {
         'POST',
         '${configService.baseUrl}/user/send-otp',
         body: {'email': profileService.email.value},
-        requiresAuth: true,
+        requiresAuth: false,
       );
 
       Get.back();

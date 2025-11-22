@@ -27,6 +27,10 @@ class MainHomeScreen extends StatelessWidget {
     // Ensure data is loaded after login when the screen appears
     WidgetsBinding.instance.addPostFrameCallback((_) {
       controller.ensureHomeDataLoaded();
+      // Also ensure profile data is fetched so app bar shows user info
+      try {
+        profile.fetchUserProfile();
+      } catch (_) {}
     });
 
     // Define colors based on theme
@@ -100,14 +104,7 @@ class MainHomeScreen extends StatelessWidget {
                                 ),
                               )),
                           SizedBox(height: screenHeight * 0.005),
-                          Text(
-                            'location'.tr,
-                            style: TextStyle(
-                              fontSize: screenWidth * 0.035,
-                              color: secondaryTextColor,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
+                         
                         ],
                       ),
                     ),

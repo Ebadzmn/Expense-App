@@ -26,15 +26,12 @@ class UploadToDriveScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildConnectedAccount(screenWidth, screenHeight, isDark),
                   SizedBox(height: screenHeight * 0.03),
                   _buildExportDataSection(controller, screenWidth, screenHeight, isDark),
                   SizedBox(height: screenHeight * 0.03),
                   _buildFileFormatSection(controller, screenWidth, screenHeight, isDark),
-                  SizedBox(height: screenHeight * 0.03),
-                  _buildLastUploadedInfo(screenWidth, isDark),
-                  SizedBox(height: screenHeight * 0.02),
-                  _buildAutoUploadToggle(controller, screenWidth, screenHeight, isDark),
+                  
+    
                   SizedBox(height: screenHeight * 0.04),
                   _buildActionButtons(controller, screenWidth, screenHeight, isDark),
                 ],
@@ -229,7 +226,7 @@ class UploadToDriveScreen extends StatelessWidget {
           ),
         ),
         SizedBox(height: screenHeight * 0.015),
-        _buildCheckboxItem('all_files'.tr, controller.allFiles, controller.toggleAllFiles, screenWidth, isDark),
+      
         _buildMonthlyReportsItem(controller, screenWidth, screenHeight, isDark),
         _buildIncomeReportsItem(controller, screenWidth, screenHeight, isDark),
         _buildExpenseReportsItem(controller, screenWidth, screenHeight, isDark),
@@ -747,38 +744,8 @@ class UploadToDriveScreen extends StatelessWidget {
     ));
   }
 
-  Widget _buildLastUploadedInfo(double screenWidth, bool isDark) {
-    return Text(
-      'last_uploaded'.tr,
-      style: TextStyle(
-        fontSize: screenWidth * 0.03,
-        color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
-      ),
-    );
-  }
 
-  Widget _buildAutoUploadToggle(UploadToDriveController controller, double screenWidth, double screenHeight, bool isDark) {
-    return Obx(() => Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          'auto_upload_monthly'.tr,
-          style: TextStyle(
-            fontSize: screenWidth * 0.035,
-            color: isDark ? Colors.white : Colors.black,
-          ),
-        ),
-        Switch(
-          value: controller.autoUpload.value,
-          onChanged: controller.toggleAutoUpload,
-          activeColor: const Color(0xFF2196F3),
-          activeTrackColor: const Color(0xFF2196F3).withOpacity(0.3),
-          inactiveThumbColor: isDark ? Colors.grey.shade400 : Colors.grey.shade300,
-          inactiveTrackColor: isDark ? Colors.grey.shade700 : Colors.grey.shade400,
-        ),
-      ],
-    ));
-  }
+
 
   Widget _buildActionButtons(UploadToDriveController controller, double screenWidth, double screenHeight, bool isDark) {
     return Column(
@@ -819,57 +786,7 @@ class UploadToDriveScreen extends StatelessWidget {
         ),
         SizedBox(height: screenHeight * 0.02),
         // Upload to Drive Button
-        GestureDetector(
-          onTap: controller.onUploadToDriveClick,
-          child: Container(
-            width: double.infinity,
-            padding: EdgeInsets.symmetric(vertical: screenHeight * 0.02),
-            decoration: BoxDecoration(
-              color: const Color(0xFF2196F3),
-              borderRadius: BorderRadius.circular(screenWidth * 0.02),
-              boxShadow: isDark ? [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.3),
-                  blurRadius: 8,
-                  offset: const Offset(0, 2),
-                )
-              ] : [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.2),
-                  blurRadius: 8,
-                  offset: const Offset(0, 2),
-                )
-              ],
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Image.asset(
-                  'assets/icons/uplode.png',
-                  width: screenWidth * 0.05,
-                  height: screenWidth * 0.05,
-                  color: Colors.white,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Icon(
-                      Icons.cloud_upload,
-                      color: Colors.white,
-                      size: screenWidth * 0.05,
-                    );
-                  },
-                ),
-                SizedBox(width: screenWidth * 0.02),
-                Text(
-                  'upload_to_drive'.tr,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: screenWidth * 0.04,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
+       
       ],
     );
   }

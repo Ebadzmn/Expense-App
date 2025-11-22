@@ -61,6 +61,7 @@ import '../login/login_ui.dart';
 import '../make it pro/AdvertisementPage/Totalsaving_add.dart';
 import '../make it pro/AdvertisementPage/add_ui.dart';
 import '../onbaording/onboarding_ui/onboarding_screen.dart';
+import '../splash/splash_screen.dart';
 import '../tram_and_condition/trams_and_condition_screen.dart';
 // Added: MonthlyBudgetController for binding when navigating via route
 import '../homepage/model_and _controller_of_monthlybudgetpage/monthly_budget_controller.dart';
@@ -69,7 +70,9 @@ import '../Comparison/MarketplaceService.dart';
 
 class AppRoutes {
   static const String initial = '/initial';
+  static const String splash = '/splash';
   static const String login = '/login';
+  static const String onboarding = '/onboarding';
   static const String faceLogin = '/faceLogin';
   static const String register = '/register';
   static const String emailVerification = '/emailVerification';
@@ -132,7 +135,10 @@ class AppRoutes {
 
   static final routes = [
     // Authentication Routes
-    GetPage(name: initial, page: () => OnboardingScreen(), middlewares: [ProUserMiddleware()]),
+    // Use SplashScreen as the initial page to decide routing
+    GetPage(name: initial, page: () => const SplashScreen()),
+    GetPage(name: splash, page: () => const SplashScreen()),
+    GetPage(name: onboarding, page: () => OnboardingScreen(), middlewares: [ProUserMiddleware()]),
     GetPage(name: login, page: () => LoginScreen()),
     GetPage(name: faceLogin, page: () => FaceLoginScreen()),
     GetPage(name: register, page: () => RegistrationScreen()),
@@ -152,7 +158,7 @@ class AppRoutes {
     GetPage(name: personalInformation, page: () => PersonalInformationScreen()),
     GetPage(name: editName, page: () => EditNameScreen()),
     GetPage(name: changeEmail, page: () => ChangeEmailScreen()),
-    GetPage(name: emailChangeVerification, page: () => profile_verification.EmailVerificationScreen()),
+    GetPage(name: emailChangeVerification, page: () => profile_verification.EmailVerificationWithResendScreen()),
     GetPage(name: premiumPlans, page: () => PremiumPlansScreen()),
     GetPage(name: notificationSettings, page: () => NotificationSettingsScreen()),
     GetPage(name: appUnlock, page: () => AppUnlockScreen()),
@@ -167,9 +173,7 @@ class AppRoutes {
     GetPage(
       name: proExpensesIncome,
       page: () => const ProExpensesIncomeScreen(),
-      binding: BindingsBuilder(() {
-        Get.lazyPut<ProExpensesIncomeController>(() => ProExpensesIncomeController());
-      }),
+      // Controller is registered globally (permanent) in main.dart
     ),
     GetPage(
       name: addCategory,

@@ -1,14 +1,94 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 import 'package:get/get.dart';
+import 'package:your_expense/services/api_base_service.dart';
+import 'package:your_expense/services/config_service.dart';
+import 'package:your_expense/Settings/userprofile/profile_services.dart';
 import '../appearance/ThemeController.dart';
 import 'PersonalInformationScreen.dart';
 
 
-class EmailVerificationScreen extends StatelessWidget {
-  final List<TextEditingController> otpControllers =
-  List.generate(6, (index) => TextEditingController());
+class EmailVerificationWithResendScreen extends StatefulWidget {
+  EmailVerificationWithResendScreen({super.key});
 
-  EmailVerificationScreen({super.key});
+  @override
+  State<EmailVerificationWithResendScreen> createState() => _EmailVerificationScreenState();
+}
+
+class _EmailVerificationScreenState extends State<EmailVerificationWithResendScreen> {
+  final List<TextEditingController> otpControllers =
+      List.generate(6, (index) => TextEditingController());
+
+  final RxBool canResend = true.obs;
+  final RxInt resendCountdown = 10.obs;
+  Timer? _countdownTimer;
+
+  void _startCountdown() {
+    canResend.value = false;
+    resendCountdown.value = 10;
+    _countdownTimer?.cancel();
+    _countdownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (resendCountdown.value > 0) {
+        resendCountdown.value--;
+      } else {
+        canResend.value = true;
+        timer.cancel();
+      }
+    });
+  }
+
+  Future<void> _resendOtp() async {
+    try {
+      final api = Get.find<ApiBaseService>();
+      final config = Get.find<ConfigService>();
+      final profile = ProfileService.to;
+
+      final email = profile.email.value;
+      if (email.isEmpty) {
+        try { await profile.fetchUserProfile(); } catch (_) {}
+      }
+
+      final resolvedEmail = profile.email.value;
+      if (resolvedEmail.isEmpty) {
+        Get.snackbar('error'.tr, 'enter_email'.tr,
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: Colors.red,
+            colorText: Colors.white);
+        return;
+      }
+
+      Get.dialog(
+        const Center(child: CircularProgressIndicator()),
+        barrierDismissible: false,
+      );
+
+      await api.request(
+        'POST',
+        config.resendOtpEndpoint,
+        body: { 'email': resolvedEmail },
+        requiresAuth: false,
+      );
+
+      Get.back();
+      Get.snackbar(
+        'code_resent'.tr,
+        'newCodeSent'.tr,
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: const Color(0xFF2196F3),
+        colorText: Colors.white,
+      );
+      _startCountdown();
+    } catch (e) {
+      Get.back();
+      Get.snackbar(
+        'error'.tr,
+        e.toString(),
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -177,29 +257,35 @@ class EmailVerificationScreen extends StatelessWidget {
                       color: themeController.isDarkModeActive ? Color(0xFFA0A0A0) : Color(0xFF6B7280),
                     ),
                   ),
-                  GestureDetector(
-                    onTap: () {
-                      for (var controller in otpControllers) {
-                        controller.clear();
-                      }
-                      Get.snackbar(
-                        'code_resent'.tr,
-                        'new_code_sent'.tr,
-                        snackPosition: SnackPosition.BOTTOM,
-                        backgroundColor: Color(0xFF2196F3),
-                        colorText: Colors.white,
-                      );
-                    },
-                    child: Text(
-                      'resend'.tr,
-                      style: TextStyle(
-                        fontSize: screenWidth * 0.035,
-                        color: Color(0xFF2196F3),
-                        fontWeight: FontWeight.w600,
-                        decoration: TextDecoration.underline,
-                      ),
-                    ),
-                  ),
+                  Obx(() => canResend.value
+                      ? GestureDetector(
+                          onTap: () async {
+                            for (var controller in otpControllers) {
+                              controller.clear();
+                            }
+                            await _resendOtp();
+                          },
+                          child: Text(
+                            'resend'.tr,
+                            style: TextStyle(
+                              fontSize: screenWidth * 0.035,
+                              color: const Color(0xFF2196F3),
+                              fontWeight: FontWeight.w600,
+                              decoration: TextDecoration.underline,
+                            ),
+                          ),
+                        )
+                      : Padding(
+                          padding: EdgeInsets.only(left: screenWidth * 0.015),
+                          child: Text(
+                            'Resend in ${resendCountdown.value}s',
+                            style: TextStyle(
+                              fontSize: screenWidth * 0.035,
+                              color: themeController.isDarkModeActive ? const Color(0xFFA0A0A0) : const Color(0xFF6B7280),
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        )),
                 ],
               ),
 

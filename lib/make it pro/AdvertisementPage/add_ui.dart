@@ -40,7 +40,7 @@ class _AdvertisementPageState extends State<AdvertisementPage> {
     super.initState();
     proController = Get.isRegistered<ProExpensesIncomeController>()
         ? Get.find<ProExpensesIncomeController>()
-        : Get.put(ProExpensesIncomeController());
+        : Get.put(ProExpensesIncomeController(), permanent: true);
     // No preload needed with simplified AdHelper
   }
 

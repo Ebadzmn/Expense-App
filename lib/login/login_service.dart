@@ -18,25 +18,41 @@ import 'login_controller/login_request_model.dart';
 class LoginService extends GetxService {
   final ApiBaseService _apiService = Get.find();
   final ConfigService _config = Get.find();
-  final TokenService _tokenService = Get.find();
+  TokenService? _tokenService;
 
   final RxBool isLoggedIn = false.obs;
   final Rx<UserModel?> currentUser = Rx<UserModel?>(null);
 
   Future<LoginService> init() async {
+    await _ensureTokenServiceReady();
     await loadUserData();
     return this;
   }
 
+  Future<void> _ensureTokenServiceReady() async {
+    if (Get.isRegistered<TokenService>()) {
+      _tokenService = Get.find<TokenService>();
+      if (_tokenService!.isInitialized.value != true) {
+        await _tokenService!.init();
+      }
+    } else {
+      _tokenService = Get.put(TokenService());
+      await _tokenService!.init();
+    }
+  }
+
   Future<void> loadUserData() async {
     try {
+      if (_tokenService == null) {
+        await _ensureTokenServiceReady();
+      }
       final prefs = await SharedPreferences.getInstance();
       final storedUserJson = prefs.getString('user_data');
 
       if (storedUserJson != null) {
         final userMap = json.decode(storedUserJson);
         currentUser.value = UserModel.fromJson(userMap);
-        isLoggedIn.value = _tokenService.isTokenValid();
+        isLoggedIn.value = _tokenService!.isTokenValid();
       }
     } catch (e) {
       print('Error loading user data: $e');
@@ -70,7 +86,8 @@ class LoginService extends GetxService {
         );
 
         // Store token using TokenService - FIXED THIS LINE
-        await _tokenService.saveToken(jwtToken);
+        await _ensureTokenServiceReady();
+        await _tokenService!.saveToken(jwtToken);
 
         // Store user info
         await _storeUserData(user);
@@ -162,7 +179,8 @@ class LoginService extends GetxService {
 
   Future<void> logout() async {
     try {
-      await _tokenService.clearToken();
+      await _ensureTokenServiceReady();
+      await _tokenService!.clearToken();
 
       final prefs = await SharedPreferences.getInstance();
       await prefs.remove('user_data');
@@ -201,10 +219,11 @@ class LoginService extends GetxService {
   }
 
   bool isTokenExpired() {
-    if (!_tokenService.isTokenValid()) return true;
+    if (_tokenService == null) return true;
+    if (!_tokenService!.isTokenValid()) return true;
 
     try {
-      final token = _tokenService.getToken();
+      final token = _tokenService!.getToken();
       if (token == null) return true;
 
       final payload = _decodeJwtPayload(token);

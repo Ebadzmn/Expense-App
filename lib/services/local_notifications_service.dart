@@ -8,6 +8,9 @@ class LocalNotificationsService extends GetxService {
   final FlutterLocalNotificationsPlugin _plugin = FlutterLocalNotificationsPlugin();
   AndroidNotificationChannel? _androidChannel;
   SharedPreferences? _prefs;
+  // When true, only notifications coming from server API will be shown.
+  // Budget threshold notifications will be suppressed.
+  final bool onlyApiNotifications = true;
 
   static const String _prefsKeyPrefix = 'budget_notifications_'; // e.g., budget_notifications_2025-11
 
@@ -35,7 +38,24 @@ class LocalNotificationsService extends GetxService {
       await _plugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()?.createNotificationChannel(_androidChannel!);
       // Android 13+ notification runtime permission
       try {
-        await Permission.notification.request();
+        final status = await Permission.notification.status;
+        if (status.isGranted) {
+          // already granted
+        } else if (status.isDenied) {
+          await Permission.notification.request();
+        } else if (status.isPermanentlyDenied) {
+          // Best-effort: nudge user and open settings
+          Get.snackbar(
+            'Enable Notifications',
+            'Please enable notifications from Android Settings to see alerts.',
+            snackPosition: SnackPosition.BOTTOM,
+            duration: const Duration(seconds: 4),
+          );
+          await openAppSettings();
+        } else {
+          // restricted/limited cases
+          await Permission.notification.request();
+        }
       } catch (_) {}
     }
 
@@ -57,6 +77,7 @@ class LocalNotificationsService extends GetxService {
     required double monthlyBudget,
     double? leftAmount,
   }) async {
+    if (onlyApiNotifications) return; // Suppress non-API notifications
     if (monthlyBudget <= 0) return; // No budget set
 
     final thresholds = [50, 75, 90, 100];
@@ -83,6 +104,7 @@ class LocalNotificationsService extends GetxService {
     double monthlyBudget, {
     double? leftAmount,
   }) async {
+    if (onlyApiNotifications) return; // Suppress non-API notifications
     final title = 'Budget Alert: $threshold% reached';
     final remaining = (leftAmount ?? (monthlyBudget * (100 - currentPercent) / 100)).clamp(0.0, double.infinity);
     final body = threshold >= 100

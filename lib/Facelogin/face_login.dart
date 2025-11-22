@@ -79,11 +79,11 @@ class _FaceLoginScreenState extends State<FaceLoginScreen>
   }
 
   Future<void> _startVerification() async {
-    final tokenService = Get.find<TokenService>();
+    final tokenService = Get.isRegistered<TokenService>() ? Get.find<TokenService>() : null;
     final faceService = Get.find<FaceIdService>();
     final localAuth = Get.find<LocalAuthService>();
 
-    if (!tokenService.isTokenValid()) {
+    if (tokenService == null || !tokenService.isTokenValid()) {
       Get.snackbar(
         'Session Expired',
         'Please login with password to continue.',

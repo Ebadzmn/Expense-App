@@ -11,7 +11,6 @@ class RegistrationController extends GetxController {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
-  final TokenService _tokenService = Get.find();
   final RegistrationApiService _registrationApiService = Get.find();
 
   var isTermsAccepted = false.obs;
@@ -108,10 +107,11 @@ class RegistrationController extends GetxController {
 
         // Save token if available
         if (token != null && token.isNotEmpty) {
-          await _tokenService.saveToken(token);
+          final ts = await _ensureTokenServiceReady();
+          await ts.saveToken(token);
           print('✅ Token saved successfully');
 
-          final savedToken = _tokenService.getToken();
+          final savedToken = ts.getToken();
           print('📋 Verified saved token exists: ${savedToken != null}');
         }
 
@@ -259,3 +259,16 @@ class RegistrationController extends GetxController {
 
   int min(int a, int b) => a < b ? a : b;
 }
+  Future<TokenService> _ensureTokenServiceReady() async {
+    if (Get.isRegistered<TokenService>()) {
+      final ts = Get.find<TokenService>();
+      if (ts.isInitialized.value != true) {
+        await ts.init();
+      }
+      return ts;
+    } else {
+      final ts = Get.put(TokenService());
+      await ts.init();
+      return ts;
+    }
+  }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import '../appearance/ThemeController.dart';
  // Import your ThemeController
@@ -105,10 +106,26 @@ class _NotificationSettingsScreenState extends State<NotificationSettingsScreen>
                 title: 'push_notification'.tr,
                 subtitle: 'push_notification_desc'.tr,
                 value: pushNotification,
-                onChanged: (value) {
-                  setState(() {
-                    pushNotification = value;
-                  });
+                onChanged: (value) async {
+                  if (value) {
+                    // Request Android notification permission when enabling
+                    final granted = await _ensureNotificationPermission();
+                    setState(() {
+                      pushNotification = granted;
+                    });
+                    if (!granted) {
+                      Get.snackbar(
+                        'Enable Notifications',
+                        'Please allow notifications in Settings to receive alerts.',
+                        snackPosition: SnackPosition.BOTTOM,
+                        duration: const Duration(seconds: 3),
+                      );
+                    }
+                  } else {
+                    setState(() {
+                      pushNotification = false;
+                    });
+                  }
                 },
                 screenWidth: screenWidth,
                 screenHeight: screenHeight,
@@ -304,3 +321,26 @@ class _NotificationSettingsScreenState extends State<NotificationSettingsScreen>
     );
   }
 }
+
+  Future<bool> _ensureNotificationPermission() async {
+    // Only meaningful for Android 13+; on iOS permission is handled in services
+    try {
+      final status = await Permission.notification.status;
+      if (status.isGranted) return true;
+      if (status.isDenied) {
+        final result = await Permission.notification.request();
+        return result.isGranted;
+      }
+      if (status.isPermanentlyDenied) {
+        await openAppSettings();
+        // After returning from settings we cannot know for sure; re-check
+        final check = await Permission.notification.status;
+        return check.isGranted;
+      }
+      // restricted/limited
+      final result = await Permission.notification.request();
+      return result.isGranted;
+    } catch (_) {
+      return false;
+    }
+  }

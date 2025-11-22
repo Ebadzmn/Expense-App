@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'dart:async';
 import 'package:get/get.dart';
 import 'package:your_expense/routes/app_routes.dart';
 import '../forgot_password_api_service.dart';
@@ -22,11 +25,15 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
   final LanguageController languageController = Get.find<LanguageController>();
   final Color primaryColor = Color(0xFF4A90E2); // Using #4A90E2 as primary color
   late final String? _email;
+  bool _canResend = false; // disable initially, start countdown
+  int _resendCountdown = 120; // 2 minutes
+  Timer? _countdownTimer;
 
   @override
   void initState() {
     super.initState();
     _email = (Get.arguments is Map) ? (Get.arguments as Map)['email']?.toString() : null;
+    _startCountdown();
   }
 
   @override
@@ -37,6 +44,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
     for (var node in _focusNodes) {
       node.dispose();
     }
+    _countdownTimer?.cancel();
     super.dispose();
   }
 
@@ -55,6 +63,72 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
         colorText: themeController.isDarkModeActive
             ? Colors.white
             : Colors.black,
+      );
+    }
+  }
+
+  void _startCountdown() {
+    setState(() {
+      _canResend = false;
+      _resendCountdown = 120; // 2 minutes
+    });
+    _countdownTimer?.cancel();
+    _countdownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (_resendCountdown <= 1) {
+        timer.cancel();
+        setState(() {
+          _canResend = true;
+          _resendCountdown = 0;
+        });
+      } else {
+        setState(() {
+          _resendCountdown -= 1;
+        });
+      }
+    });
+  }
+
+  Future<void> _resendOtp() async {
+    final email = _email ?? (Get.arguments is Map ? (Get.arguments as Map)['email']?.toString() : null);
+    if (email == null || email.isEmpty) {
+      Get.snackbar('Error'.tr, 'Email missing. Please restart flow.'.tr,
+          snackPosition: SnackPosition.BOTTOM);
+      return;
+    }
+    if (!_canResend) return;
+
+    try {
+      Get.dialog(
+        const Center(child: CircularProgressIndicator()),
+        barrierDismissible: false,
+      );
+
+      final service = Get.isRegistered<ForgotPasswordApiService>()
+          ? Get.find<ForgotPasswordApiService>()
+          : Get.put(ForgotPasswordApiService());
+      await service.init();
+      await service.resendOtp(email);
+
+      Get.back();
+      Get.snackbar(
+        'codeResent'.tr,
+        'newCodeSent'.tr,
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: themeController.isDarkModeActive
+            ? const Color(0xFF2D2D2D)
+            : const Color(0xFF2196F3),
+        colorText: Colors.white,
+      );
+
+      _startCountdown();
+    } catch (e) {
+      Get.back();
+      Get.snackbar(
+        'Error'.tr,
+        e.toString().replaceAll('Exception: ', ''),
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
       );
     }
   }
@@ -214,38 +288,44 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                 }),
               ),
 
-              const SizedBox(height: 24),
+             
 
-              Text(
-                'code_expires'.tr,
-                style: TextStyle(
-                  fontSize: 14,
-                  color: isDark ? Colors.grey[400] : Colors.grey[600],
-                ),
-              ),
 
               const SizedBox(height: 16),
 
               // Resend Code
               Center(
-                child: Text.rich(
-                  TextSpan(
-                    text: 'dont_get_code'.tr,
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: isDark ? Colors.grey[400] : Colors.grey[600],
-                    ),
-                    children: [
-                      TextSpan(
-                        text: 'resend'.tr,
-                        style: TextStyle(
-                          color: primaryColor,
-                          fontWeight: FontWeight.bold,
-                          decoration: TextDecoration.underline,
-                        ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      'dont_get_code'.tr,
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: isDark ? Colors.grey[400] : Colors.grey[600],
                       ),
-                    ],
-                  ),
+                    ),
+                    const SizedBox(width: 6),
+                    _canResend
+                        ? GestureDetector(
+                            onTap: _resendOtp,
+                            child: Text(
+                              'resend'.tr,
+                              style: TextStyle(
+                                color: primaryColor,
+                                fontWeight: FontWeight.bold,
+                                decoration: TextDecoration.underline,
+                              ),
+                            ),
+                          )
+                        : Text(
+                            'resend_in'.trParams({'seconds': _resendCountdown.toString()}),
+                            style: TextStyle(
+                              color: isDark ? Colors.grey[400] : Colors.grey[600],
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                  ],
                 ),
               ),
 

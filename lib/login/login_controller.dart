@@ -15,7 +15,6 @@ import 'package:your_expense/services/subscription_service.dart';
 class LoginController extends GetxController {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
-  final LoginService loginService = Get.find();
   SharedPreferences? _prefs;
 
   final RxBool isLoading = false.obs;
@@ -39,6 +38,10 @@ class LoginController extends GetxController {
         return;
       }
 
+      // Resolve LoginService lazily and ensure a non-null instance
+      final LoginService loginService = Get.isRegistered<LoginService>()
+          ? Get.find<LoginService>()
+          : Get.put(LoginService());
       final response = await loginService.login(email, password);
 
       if (response['success'] == true) {

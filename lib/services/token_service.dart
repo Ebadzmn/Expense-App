@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -7,19 +8,32 @@ class TokenService extends GetxService {
   SharedPreferences? _prefs;
   final RxBool isInitialized = false.obs;
 
+  // Cached token data to avoid repeated decoding and log spam
+  String? _cachedToken;
+  Map<String, dynamic>? _cachedPayload;
+  int? _cachedExp;
+  String? _cachedUserId;
+
   Future<TokenService> init() async {
     try {
       _prefs = await SharedPreferences.getInstance();
       isInitialized.value = true;
-      print('✅ TokenService initialized');
-      print('📋 Token exists: ${getToken() != null}');
-      print('📋 Token valid: ${isTokenValid()}');
-      if (getToken() != null) {
-        print('📋 User ID: ${getUserId()}');
+      if (kDebugMode) {
+        debugPrint('✅ TokenService initialized');
+      }
+      // Preload cache if token exists
+      final token = _prefs?.getString('auth_token');
+      if (token != null && token.isNotEmpty) {
+        _cacheTokenData(token);
+        if (kDebugMode) {
+          debugPrint('📋 Token exists at init. Valid: ${isTokenValid()}');
+        }
       }
       return this;
     } catch (e) {
-      print('❌ TokenService initialization failed: $e');
+      if (kDebugMode) {
+        debugPrint('❌ TokenService initialization failed: $e');
+      }
       rethrow;
     }
   }
@@ -27,27 +41,39 @@ class TokenService extends GetxService {
   Future<void> saveToken(String token) async {
     try {
       await _prefs?.setString('auth_token', token);
-      print('✅ Token saved successfully');
-      print('📋 Token length: ${token.length}');
-      print('📋 Token preview: ${token.substring(0, min(token.length, 20))}...');
-      debugToken();
+      _cacheTokenData(token);
+      if (kDebugMode) {
+        debugPrint('✅ Token saved successfully (len=${token.length})');
+        debugToken();
+      }
     } catch (e) {
-      print('❌ Error saving token: $e');
+      if (kDebugMode) {
+        debugPrint('❌ Error saving token: $e');
+      }
       rethrow;
     }
   }
 
   String? getToken() {
     try {
+      // Prefer cached token; fallback to storage
+      if (_cachedToken != null) return _cachedToken;
       final token = _prefs?.getString('auth_token');
       if (token == null || token.isEmpty) {
-        print('📋 No token found in storage');
+        if (kDebugMode) {
+          debugPrint('📋 No token found in storage');
+        }
         return null;
       }
-      print('📋 Retrieved token: ${token.substring(0, min(token.length, 20))}...');
-      return token;
+      _cacheTokenData(token);
+      if (kDebugMode) {
+        debugPrint('📋 Retrieved token from storage');
+      }
+      return _cachedToken;
     } catch (e) {
-      print('❌ Error retrieving token: $e');
+      if (kDebugMode) {
+        debugPrint('❌ Error retrieving token: $e');
+      }
       return null;
     }
   }
@@ -56,38 +82,27 @@ class TokenService extends GetxService {
     try {
       final token = getToken();
       if (token == null || token.isEmpty) {
-        print('❌ Token is null or empty');
+        if (kDebugMode) debugPrint('❌ Token is null or empty');
         return false;
       }
 
-      final parts = token.split('.');
-      if (parts.length != 3) {
-        print('❌ Invalid JWT format: ${parts.length} parts instead of 3');
-        return false;
+      // Use cached exp if available; decode once otherwise
+      if (_cachedExp == null) {
+        _cacheTokenData(token);
       }
-
-      final payload = _decodePayload(parts[1]);
-      if (payload.isEmpty) {
-        print('❌ Failed to decode payload');
-        return false;
-      }
-
-      final exp = payload['exp'];
+      final exp = _cachedExp;
       if (exp == null) {
-        print('📋 No expiration time in token');
+        // No expiration => treat as valid
         return true;
       }
-
       final currentTime = DateTime.now().millisecondsSinceEpoch ~/ 1000;
       final isValid = exp > currentTime;
-
-      print('📋 Token expiration: ${DateTime.fromMillisecondsSinceEpoch(exp * 1000)}');
-      print('📋 Current time: ${DateTime.now()}');
-      print('📋 Token valid: $isValid');
-
+      if (kDebugMode) {
+        debugPrint('📋 Token valid: $isValid');
+      }
       return isValid;
     } catch (e) {
-      print('❌ Token validation error: $e');
+      if (kDebugMode) debugPrint('❌ Token validation error: $e');
       return false;
     }
   }
@@ -106,41 +121,41 @@ class TokenService extends GetxService {
 
       final decoded = base64Url.decode(normalizedPayload);
       final String decodedString = utf8.decode(decoded);
-
-      print('📋 Decoded payload: $decodedString');
+      if (kDebugMode) {
+        debugPrint('📋 Decoded payload');
+      }
       return json.decode(decodedString);
     } catch (e) {
-      print('❌ Payload decoding error: $e');
+      if (kDebugMode) debugPrint('❌ Payload decoding error: $e');
       return {};
     }
   }
 
   Map<String, dynamic>? getTokenPayload() {
     try {
+      if (_cachedPayload != null) return _cachedPayload;
       final token = getToken();
       if (token == null) return null;
-
-      final parts = token.split('.');
-      if (parts.length != 3) return null;
-
-      return _decodePayload(parts[1]);
+      _cacheTokenData(token);
+      return _cachedPayload;
     } catch (e) {
-      print('❌ Token payload decoding error: $e');
+      if (kDebugMode) debugPrint('❌ Token payload decoding error: $e');
       return null;
     }
   }
 
   String? getUserId() {
     try {
+      if (_cachedUserId != null) return _cachedUserId;
       final payload = getTokenPayload();
       if (payload == null) return null;
-
-      return payload['id']?.toString() ??
+      _cachedUserId = payload['id']?.toString() ??
           payload['userId']?.toString() ??
           payload['sub']?.toString() ??
           payload['user_id']?.toString();
+      return _cachedUserId;
     } catch (e) {
-      print('❌ Error getting user ID: $e');
+      if (kDebugMode) debugPrint('❌ Error getting user ID: $e');
       return null;
     }
   }
@@ -148,54 +163,56 @@ class TokenService extends GetxService {
   Future<void> clearToken() async {
     try {
       await _prefs?.remove('auth_token');
-      print('✅ Token cleared successfully');
+      _cachedToken = null;
+      _cachedPayload = null;
+      _cachedExp = null;
+      _cachedUserId = null;
+      if (kDebugMode) debugPrint('✅ Token cleared successfully');
     } catch (e) {
-      print('❌ Error clearing token: $e');
+      if (kDebugMode) debugPrint('❌ Error clearing token: $e');
     }
   }
 
   void debugToken() {
+    if (!kDebugMode) return;
     final token = getToken();
-    print('=== 🔍 TOKEN DEBUG ===');
-    print('Token exists: ${token != null}');
-    print('Token length: ${token?.length}');
-    print('Token valid: ${isTokenValid()}');
-    print('User ID: ${getUserId()}');
+    debugPrint('=== 🔍 TOKEN DEBUG ===');
+    debugPrint('Token exists: ${token != null}');
+    debugPrint('Token length: ${token?.length}');
+    debugPrint('Token valid: ${isTokenValid()}');
+    debugPrint('User ID: ${getUserId()}');
 
     final payload = getTokenPayload();
     if (payload != null) {
-      print('Payload keys: ${payload.keys}');
-      print('Full payload: $payload');
+      debugPrint('Payload keys: ${payload.keys}');
     }
-    print('=====================');
+    debugPrint('=====================');
   }
 
   bool get isAuthenticated => isTokenValid();
 
   DateTime? getTokenExpiration() {
     try {
-      final payload = getTokenPayload();
-      final exp = payload?['exp'];
+      final exp = _cachedExp ?? getTokenPayload()?['exp'];
       if (exp != null && exp is int) {
         return DateTime.fromMillisecondsSinceEpoch(exp * 1000);
       }
       return null;
     } catch (e) {
-      print('❌ Error getting token expiration: $e');
+      if (kDebugMode) debugPrint('❌ Error getting token expiration: $e');
       return null;
     }
   }
 
   DateTime? getTokenIssuedAt() {
     try {
-      final payload = getTokenPayload();
-      final iat = payload?['iat'];
+      final iat = _cachedPayload?['iat'] ?? getTokenPayload()?['iat'];
       if (iat != null && iat is int) {
         return DateTime.fromMillisecondsSinceEpoch(iat * 1000);
       }
       return null;
     } catch (e) {
-      print('❌ Error getting token issued at: $e');
+      if (kDebugMode) debugPrint('❌ Error getting token issued at: $e');
       return null;
     }
   }
@@ -209,7 +226,7 @@ class TokenService extends GetxService {
       final fiveMinutesFromNow = now.add(Duration(minutes: 5));
       return expiration.isBefore(fiveMinutesFromNow);
     } catch (e) {
-      print('❌ Error checking token expiration: $e');
+      if (kDebugMode) debugPrint('❌ Error checking token expiration: $e');
       return false;
     }
   }
@@ -218,11 +235,11 @@ class TokenService extends GetxService {
   Future<void> saveResetToken(String token) async {
     try {
       await _prefs?.setString('reset_password_token', token);
-      print('✅ Reset token saved successfully');
-      print('📋 Reset token length: ${token.length}');
-      print('📋 Reset token preview: ${token.substring(0, min(token.length, 20))}...');
+      if (kDebugMode) {
+        debugPrint('✅ Reset token saved successfully (len=${token.length})');
+      }
     } catch (e) {
-      print('❌ Error saving reset token: $e');
+      if (kDebugMode) debugPrint('❌ Error saving reset token: $e');
     }
   }
 
@@ -230,13 +247,12 @@ class TokenService extends GetxService {
     try {
       final token = _prefs?.getString('reset_password_token');
       if (token == null || token.isEmpty) {
-        print('📋 No reset token found in storage');
+        if (kDebugMode) debugPrint('📋 No reset token found in storage');
         return null;
       }
-      print('📋 Retrieved reset token: ${token.substring(0, min(token.length, 20))}...');
       return token;
     } catch (e) {
-      print('❌ Error retrieving reset token: $e');
+      if (kDebugMode) debugPrint('❌ Error retrieving reset token: $e');
       return null;
     }
   }
@@ -244,11 +260,30 @@ class TokenService extends GetxService {
   Future<void> clearResetToken() async {
     try {
       await _prefs?.remove('reset_password_token');
-      print('✅ Reset token cleared successfully');
+      if (kDebugMode) debugPrint('✅ Reset token cleared successfully');
     } catch (e) {
-      print('❌ Error clearing reset token: $e');
+      if (kDebugMode) debugPrint('❌ Error clearing reset token: $e');
     }
   }
 
   int min(int a, int b) => a < b ? a : b;
+
+  void _cacheTokenData(String token) {
+    _cachedToken = token;
+    try {
+      final parts = token.split('.');
+      if (parts.length == 3) {
+        final payload = _decodePayload(parts[1]);
+        _cachedPayload = payload;
+        final exp = payload['exp'];
+        _cachedExp = exp is int ? exp : null;
+        _cachedUserId = payload['id']?.toString() ??
+            payload['userId']?.toString() ??
+            payload['sub']?.toString() ??
+            payload['user_id']?.toString();
+      }
+    } catch (_) {
+      // Ignore caching errors silently
+    }
+  }
 }

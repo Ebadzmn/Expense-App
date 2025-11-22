@@ -6,6 +6,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:your_expense/firebase_options.dart';
 import 'package:your_expense/routes/app_routes.dart';
@@ -40,11 +41,25 @@ class PushNotificationService extends GetxService {
     if (!kIsWeb && Platform.isAndroid) {
       try {
         final status = await Permission.notification.status;
-        if (!status.isGranted) {
-          final result = await Permission.notification.request();
-          debugPrint('[Push] Android notification permission: $result');
-        } else {
+        if (status.isGranted) {
           debugPrint('[Push] Android notification permission already granted');
+        } else if (status.isDenied) {
+          final result = await Permission.notification.request();
+          debugPrint('[Push] Android notification permission request result: $result');
+        } else if (status.isPermanentlyDenied) {
+          debugPrint('[Push] Notification permission permanently denied. Prompting to open settings.');
+          Get.snackbar(
+            'Enable Notifications',
+            'Please enable notifications from Android Settings for full experience.',
+            snackPosition: SnackPosition.BOTTOM,
+            duration: const Duration(seconds: 4),
+          );
+          // Best-effort: open app settings so user can enable permission
+          await openAppSettings();
+        } else {
+          // restricted or limited
+          final result = await Permission.notification.request();
+          debugPrint('[Push] Android notification permission (restricted/limited) result: $result');
         }
       } catch (e) {
         debugPrint('[Push] Android notification permission request error: $e');
@@ -104,6 +119,13 @@ class PushNotificationService extends GetxService {
         );
 
         debugPrint('[Push] onMessage data: ${message.data}');
+
+        // Record the arrival time to prevent immediate duplicate local notifications from API
+        try {
+          SharedPreferences.getInstance().then((prefs) {
+            prefs.setInt('last_push_ts', DateTime.now().millisecondsSinceEpoch);
+          });
+        } catch (_) {}
 
         // Navigate for monthly report even when app is in foreground
         final type = message.data['type'];

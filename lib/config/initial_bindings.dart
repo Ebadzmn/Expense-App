@@ -29,6 +29,7 @@ class InitialBindings extends Bindings {
     }
     Get.lazyPut(() => MonthlyBudgetController(), fenix: true);
     Get.lazyPut(() => ExpenseController(), fenix: true);
-    Get.lazyPut(() => ProExpensesIncomeController(), fenix: true);
+    // ProExpensesIncomeController is registered permanently in main.dart to avoid
+    // disposing TextEditingControllers while its screen remains in the stack.
   }
 }

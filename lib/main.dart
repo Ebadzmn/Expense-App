@@ -48,97 +48,136 @@ import 'login/login_service.dart';
 import 'package:your_expense/Settings/userprofile/profile_services.dart';
 
 Future<void> main() async {
+  // Measure startup
+  final appStartSw = Stopwatch()..start();
   WidgetsFlutterBinding.ensureInitialized();
 
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  // Background handler register
+  // Register FCM background handler
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
 
-  // Essential services before UI
-  await Get.putAsync(() => ConfigService().init());
-  await Get.putAsync(() => TokenService().init());
-  await Get.putAsync(() => ApiBaseService().init());
-  await Get.putAsync(() => SubscriptionService().init());
-  await Get.putAsync(() => LocalNotificationsService().init());
-  // Ensure LoginService is available before any controller tries to Get.find()
-  await Get.putAsync(() => LoginService().init());
-  // Critical services used by HomeController/UI must exist before first build
-  await Get.putAsync(() => TransactionService().init());
-  await Get.putAsync(() => BudgetService().init());
-  await Get.putAsync(() => CategoryService().init());
-  await Get.putAsync(() => ExpenseService().init());
-  await Get.putAsync(() => FaceIdService().init());
-  await Get.putAsync(() => ProfileService().init());
+  // Essential services before first frame: config, token, API
+  await Future.wait([
+    Get.putAsync(() => ConfigService().init()),
+    Get.putAsync(() => TokenService().init()),
+    Get.putAsync(() => ApiBaseService().init()),
+    // Ensure Face ID preferences are available before any routing decisions
+    Get.putAsync(() => FaceIdService().init()),
+  ]);
 
-  // Start UI ASAP
-  
-  // Controllers before UI
-  // Ensure Theme/Language controllers exist before building GetMaterialApp
+  // Initialize Mobile Ads early (before first frame) to reduce load failures
+  if (!kIsWeb &&
+      (defaultTargetPlatform == TargetPlatform.android ||
+          defaultTargetPlatform == TargetPlatform.iOS)) {
+    try {
+      await MobileAds.instance.initialize();
+      debugPrint('[Startup] MobileAds initialized early');
+      // In debug builds, configure test device IDs to reliably receive test ads
+      if (kDebugMode) {
+        await MobileAds.instance.updateRequestConfiguration(
+          RequestConfiguration(
+            testDeviceIds: const [
+              // Android device hash from log hint
+              '5EFC723B6630B42FFF41E5FA02E7A513',
+            ],
+          ),
+        );
+        debugPrint('[Startup] MobileAds RequestConfiguration set with testDeviceIds for debug');
+      }
+    } catch (e) {
+      debugPrint('⚠️ MobileAds early initialization skipped: $e');
+    }
+  }
+
+  // Controllers required for building the app shell
   if (!Get.isRegistered<ThemeController>()) {
     Get.put(ThemeController(), permanent: true);
   }
   if (!Get.isRegistered<LanguageController>()) {
     Get.put(LanguageController(), permanent: true);
   }
-
   if (!Get.isRegistered<LocalAuthService>()) {
     Get.put(LocalAuthService(), permanent: true);
   }
 
-  // Start UI
+  // Show first frame ASAP
   runApp(AppConfig.app);
+  debugPrint('[Startup] First frame shown at: ${appStartSw.elapsedMilliseconds} ms');
 
-  // Async init (non-blocking)
+  // Background bootstrap (do not block UI)
+  final bgSw = Stopwatch()..start();
   Future(() async {
-    // Initialize remaining heavy services in background
-    await Future.wait([
-      Get.putAsync(() => MarketplaceService().init()),
-      Get.putAsync(() => IncomeService().init()),
-    ]);
-
-    // Push notifications quickly after UI starts
     try {
-      await Get.putAsync(() => PushNotificationService().init());
-    } catch (e) {
-      debugPrint('[Startup] PushNotificationService init failed: $e');
-    }
+      // Non-critical services moved to background
+      await Future.wait([
+        Get.putAsync(() => SubscriptionService().init()),
+        Get.putAsync(() => LocalNotificationsService().init()),
+        Get.putAsync(() => LoginService().init()),
+      ]);
 
-    await Future.wait([
-      Get.putAsync(() => RegistrationApiService().init()),
-      Get.putAsync(() => VerificationApiService().init()),
-      Get.putAsync(() => ForgotPasswordApiService().init()),
-      Get.putAsync(() => ReviewService().init()),
-      Get.putAsync(() => UserService().init()),
-      Get.putAsync(() => ChangeEmailService().init()),
-    ]);
+      // Feature-heavy services deferred
+      await Future.wait([
+        Get.putAsync(() => TransactionService().init()),
+        Get.putAsync(() => BudgetService().init()),
+        Get.putAsync(() => CategoryService().init()),
+        Get.putAsync(() => ExpenseService().init()),
+        Get.putAsync(() => ProfileService().init()),
+      ]);
 
-    if (!Get.isRegistered<ExpenseController>()) {
-      Get.put(ExpenseController(), permanent: true);
-    }
-    if (!Get.isRegistered<ProExpensesIncomeController>()) {
-      Get.put(ProExpensesIncomeController(), permanent: true);
-    }
+      // Additional feature services
+      await Future.wait([
+        Get.putAsync(() => MarketplaceService().init()),
+        Get.putAsync(() => IncomeService().init()),
+        Get.putAsync(() => RegistrationApiService().init()),
+        Get.putAsync(() => VerificationApiService().init()),
+        Get.putAsync(() => ForgotPasswordApiService().init()),
+        Get.putAsync(() => ReviewService().init()),
+        Get.putAsync(() => UserService().init()),
+        Get.putAsync(() => ChangeEmailService().init()),
+      ]);
 
-    try {
-      final tokenService = Get.find<TokenService>();
-      final hasToken = tokenService.getToken() != null;
-      debugPrint('[Startup] Token present: $hasToken');
-      if (hasToken && tokenService.isTokenValid()) {
-        debugPrint('[Startup] Token valid, app ready.');
-      } else {
-        debugPrint('[Startup] No valid token.');
+      // Push notifications quickly after UI starts
+      try {
+        await Get.putAsync(() => PushNotificationService().init());
+      } catch (e) {
+        debugPrint('[Startup] PushNotificationService init failed: $e');
       }
-    } catch (e) {
-      debugPrint('[Startup] Token check failed: $e');
-    }
 
-    try {
-      await SubscriptionService.to.reconcileWithServer();
+      // Controllers that can be created after services are ready
+      if (!Get.isRegistered<ExpenseController>()) {
+        Get.put(ExpenseController(), permanent: true);
+      }
+      if (!Get.isRegistered<ProExpensesIncomeController>()) {
+        Get.put(ProExpensesIncomeController(), permanent: true);
+      }
+
+      // Token check
+      try {
+        final tokenService = Get.find<TokenService>();
+        final hasToken = tokenService.getToken() != null;
+        debugPrint('[Startup] Token present: $hasToken');
+        if (hasToken && tokenService.isTokenValid()) {
+          debugPrint('[Startup] Token valid, app ready.');
+        } else {
+          debugPrint('[Startup] No valid token.');
+        }
+      } catch (e) {
+        debugPrint('[Startup] Token check failed: $e');
+      }
+
+      // Subscription reconcile in background
+      try {
+        await SubscriptionService.to.reconcileWithServer();
+      } catch (e) {
+        debugPrint('[Startup] Subscription reconcile failed: $e');
+      }
+
+      debugPrint('[Startup] Background bootstrap done at: ${bgSw.elapsedMilliseconds} ms');
     } catch (e) {
-      debugPrint('[Startup] Subscription reconcile failed: $e');
+      debugPrint('[Startup] Background bootstrap error: $e');
     }
   });
 
@@ -154,16 +193,5 @@ Future<void> main() async {
     }
   });
 
-  // Mobile Ads init moved to background after UI to avoid blocking
-  Future(() async {
-    if (!kIsWeb &&
-        (defaultTargetPlatform == TargetPlatform.android ||
-            defaultTargetPlatform == TargetPlatform.iOS)) {
-      try {
-        await MobileAds.instance.initialize();
-      } catch (e) {
-        debugPrint('⚠️ MobileAds initialization skipped: $e');
-      }
-    }
-  });
+  // (Moved) Mobile Ads initialized early above
 }

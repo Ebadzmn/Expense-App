@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'package:get/Get.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:http_parser/http_parser.dart';
@@ -11,7 +11,12 @@ import '../../services/config_service.dart';
 import '../../services/token_service.dart';
 
 class ProfileService extends GetxService {
-  static ProfileService get to => Get.find();
+  static ProfileService get to {
+    if (Get.isRegistered<ProfileService>()) {
+      return Get.find<ProfileService>();
+    }
+    return Get.put(ProfileService());
+  }
   final ConfigService configService = ConfigService.to;
   final TokenService tokenService = TokenService.to;
   final RxString userName = 'John Doe'.obs;
@@ -321,17 +326,9 @@ class ProfileService extends GetxService {
   // New method to send OTP
   Future<bool> sendOtp() async {
     try {
-      final token = tokenService.getToken();
-      if (token == null || !tokenService.isTokenValid()) {
-        print('❌ No valid token for OTP send');
-        Get.toNamed(AppRoutes.login);
-        return false;
-      }
-
       final response = await http.post(
         Uri.parse('${configService.baseUrl}/user/send-otp'),
         headers: {
-          'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',
         },
         body: json.encode({'email': email.value}),

@@ -22,7 +22,7 @@ class UserService extends GetxService {
         body: {
           'purpose': 'email_change',
         },
-        requiresAuth: true,
+        requiresAuth: false,
       );
       print('✅ OTP sent successfully');
       return response;
@@ -73,7 +73,7 @@ class UserService extends GetxService {
           'purpose': 'email_change',
           'resend': true,
         },
-        requiresAuth: true,
+        requiresAuth: false,
       );
       print('✅ OTP resent successfully');
       return response;
