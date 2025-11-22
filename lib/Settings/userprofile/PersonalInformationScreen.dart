@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'package:get/Get.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:http_parser/http_parser.dart';
@@ -12,7 +12,6 @@ import '../../services/token_service.dart';
 import 'package:your_expense/Settings/userprofile/passwordchangescreen.dart';
 import 'package:your_expense/Settings/userprofile/profile_services.dart';
 import '../../services/api_base_service.dart';
-import 'changeemail.dart';
 import '../appearance/ThemeController.dart';
 
 class PersonalInformationScreen extends StatelessWidget {
@@ -87,45 +86,15 @@ class PersonalInformationScreen extends StatelessWidget {
 
   Future<void> _sendOtpForPassword() async {
     try {
-      Get.dialog(
-        Center(child: CircularProgressIndicator()),
-        barrierDismissible: false,
-      );
-
-      final success = await profileService.sendOtp();
-
-      Get.back();
-
-      if (success) {
-        Get.to(() => PasswordChangeScreen());
-        Get.snackbar(
-          'otp_sent'.tr,
-          'otp_sent_message'.tr,
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: themeController.isDarkModeActive
-              ? Color(0xFF2D2D2D)
-              : Color(0xFF2196F3),
-          colorText: Colors.white,
-        );
-      } else {
-        Get.snackbar(
-          'error'.tr,
-          'otp_send_failed'.tr,
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
-        );
-      }
+      Get.to(() => PasswordChangeScreen());
     } catch (e) {
-      Get.back();
       Get.snackbar(
         'error'.tr,
-        'otp_send_failed'.tr,
+        'password_change_failed'.tr,
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.red,
         colorText: Colors.white,
       );
-      print('❌ OTP Send Error: $e');
     }
   }
 
@@ -292,7 +261,7 @@ class PersonalInformationScreen extends StatelessWidget {
               Obx(() => _buildInfoItem(
                 'email_address'.tr,
                 profileService.email.value,
-                    () => Get.to(() => ChangeEmailScreen()),
+                    () {},
                 screenWidth,
                 screenHeight,
                 themeController.isDarkModeActive,

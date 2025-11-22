@@ -18,6 +18,7 @@ class ConfigService extends GetxService {
   String get forgetPasswordEndpoint => '$baseUrl/auth/forget-password';
   String get forgotPasswordEndpoint => '$baseUrl/auth/forgot-password';
   String get resetPasswordEndpoint => '$baseUrl/auth/reset-password';
+  String get changePasswordEndpoint => '$baseUrl/auth/change-password';
 
   // Expense endpoints
   String get expenseEndpoint => '$baseUrl/expense';

@@ -23,6 +23,7 @@ class ProfileService extends GetxService {
   final RxString profileImage = ''.obs;
   final RxString email = ''.obs;
   final RxInt imageVersion = 0.obs; // Add version counter for cache busting
+  final RxString lastErrorMessage = ''.obs;
 
   Future<ProfileService> init() async {
     try {
@@ -393,6 +394,110 @@ class ProfileService extends GetxService {
       }
     } catch (e) {
       print('❌ Password update error: $e');
+      return false;
+    }
+  }
+
+  Future<bool> changePasswordWithCurrent({
+    required String currentPassword,
+    required String newPassword,
+    required String confirmPassword,
+  }) async {
+    try {
+      final token = tokenService.getToken();
+      if (token == null || !tokenService.isTokenValid()) {
+        lastErrorMessage.value = 'Session expired';
+        Get.toNamed(AppRoutes.login);
+        return false;
+      }
+
+      final response = await http.post(
+        Uri.parse('${configService.changePasswordEndpoint}'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: json.encode({
+          'currentPassword': currentPassword,
+          'newPassword': newPassword,
+          'confirmPassword': confirmPassword,
+        }),
+      );
+
+      print('📋 Change Password HTTP Status: ${response.statusCode}');
+      print('📋 Change Password Response Body: ${response.body}');
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        try {
+          final jsonResponse = json.decode(response.body);
+          if (jsonResponse is Map) {
+            final success = jsonResponse['success'] == true;
+            final message = (jsonResponse['message'] ?? '').toString();
+            if (success) {
+              lastErrorMessage.value = '';
+              return true;
+            }
+            lastErrorMessage.value = message.isNotEmpty ? message : 'Password change failed';
+          }
+        } catch (e) {
+          print('❌ JSON parse error: $e');
+          lastErrorMessage.value = 'Unexpected response from server';
+        }
+        return false;
+      } else {
+        // Optional fallback if server rejects PATCH
+        if (response.statusCode == 405) {
+          try {
+            final postResp = await http.post(
+              Uri.parse('${configService.changePasswordEndpoint}'),
+              headers: {
+                'Authorization': 'Bearer $token',
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+              },
+              body: json.encode({
+                'currentPassword': currentPassword,
+                'newPassword': newPassword,
+                'confirmPassword': confirmPassword,
+              }),
+            );
+            print('📋 Fallback POST Status: ${postResp.statusCode}');
+            print('📋 Fallback POST Body: ${postResp.body}');
+            if (postResp.statusCode == 200 || postResp.statusCode == 201) {
+              try {
+                final jsonResponse = json.decode(postResp.body);
+                if (jsonResponse is Map && jsonResponse['success'] == true) {
+                  lastErrorMessage.value = '';
+                  return true;
+                }
+                lastErrorMessage.value = (jsonResponse['message'] ?? 'Password change failed').toString();
+              } catch (_) {
+                lastErrorMessage.value = 'Unexpected response from server';
+              }
+              return false;
+            }
+          } catch (e) {
+            print('❌ Fallback POST error: $e');
+          }
+        }
+
+        // Try to extract message from error body
+        String serverMessage = '';
+        try {
+          final jsonResponse = json.decode(response.body);
+          if (jsonResponse is Map) {
+            serverMessage = (jsonResponse['message'] ?? '').toString();
+          }
+        } catch (_) {}
+        lastErrorMessage.value = serverMessage.isNotEmpty
+            ? serverMessage
+            : 'HTTP ${response.statusCode}: Password change failed';
+        return false;
+      }
+    } catch (e) {
+      print('❌ Change password error: $e');
+      lastErrorMessage.value = 'Network error during password change';
       return false;
     }
   }

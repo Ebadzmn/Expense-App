@@ -1,71 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:get/Get.dart';
+import 'package:get/get.dart';
 import '../appearance/ThemeController.dart';
-import '../../services/api_base_service.dart';
-import '../../services/config_service.dart';
 import 'package:your_expense/Settings/userprofile/profile_services.dart';
 
 class PasswordChangeScreen extends StatelessWidget {
+  final TextEditingController currentPasswordController = TextEditingController();
   final TextEditingController newPasswordController = TextEditingController();
   final TextEditingController confirmPasswordController = TextEditingController();
-  final TextEditingController otpController1 = TextEditingController();
-  final TextEditingController otpController2 = TextEditingController();
-  final TextEditingController otpController3 = TextEditingController();
-  final TextEditingController otpController4 = TextEditingController();
   final ThemeController themeController = Get.find<ThemeController>();
-  final ApiBaseService apiService = Get.find<ApiBaseService>();
-  final ConfigService configService = Get.find<ConfigService>();
   final ProfileService profileService = Get.find<ProfileService>();
   final RxBool isLoading = false.obs;
-  final RxBool isOtpSent = true.obs;
 
-  PasswordChangeScreen({super.key}); // OTP is already sent before navigating
+  PasswordChangeScreen({super.key});
 
-  Future<void> _resendOtp() async {
-    try {
-      isLoading.value = true;
-      Get.dialog(
-        Center(child: CircularProgressIndicator()),
-        barrierDismissible: false,
-      );
-
-      final success = await profileService.sendOtp();
-
-      Get.back();
-      isLoading.value = false;
-
-      if (success) {
-        Get.snackbar(
-          'otp_resent'.tr,
-          'otp_resent_message'.tr,
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: themeController.isDarkModeActive
-              ? Color(0xFF2D2D2D)
-              : Color(0xFF2196F3),
-          colorText: Colors.white,
-        );
-      } else {
-        Get.snackbar(
-          'error'.tr,
-          'otp_resend_failed'.tr,
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
-        );
-      }
-    } catch (e) {
-      Get.back();
-      isLoading.value = false;
-      Get.snackbar(
-        'error'.tr,
-        'otp_resend_failed'.tr,
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
-      print('❌ OTP Resend Error: $e');
-    }
-  }
+  
 
   Future<void> _changePassword() async {
     try {
@@ -74,6 +22,19 @@ class PasswordChangeScreen extends StatelessWidget {
         Center(child: CircularProgressIndicator()),
         barrierDismissible: false,
       );
+
+      if (currentPasswordController.text.isEmpty) {
+        Get.back();
+        isLoading.value = false;
+        Get.snackbar(
+          'error'.tr,
+          'enter_current_password_error'.tr,
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
+        return;
+      }
 
       if (newPasswordController.text.isEmpty || confirmPasswordController.text.isEmpty) {
         Get.back();
@@ -101,42 +62,36 @@ class PasswordChangeScreen extends StatelessWidget {
         return;
       }
 
-      if (otpController1.text.isEmpty || otpController2.text.isEmpty || otpController3.text.isEmpty || otpController4.text.isEmpty) {
-        Get.back();
-        isLoading.value = false;
-        Get.snackbar(
-          'error'.tr,
-          'fill_all_otp_fields'.tr,
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
-        );
-        return;
-      }
-
-      final otp = int.parse('${otpController1.text}${otpController2.text}${otpController3.text}${otpController4.text}');
-
-      final success = await profileService.updatePassword(newPasswordController.text, otp);
+      final success = await profileService.changePasswordWithCurrent(
+        currentPassword: currentPasswordController.text,
+        newPassword: newPasswordController.text,
+        confirmPassword: confirmPasswordController.text,
+      );
 
       Get.back();
       isLoading.value = false;
 
       if (success) {
         Get.snackbar(
-          'password_changed'.tr,
-          'password_changed_message'.tr,
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: themeController.isDarkModeActive
-              ? Color(0xFF2D2D2D)
-              : Color(0xFF2196F3),
+          'Success',
+          'Password change success',
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: const Color(0xFF10B981),
           colorText: Colors.white,
+          icon: const Icon(Icons.check_circle, color: Colors.white),
+          margin: const EdgeInsets.all(12),
+          borderRadius: 12,
+          duration: const Duration(seconds: 3),
         );
 
         Get.offAllNamed('/settings/personal-information');
       } else {
+        final msg = profileService.lastErrorMessage.value.isNotEmpty
+            ? profileService.lastErrorMessage.value
+            : 'password_change_failed'.tr;
         Get.snackbar(
           'error'.tr,
-          'password_change_failed'.tr,
+          msg,
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: Colors.red,
           colorText: Colors.white,
@@ -175,7 +130,7 @@ class PasswordChangeScreen extends StatelessWidget {
           onPressed: () => Get.back(),
         ),
         title: Text(
-          'change_password'.tr,
+          'Change Password',
           style: TextStyle(
             color: themeController.isDarkModeActive ? Colors.white : Colors.black,
             fontSize: screenWidth * 0.045,
@@ -221,6 +176,56 @@ class PasswordChangeScreen extends StatelessWidget {
               ),
 
               SizedBox(height: screenHeight * 0.06),
+
+              // Current Password
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'current_password'.tr,
+                    style: TextStyle(
+                      fontSize: screenWidth * 0.035,
+                      color: themeController.isDarkModeActive ? Colors.white : Colors.black,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  SizedBox(height: screenHeight * 0.01),
+                  TextField(
+                    controller: currentPasswordController,
+                    obscureText: true,
+                    style: TextStyle(
+                      color: themeController.isDarkModeActive ? Colors.white : Colors.black,
+                    ),
+                    decoration: InputDecoration(
+                      hintText: 'enter_current_password'.tr,
+                      hintStyle: TextStyle(
+                        color: themeController.isDarkModeActive ? Colors.grey.shade400 : Colors.grey.shade400,
+                        fontSize: screenWidth * 0.035,
+                      ),
+                      filled: true,
+                      fillColor: themeController.isDarkModeActive ? Color(0xFF1E1E1E) : Colors.white,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(screenWidth * 0.02),
+                        borderSide: BorderSide(color: themeController.isDarkModeActive ? Color(0xFF3A3A3A) : Colors.grey.shade300),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(screenWidth * 0.02),
+                        borderSide: BorderSide(color: themeController.isDarkModeActive ? Color(0xFF3A3A3A) : Colors.grey.shade300),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(screenWidth * 0.02),
+                        borderSide: BorderSide(color: const Color(0xFF2196F3)),
+                      ),
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: screenWidth * 0.04,
+                        vertical: screenHeight * 0.018,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+
+              SizedBox(height: screenHeight * 0.025),
 
               // New Password
               Column(
@@ -322,43 +327,6 @@ class PasswordChangeScreen extends StatelessWidget {
 
               SizedBox(height: screenHeight * 0.04),
 
-              // OTP Input Fields
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'enter_otp'.tr,
-                    style: TextStyle(
-                      fontSize: screenWidth * 0.035,
-                      color: themeController.isDarkModeActive ? Colors.white : Colors.black,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  SizedBox(height: screenHeight * 0.02),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      _buildOtpField(otpController1, screenWidth, screenHeight, themeController.isDarkModeActive),
-                      _buildOtpField(otpController2, screenWidth, screenHeight, themeController.isDarkModeActive),
-                      _buildOtpField(otpController3, screenWidth, screenHeight, themeController.isDarkModeActive),
-                      _buildOtpField(otpController4, screenWidth, screenHeight, themeController.isDarkModeActive),
-                    ],
-                  ),
-                  SizedBox(height: screenHeight * 0.02),
-                  GestureDetector(
-                    onTap: _resendOtp,
-                    child: Text(
-                      'dont_get_code_resend'.tr,
-                      style: TextStyle(
-                        fontSize: screenWidth * 0.035,
-                        color: const Color(0xFF2196F3),
-                        decoration: TextDecoration.underline,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-
               SizedBox(height: screenHeight * 0.04),
 
               // Submit Button
@@ -393,49 +361,5 @@ class PasswordChangeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildOtpField(
-      TextEditingController controller,
-      double screenWidth,
-      double screenHeight,
-      bool isDarkMode,
-      ) {
-    return SizedBox(
-      width: screenWidth * 0.15,
-      child: TextField(
-        controller: controller,
-        maxLength: 1,
-        textAlign: TextAlign.center,
-        keyboardType: TextInputType.number,
-        style: TextStyle(
-          color: isDarkMode ? Colors.white : Colors.black,
-          fontSize: screenWidth * 0.05,
-        ),
-        decoration: InputDecoration(
-          counterText: '',
-          filled: true,
-          fillColor: isDarkMode ? Color(0xFF1E1E1E) : Colors.white,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(screenWidth * 0.02),
-            borderSide: BorderSide(color: isDarkMode ? Color(0xFF3A3A3A) : Colors.grey.shade300),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(screenWidth * 0.02),
-            borderSide: BorderSide(color: isDarkMode ? Color(0xFF3A3A3A) : Colors.grey.shade300),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(screenWidth * 0.02),
-            borderSide: BorderSide(color: const Color(0xFF2196F3)),
-          ),
-          contentPadding: EdgeInsets.symmetric(
-            vertical: screenHeight * 0.015,
-          ),
-        ),
-        onChanged: (value) {
-          if (value.length == 1) {
-            FocusScope.of(Get.context!).nextFocus();
-          }
-        },
-      ),
-    );
-  }
+  
 }
