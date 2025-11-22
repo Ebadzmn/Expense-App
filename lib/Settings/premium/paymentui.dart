@@ -134,7 +134,7 @@ class _PremiumPlansScreenState extends State<PremiumPlansScreen> {
                         child: _buildPlanCard(
                           title: displayTitle,
                           price: displayPrice,
-                          trialText: 'free_trial'.tr,
+                          // trialText: 'free_trial'.tr,
                           isRecommended: false,
                           isSelected: selectedProductId == IapService.monthlyId,
                           screenWidth: screenWidth,
@@ -178,7 +178,7 @@ class _PremiumPlansScreenState extends State<PremiumPlansScreen> {
                         child: _buildPlanCard(
                           title: displayTitle,
                           price: displayPrice,
-                          trialText: 'free_trial'.tr,
+                        
                           isRecommended: true,
                           isSelected: selectedProductId == IapService.yearlyId,
                           screenWidth: screenWidth,
@@ -460,7 +460,7 @@ class _PremiumPlansScreenState extends State<PremiumPlansScreen> {
   Widget _buildPlanCard({
     required String title,
     required String price,
-    required String trialText,
+   
     required bool isRecommended,
     required bool isSelected,
     required double screenWidth,
@@ -540,14 +540,7 @@ class _PremiumPlansScreenState extends State<PremiumPlansScreen> {
                     ],
                   ),
                 ),
-                Text(
-                  trialText,
-                  style: TextStyle(
-                    fontSize: screenWidth * 0.03,
-                    color: const Color(0xFF2196F3),
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
+           
               ],
             ),
             if (saveText != null || isRecommended) ...[

@@ -319,10 +319,7 @@ class MainHomeScreen extends StatelessWidget {
                         ),
                       ),
                       SizedBox(height: screenHeight * 0.01),
-                      Text(
-                        'keep_it_up'.tr,
-                        style: TextStyle(color: secondaryTextColor, fontSize: screenWidth * 0.035),
-                      ),
+                      
                       SizedBox(height: screenHeight * 0.02),
                       Obx(() => Container(
                         width: double.infinity,

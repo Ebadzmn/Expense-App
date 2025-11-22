@@ -1,6 +1,6 @@
 {
-    "name": "your_expense",
-    "short_name": "your_expense",
+    "name": "YeSpend",
+    "short_name": "YeSpend",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

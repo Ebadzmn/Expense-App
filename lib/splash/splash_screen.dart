@@ -62,15 +62,19 @@ class _SplashScreenState extends State<SplashScreen> {
         child: Center(
           child: Column(
             mainAxisSize: MainAxisSize.min,
-            children: const [
-              FlutterLogo(size: 72),
-              SizedBox(height: 16),
-              Text(
-                'Your Expense',
+            children: [
+              Image.asset(
+                'assets/icons/AppIcon.png',
+                width: 84,
+                height: 84,
+              ),
+              const SizedBox(height: 16),
+              const Text(
+                'YeSpend',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: Colors.white),
               ),
-              SizedBox(height: 12),
-              CircularProgressIndicator(strokeWidth: 2.5),
+              const SizedBox(height: 12),
+              const CircularProgressIndicator(strokeWidth: 2.5),
             ],
           ),
         ),
