@@ -697,7 +697,7 @@ class AppTranslations extends Translations {
       'confirm_your_password': 'Confirm your new password',
       'continue': 'Continue',
       //uplodedrive
-      "upload_to_drive": "Upload to drive",
+      "upload_to_drive": "Save Report",
       "connected_account": "Connected Account",
       "connected": "Connected",
       "select_export_data": "Select Export Data",
