@@ -82,6 +82,7 @@ class _TotalSavingAdvertisementState extends State<TotalSavingAdvertisement> {
           });
         }
       },
+      comparator: true,
     );
   }
 

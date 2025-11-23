@@ -2,26 +2,36 @@ import 'package:flutter/foundation.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class AdHelper {
-  static String get interstitialAdUnitId {
-    if (kIsWeb) {
-      return '';
-    }
+  static String _genericInterstitialId() {
+    if (kIsWeb) return '';
     final bool isAndroid = defaultTargetPlatform == TargetPlatform.android;
     if (kDebugMode) {
-      // Use test IDs during development (always show demo ads on physical devices)
       return isAndroid
-          ? 'ca-app-pub-3940256099942544/1033173712' // Android test interstitial
-          : 'ca-app-pub-3940256099942544/4411468910'; // iOS test interstitial
+          ? 'ca-app-pub-3940256099942544/1033173712'
+          : 'ca-app-pub-3940256099942544/4411468910';
     }
-    // Use real IDs for production
     return isAndroid
-        ? 'ca-app-pub-3286434692968748/1750922400' // Android real interstitial
-        : 'ca-app-pub-3286434692968748/3290508437'; // iOS real interstitial
+        ? 'ca-app-pub-7017672768951042/7242712146'
+        : 'ca-app-pub-7017672768951042/7701877140';
+  }
+
+  static String _comparatorInterstitialId() {
+    if (kIsWeb) return '';
+    final bool isAndroid = defaultTargetPlatform == TargetPlatform.android;
+    if (kDebugMode) {
+      return isAndroid
+          ? 'ca-app-pub-3940256099942544/1033173712'
+          : 'ca-app-pub-3940256099942544/4411468910';
+    }
+    return isAndroid
+        ? 'ca-app-pub-7017672768951042/9014958816'
+        : 'ca-app-pub-7017672768951042/4657019202';
   }
 
   static Future<void> showInterstitialAd({
     required VoidCallback onAdDismissed,
     required VoidCallback onAdFailed,
+    bool comparator = false,
   }) async {
     if (kIsWeb) {
       debugPrint('Ads are not supported on web; continuing without ad.');
@@ -29,8 +39,9 @@ class AdHelper {
       return;
     }
     debugPrint('Loading and showing interstitial ad...');
+    final adUnitId = comparator ? _comparatorInterstitialId() : _genericInterstitialId();
     await InterstitialAd.load(
-      adUnitId: interstitialAdUnitId,
+      adUnitId: adUnitId,
       request: const AdRequest(),
       adLoadCallback: InterstitialAdLoadCallback(
         onAdLoaded: (InterstitialAd ad) {

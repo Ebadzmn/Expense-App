@@ -26,14 +26,22 @@
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>FirebaseAppDelegateProxyEnabled</key>
 	<true/>
-	<key>GADApplicationIdentifier</key>
-	<string>ca-app-pub-3286434692968748~1862177047</string>
+    <key>GADApplicationIdentifier</key>
+    <string>ca-app-pub-7017672768951042~3051351549</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
 	<string>Camera access is used for face verification setup.</string>
 	<key>NSFaceIDUsageDescription</key>
 	<string>We use Face ID to unlock the app and secure your data.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Access your photos to select or update your profile picture.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Save images to your photo library when exporting or downloading content.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Microphone access may be used when recording video via the camera.</string>
+	<key>NSUserTrackingUsageDescription</key>
+	<string>Allow tracking to deliver relevant ads and reduce ad fraud.</string>
 	<key>SKAdNetworkItems</key>
 	<array>
 		<dict>

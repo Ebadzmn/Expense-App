@@ -220,43 +220,43 @@ class MonthlyBudgetPage extends StatelessWidget {
             ),
             SizedBox(height: screenHeight * 0.03),
 
-            // Premium Feature Notice
-            Container(
-              width: double.infinity,
-              padding: EdgeInsets.all(screenWidth * 0.05),
-              decoration: BoxDecoration(
-                color: cardColor,
-                borderRadius: BorderRadius.circular(screenWidth * 0.04),
-              ),
-              child: Column(
-                children: [
-                  Icon(
-                    Icons.lock_outline,
-                    size: screenWidth * 0.08,
-                    color: secondaryTextColor,
-                  ),
-                  SizedBox(height: screenHeight * 0.015),
-                  Text(
-                    'Distribute your budget by category',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: screenWidth * 0.035,
-                      color: secondaryTextColor,
-                    ),
-                  ),
-                  SizedBox(height: screenHeight * 0.01),
-                  Text(
-                    'upgrade to Premium to unlock this feature.',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: screenWidth * 0.035,
-                      color: primaryColor,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            // // Premium Feature Notice
+            // Container(
+            //   width: double.infinity,
+            //   padding: EdgeInsets.all(screenWidth * 0.05),
+            //   decoration: BoxDecoration(
+            //     color: cardColor,
+            //     borderRadius: BorderRadius.circular(screenWidth * 0.04),
+            //   ),
+            //   child: Column(
+            //     children: [
+            //       Icon(
+            //         Icons.lock_outline,
+            //         size: screenWidth * 0.08,
+            //         color: secondaryTextColor,
+            //       ),
+            //       SizedBox(height: screenHeight * 0.015),
+            //       Text(
+            //         'Distribute your budget by category',
+            //         textAlign: TextAlign.center,
+            //         style: TextStyle(
+            //           fontSize: screenWidth * 0.035,
+            //           color: secondaryTextColor,
+            //         ),
+            //       ),
+            //       SizedBox(height: screenHeight * 0.01),
+            //       Text(
+            //         'upgrade to Premium to unlock this feature.',
+            //         textAlign: TextAlign.center,
+            //         style: TextStyle(
+            //           fontSize: screenWidth * 0.035,
+            //           color: primaryColor,
+            //           fontWeight: FontWeight.bold,
+            //         ),
+            //       ),
+            //     ],
+            //   ),
+            // ),
           ],
         ),
         ),

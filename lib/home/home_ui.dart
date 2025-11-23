@@ -60,7 +60,9 @@ class MainHomeScreen extends StatelessWidget {
                 // Header with Profile, Greeting, Location, and Notification
                 Row(
                   children: [
-                    Container(
+                    GestureDetector(
+                      onTap: () => Get.toNamed(AppRoutes.personalInformation),
+                      child: Container(
                       width: screenWidth * 0.12,
                       height: screenWidth * 0.12,
                       decoration: BoxDecoration(
@@ -89,23 +91,27 @@ class MainHomeScreen extends StatelessWidget {
                           return Image.asset('assets/icons/user.png', fit: BoxFit.cover);
                         }),
                       ),
+                      ),
                     ),
                     SizedBox(width: screenWidth * 0.03),
                     Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Obx(() => Text(
-                                profile.userName.value,
-                                style: TextStyle(
-                                  fontSize: screenWidth * 0.045,
-                                  fontWeight: FontWeight.w600,
-                                  color: textColor,
-                                ),
-                              )),
-                          SizedBox(height: screenHeight * 0.005),
-                         
-                        ],
+                      child: GestureDetector(
+                        onTap: () => Get.toNamed(AppRoutes.personalInformation),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Obx(() => Text(
+                                  profile.userName.value,
+                                  style: TextStyle(
+                                    fontSize: screenWidth * 0.045,
+                                    fontWeight: FontWeight.w600,
+                                    color: textColor,
+                                  ),
+                                )),
+                            SizedBox(height: screenHeight * 0.005),
+                           
+                          ],
+                        ),
                       ),
                     ),
                     GestureDetector(

@@ -6,7 +6,7 @@ class ConfigService extends GetxService {
 
   final String baseUrl;
 
-  ConfigService({this.baseUrl = 'http://10.10.7.106:5001/api/v1'});
+  ConfigService({this.baseUrl = 'https://api.yespend.com/api/v1'});
 
   // Auth endpoints
   String get loginEndpoint => '$baseUrl/auth/login';
