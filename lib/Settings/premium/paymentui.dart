@@ -4,6 +4,9 @@ import 'package:get/get.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:your_expense/services/iap_service.dart';
 import 'package:your_expense/services/subscription_service.dart';
+import 'package:your_expense/services/config_service.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:your_expense/common/webview_screen.dart';
 
 import '../appearance/ThemeController.dart';
 
@@ -87,6 +90,50 @@ class _PremiumPlansScreenState extends State<PremiumPlansScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(height: screenHeight * 0.03),
+
+                  // Restore Purchases (iOS only)
+                  if (defaultTargetPlatform == TargetPlatform.iOS)
+                    SizedBox(
+                      width: double.infinity,
+                      height: screenHeight * 0.06,
+                      child: ValueListenableBuilder<bool>(
+                        valueListenable: iap.isLoading,
+                        builder: (context, loading, __) {
+                          return OutlinedButton(
+                            onPressed: loading
+                                ? null
+                                : () async {
+                                    try {
+                                      iap.isLoading.value = true;
+                                      await iap.restorePurchases();
+                                    } finally {
+                                      iap.isLoading.value = false;
+                                    }
+                                  },
+                            style: OutlinedButton.styleFrom(
+                              side: BorderSide(color: const Color(0xFF2196F3)),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(screenWidth * 0.03),
+                              ),
+                            ),
+                            child: loading
+                                ? const SizedBox(
+                                    width: 18,
+                                    height: 18,
+                                    child: CircularProgressIndicator(strokeWidth: 2),
+                                  )
+                                : Text(
+                                    'Restore Purchases',
+                                    style: TextStyle(
+                                      color: const Color(0xFF2196F3),
+                                      fontSize: screenWidth * 0.04,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                          );
+                        },
+                      ),
+                    ),
 
                   // Header Section
                   Text(
@@ -350,6 +397,27 @@ class _PremiumPlansScreenState extends State<PremiumPlansScreen> {
                   ),
 
                   SizedBox(height: screenHeight * 0.03),
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      TextButton(
+                        onPressed: () {
+                          final cfg = Get.find<ConfigService>();
+                          Get.to(() => WebPageScreen(title: 'Privacy Policy', url: cfg.privacyPolicyUrl));
+                        },
+                        child: const Text('Privacy Policy'),
+                      ),
+                      const SizedBox(width: 16),
+                      TextButton(
+                        onPressed: () {
+                          final cfg = Get.find<ConfigService>();
+                          Get.to(() => WebPageScreen(title: 'Terms of Use', url: cfg.termsOfUseUrl));
+                        },
+                        child: const Text('Terms of Use'),
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ),

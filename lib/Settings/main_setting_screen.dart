@@ -7,6 +7,7 @@ import '../reuseablenav/reuseablenavui.dart';
 import '../routes/app_routes.dart';
 
 import '../Settings/appearance/ThemeController.dart';
+import 'package:your_expense/common/webview_screen.dart';
 import '../services/config_service.dart';
 
 
@@ -211,10 +212,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 //   themeController.isDarkModeActive,
                 // ),
                 _buildSettingsItem(
-                  'terms_conditions'.tr,
-                  'terms_conditions_subtitle'.tr,
+                  'Privacy Policy',
+                  'Read privacy policy for data handling',
                   'assets/icons/Terms & Conditions.png',
-                      () => Get.toNamed(AppRoutes.termsConditions),
+                      () {
+                        final cfg = Get.find<ConfigService>();
+                        Get.to(() => WebPageScreen(title: 'Privacy Policy', url: cfg.privacyPolicyUrl));
+                      },
                   screenWidth,
                   screenHeight,
                   themeController.isDarkModeActive,

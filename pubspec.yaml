@@ -1,7 +1,7 @@
 name: your_expense
 description: "A new Flutter project."
 publish_to: 'none'
-version: 1.0.1+7
+version: 1.0.1+9
 
 environment:
   sdk: ^3.8.1
@@ -20,6 +20,8 @@ dependencies:
   shared_preferences: ^2.2.2
   http: ^1.2.2
   pull_to_refresh: ^2.0.0
+  url_launcher: ^6.3.0
+  webview_flutter: ^4.10.0
 
   google_mlkit_text_recognition: ^0.14.0
   image_picker: ^1.0.4

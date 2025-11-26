@@ -31,13 +31,13 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>Camera access is used for face verification setup.</string>
+	<string>Allow camera to scan receipts/documents for OCR and for Face ID setup.</string>
 	<key>NSFaceIDUsageDescription</key>
 	<string>We use Face ID to unlock the app and secure your data.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Access your photos to select or update your profile picture.</string>
+	<string>Allow photo library access to select receipts/images for OCR and update profile picture.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>Save images to your photo library when exporting or downloading content.</string>
+	<string>Save exported receipts, reports or images to your photo library.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Microphone access may be used when recording video via the camera.</string>
 	<key>NSUserTrackingUsageDescription</key>

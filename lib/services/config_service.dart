@@ -5,8 +5,14 @@ class ConfigService extends GetxService {
   static ConfigService get to => Get.find();
 
   final String baseUrl;
+  final String privacyPolicyUrl;
+  final String termsOfUseUrl;
 
-  ConfigService({this.baseUrl = 'https://api.yespend.com/api/v1'});
+  ConfigService({
+    this.baseUrl = 'https://api.yespend.com/api/v1',
+    this.privacyPolicyUrl = 'https://yespend.com/privacy',
+    this.termsOfUseUrl = 'https://www.apple.com/legal/internet-services/itunes/dev/stdeula/',
+  });
 
   // Auth endpoints
   String get loginEndpoint => '$baseUrl/auth/login';

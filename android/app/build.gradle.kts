@@ -1,4 +1,5 @@
 import java.util.Properties
+import java.io.File
 
 plugins {
     id("com.android.application")
@@ -44,10 +45,26 @@ android {
 
     signingConfigs {
         create("release") {
-            storeFile = rootProject.file(keystoreProperties["storeFile"]?.toString() ?: "upload-key.jks")
-            storePassword = keystoreProperties["storePassword"]?.toString() ?: "123456"
-            keyAlias = keystoreProperties["keyAlias"]?.toString() ?: "upload"
-            keyPassword = keystoreProperties["keyPassword"]?.toString() ?: "123456"
+            val desiredStoreFile = rootProject.file(keystoreProperties["storeFile"]?.toString() ?: "upload-key.jks")
+            val hasDesiredKeystore = desiredStoreFile.exists()
+
+            // Fallback to Android debug keystore if release keystore missing
+            val debugKeystore = File(System.getProperty("user.home"), ".android/debug.keystore")
+            val useDebugKeystore = !hasDesiredKeystore && debugKeystore.exists()
+
+            if (!hasDesiredKeystore) {
+                println("⚠️ Release keystore not found at ${desiredStoreFile.path}")
+                if (useDebugKeystore) {
+                    println("ℹ️ Falling back to debug keystore at ${debugKeystore.path} for local build")
+                } else {
+                    println("❌ Debug keystore not found at ${debugKeystore.path}. Please create or provide a release keystore.")
+                }
+            }
+
+            storeFile = if (useDebugKeystore) debugKeystore else desiredStoreFile
+            storePassword = if (useDebugKeystore) "android" else (keystoreProperties["storePassword"]?.toString() ?: "123456")
+            keyAlias = if (useDebugKeystore) "androiddebugkey" else (keystoreProperties["keyAlias"]?.toString() ?: "upload")
+            keyPassword = if (useDebugKeystore) "android" else (keystoreProperties["keyPassword"]?.toString() ?: "123456")
         }
     }
 
