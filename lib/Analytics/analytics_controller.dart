@@ -17,10 +17,10 @@ class AnalyticsController extends GetxController {
   var totalExpenses = 0.0.obs; // Now dynamic from API
   var selectedMonth = ''.obs;
 
-  final ApiBaseService _apiService = Get.find();
-  final ConfigService _configService = Get.find();
-  final ExpenseService _expenseService = Get.find();
-  final IncomeService _incomeService = Get.find();
+  late final ApiBaseService _apiService;
+  late final ConfigService _configService;
+  late final ExpenseService _expenseService;
+  late final IncomeService _incomeService;
 
   // Dynamic income data from API
   final RxList<ChartData> incomeData = <ChartData>[].obs;
@@ -31,6 +31,14 @@ class AnalyticsController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    _apiService = Get.find<ApiBaseService>();
+    _configService = Get.find<ConfigService>();
+    _expenseService = Get.isRegistered<ExpenseService>()
+        ? Get.find<ExpenseService>()
+        : Get.put(ExpenseService(), permanent: true);
+    _incomeService = Get.isRegistered<IncomeService>()
+        ? Get.find<IncomeService>()
+        : Get.put(IncomeService(), permanent: true);
     final now = DateTime.now();
     selectedMonth.value = DateFormat('yyyy-MM').format(now);
     fetchIncomeSummary();

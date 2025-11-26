@@ -23,8 +23,12 @@ class _AppUnlockScreenState extends State<AppUnlockScreen> {
   @override
   void initState() {
     super.initState();
-    _faceService = Get.find<FaceIdService>();
-    _localAuth = Get.find<LocalAuthService>();
+    _faceService = Get.isRegistered<FaceIdService>()
+        ? Get.find<FaceIdService>()
+        : Get.put(FaceIdService(), permanent: true);
+    _localAuth = Get.isRegistered<LocalAuthService>()
+        ? Get.find<LocalAuthService>()
+        : Get.put(LocalAuthService(), permanent: true);
     // Initialize toggle state from saved preference
     enableFaceID = _faceService.isEnabledForCurrentUser();
     faceIDForAppLaunch = _faceService.isLaunchGateEnabledForCurrentUser();

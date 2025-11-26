@@ -159,7 +159,17 @@ class HomeController extends GetxController {
       isLoading.value = true;
       final txService = _transactionService;
       if (txService == null) {
-        print('HomeController: TransactionService not ready. Skipping recent transactions fetch.');
+        print('HomeController: TransactionService not ready. Scheduling retry.');
+        // Retry shortly after services finish registering
+        Future.delayed(const Duration(milliseconds: 500), () async {
+          try {
+            if (_transactionService != null || Get.isRegistered<TransactionService>()) {
+              await fetchRecentTransactions();
+            }
+          } catch (e) {
+            print('HomeController: retry fetchRecentTransactions failed: $e');
+          }
+        });
         return;
       }
       final transactions = await txService.fetchRecentTransactions();

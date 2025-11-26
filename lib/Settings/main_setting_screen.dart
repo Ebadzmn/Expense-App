@@ -7,7 +7,7 @@ import '../reuseablenav/reuseablenavui.dart';
 import '../routes/app_routes.dart';
 
 import '../Settings/appearance/ThemeController.dart';
-import 'package:your_expense/common/webview_screen.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../services/config_service.dart';
 
 
@@ -215,9 +215,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   'Privacy Policy',
                   'Read privacy policy for data handling',
                   'assets/icons/Terms & Conditions.png',
-                      () {
+                      () async {
                         final cfg = Get.find<ConfigService>();
-                        Get.to(() => WebPageScreen(title: 'Privacy Policy', url: cfg.privacyPolicyUrl));
+                        final uri = Uri.parse(cfg.privacyPolicyUrl);
+                        await launchUrl(uri, mode: LaunchMode.externalApplication);
                       },
                   screenWidth,
                   screenHeight,

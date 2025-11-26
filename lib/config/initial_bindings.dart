@@ -4,6 +4,8 @@ import 'package:get/get.dart';
 import 'package:your_expense/Settings/appearance/ThemeController.dart';
 import 'package:your_expense/Settings/language/language_controller.dart';
 import 'package:your_expense/home/home_controller.dart';
+import 'package:your_expense/homepage/service/budget_service.dart';
+import 'package:your_expense/homepage/service/transaction_service.dart';
 import 'package:your_expense/login/login_controller.dart';
 import 'package:your_expense/Analytics/expense_controller.dart';
 import 'package:your_expense/add_exp/pro_user/expenseincomepro/proexpincome_controller.dart';
@@ -22,6 +24,9 @@ class InitialBindings extends Bindings {
 
     // Lazily create other controllers when first used
     Get.lazyPut(() => HomeController(), fenix: true);
+    // Ensure feature services needed by Home are available early
+    Get.lazyPut(() => TransactionService(), fenix: true);
+    Get.lazyPut(() => BudgetService(), fenix: true);
     // Keep LoginController permanent to avoid disposing TextEditingControllers
     // while LoginScreen remains in the navigation stack.
     if (!Get.isRegistered<LoginController>()) {

@@ -6,7 +6,9 @@ import 'package:your_expense/services/subscription_service.dart';
 class ProUserMiddleware extends GetMiddleware {
   @override
   RouteSettings? redirect(String? route) {
-    final sub = Get.find<SubscriptionService>();
+    final sub = Get.isRegistered<SubscriptionService>()
+        ? Get.find<SubscriptionService>()
+        : Get.put(SubscriptionService(), permanent: true);
     // Redirect if subscription is expired; allow navigation otherwise
     if (sub.isProUser && sub.isExpiredNow) {
         // Prompt to resubscribe and reroute to premium plans

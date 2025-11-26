@@ -171,7 +171,19 @@ class UploadToDriveController extends GetxController {
         }
         break;
     }
-    final Uint8List bytes = await api.requestBytes('GET', endpoint, requiresAuth: true);
+    Uint8List bytes;
+    try {
+      bytes = await api.requestBytes('GET', endpoint, requiresAuth: true);
+    } catch (e) {
+      // Fallback: some backends expect 'Month' (capital M) in query
+      try {
+        final alt = endpoint.replaceFirst('month=', 'Month=');
+        bytes = await api.requestBytes('GET', alt, requiresAuth: true);
+        endpoint = alt;
+      } catch (_) {
+        rethrow;
+      }
+    }
     final filename = '$type-$month.$ext';
     await triggerDownload(filename, bytes);
         Get.snackbar(

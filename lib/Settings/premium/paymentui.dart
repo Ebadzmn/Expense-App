@@ -402,17 +402,17 @@ class _PremiumPlansScreenState extends State<PremiumPlansScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       TextButton(
-                        onPressed: () {
+                        onPressed: () async {
                           final cfg = Get.find<ConfigService>();
-                          Get.to(() => WebPageScreen(title: 'Privacy Policy', url: cfg.privacyPolicyUrl));
+                          await launchUrl(Uri.parse(cfg.privacyPolicyUrl), mode: LaunchMode.externalApplication);
                         },
                         child: const Text('Privacy Policy'),
                       ),
                       const SizedBox(width: 16),
                       TextButton(
-                        onPressed: () {
+                        onPressed: () async {
                           final cfg = Get.find<ConfigService>();
-                          Get.to(() => WebPageScreen(title: 'Terms of Use', url: cfg.termsOfUseUrl));
+                          await launchUrl(Uri.parse(cfg.termsOfUseUrl), mode: LaunchMode.externalApplication);
                         },
                         child: const Text('Terms of Use'),
                       ),

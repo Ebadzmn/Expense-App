@@ -10,8 +10,8 @@ import 'package:your_expense/Analytics/analytics_controller.dart';
 import 'package:your_expense/homepage/notification/notification_controller.dart';
 
 class ExpenseController extends GetxController {
-  final ExpenseService _expenseService = Get.find();
-  final ConfigService _configService = Get.find();
+  late final ExpenseService _expenseService;
+  late final ConfigService _configService;
 
   final RxList<ExpenseItem> allExpenses = <ExpenseItem>[].obs;
   final RxList<ExpenseItem> expenses = <ExpenseItem>[].obs;
@@ -23,6 +23,10 @@ class ExpenseController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    _expenseService = Get.isRegistered<ExpenseService>()
+        ? Get.find<ExpenseService>()
+        : Get.put(ExpenseService(), permanent: true);
+    _configService = Get.find<ConfigService>();
     // Initialize selected month from arguments or current month
     final args = Get.arguments as Map<String, dynamic>?;
     if (args != null && args.containsKey('month') && (args['month'] as String).isNotEmpty) {

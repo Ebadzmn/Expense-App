@@ -16,8 +16,12 @@ class AppColors {
 
 class AppConfig {
   static final app = Obx(() {
-    final themeController = Get.find<ThemeController>();
-    final langController = Get.find<LanguageController>();
+    final themeController = Get.isRegistered<ThemeController>()
+        ? Get.find<ThemeController>()
+        : Get.put(ThemeController(), permanent: true);
+    final langController = Get.isRegistered<LanguageController>()
+        ? Get.find<LanguageController>()
+        : Get.put(LanguageController(), permanent: true);
 
     // Force rebuild when language changes
     final currentLocale = langController.locale.value;
