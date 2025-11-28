@@ -10,6 +10,8 @@ import 'package:your_expense/login/login_controller.dart';
 import 'package:your_expense/Analytics/expense_controller.dart';
 import 'package:your_expense/add_exp/pro_user/expenseincomepro/proexpincome_controller.dart';
 import 'package:your_expense/homepage/model_and _controller_of_monthlybudgetpage/monthly_budget_controller.dart';
+import 'package:your_expense/RegisterScreen/registration_api_service.dart';
+import 'package:your_expense/RegisterScreen/verification_api_service.dart';
 
 class InitialBindings extends Bindings {
   @override
@@ -34,6 +36,10 @@ class InitialBindings extends Bindings {
     }
     Get.lazyPut(() => MonthlyBudgetController(), fenix: true);
     Get.lazyPut(() => ExpenseController(), fenix: true);
+    // Registration API for signup flow
+    Get.lazyPut(() => RegistrationApiService(), fenix: true);
+    // Verification API for signup OTP
+    Get.lazyPut(() => VerificationApiService(), fenix: true);
     // ProExpensesIncomeController is registered permanently in main.dart to avoid
     // disposing TextEditingControllers while its screen remains in the stack.
   }

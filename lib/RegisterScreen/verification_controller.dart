@@ -9,7 +9,11 @@ import 'package:your_expense/services/subscription_service.dart';
 import '../routes/app_routes.dart';
 
 class VerificationController extends GetxController {
-  final VerificationApiService verificationApiService = Get.find();
+  VerificationApiService _getVerificationService() {
+    return Get.isRegistered<VerificationApiService>()
+        ? Get.find<VerificationApiService>()
+        : Get.put(VerificationApiService(), permanent: true);
+  }
   final String? email = Get.arguments?['email'];
 
   List<TextEditingController> otpControllers = List.generate(
@@ -70,6 +74,8 @@ class VerificationController extends GetxController {
       print('Warn: failed to clean auth state at OTP init: $e');
     }
 
+    final s = _getVerificationService();
+    await s.init();
     startResendCountdown();
   }
 
@@ -202,7 +208,7 @@ class VerificationController extends GetxController {
     try {
       print('🚀 Calling API: verifyEmail($email, $otpCode)');
       final int otpInt = int.parse(otpCode);
-      final response = await verificationApiService.verifyEmail(email!, otpInt);
+      final response = await _getVerificationService().verifyEmail(email!, otpInt);
 
       print('═══════════════════════════════════════');
       print('📨 API RESPONSE RECEIVED');
@@ -354,7 +360,7 @@ class VerificationController extends GetxController {
 
     try {
       print('🚀 Calling API: resendOtp($email)');
-      final response = await verificationApiService.resendOtp(email!);
+      final response = await _getVerificationService().resendOtp(email!);
 
       print('═══════════════════════════════════════');
       print('📨 RESEND API RESPONSE');

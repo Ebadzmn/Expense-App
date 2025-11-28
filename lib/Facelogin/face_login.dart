@@ -80,8 +80,12 @@ class _FaceLoginScreenState extends State<FaceLoginScreen>
 
   Future<void> _startVerification() async {
     final tokenService = Get.isRegistered<TokenService>() ? Get.find<TokenService>() : null;
-    final faceService = Get.find<FaceIdService>();
-    final localAuth = Get.find<LocalAuthService>();
+    final faceService = Get.isRegistered<FaceIdService>()
+        ? Get.find<FaceIdService>()
+        : Get.put(FaceIdService(), permanent: true);
+    final localAuth = Get.isRegistered<LocalAuthService>()
+        ? Get.find<LocalAuthService>()
+        : Get.put(LocalAuthService(), permanent: true);
 
     if (tokenService == null || !tokenService.isTokenValid()) {
       Get.snackbar(

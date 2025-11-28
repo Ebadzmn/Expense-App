@@ -11,7 +11,7 @@ class RegistrationController extends GetxController {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
-  final RegistrationApiService _registrationApiService = Get.find();
+  late final RegistrationApiService _registrationApiService;
 
   var isTermsAccepted = false.obs;
   var isLoading = false.obs;
@@ -20,6 +20,10 @@ class RegistrationController extends GetxController {
   void onInit() {
     super.onInit();
     print('📋 RegistrationController initialized');
+    _registrationApiService = Get.isRegistered<RegistrationApiService>()
+        ? Get.find<RegistrationApiService>()
+        : Get.put(RegistrationApiService(), permanent: true);
+    _registrationApiService.init();
   }
 
   void toggleTermsAccepted(bool? value) {
