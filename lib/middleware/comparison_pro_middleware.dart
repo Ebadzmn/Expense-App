@@ -6,18 +6,20 @@ import 'package:your_expense/routes/app_routes.dart';
 class ComparisonProMiddleware extends GetMiddleware {
   @override
   RouteSettings? redirect(String? route) {
-    final sub = Get.find<SubscriptionService>();
-    // Block non‑Pro users from Comparison routes entirely
-    if (!sub.isActivePro) {
-      Future.microtask(() {
-        Get.snackbar(
-          'upgradeToProToView'.tr,
-          'graphsAndReports'.tr,
-          snackPosition: SnackPosition.BOTTOM,
-        );
-      });
-      return const RouteSettings(name: AppRoutes.premiumPlans);
-    }
+    // Disabled: Screen already has pro-gate overlay
+    // Let the screen show overlay instead of redirecting
+
+    // final sub = Get.find<SubscriptionService>();
+    // if (!sub.isActivePro) {
+    //   Future.microtask(() {
+    //     Get.snackbar(
+    //       'upgradeToProToView'.tr,
+    //       'graphsAndReports'.tr,
+    //       snackPosition: SnackPosition.BOTTOM,
+    //     );
+    //   });
+    //   return const RouteSettings(name: AppRoutes.premiumPlans);
+    // }
     return null;
   }
 }

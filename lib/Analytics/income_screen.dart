@@ -5,7 +5,6 @@ import 'package:your_expense/Settings/appearance/ThemeController.dart';
 import 'income_controller.dart';
 import 'income_model.dart';
 
-
 class IncomeListScreen extends StatelessWidget {
   final IncomeController _incomeController = Get.find();
 
@@ -16,23 +15,39 @@ class IncomeListScreen extends StatelessWidget {
     final themeController = Get.find<ThemeController>();
 
     // Define colors based on theme
-    final backgroundColor = themeController.isDarkModeActive ? Color(0xFF121212) : Colors.white;
-    final cardColor = themeController.isDarkModeActive ? Color(0xFF1E1E1E) : Colors.white;
-    final textColor = themeController.isDarkModeActive ? Colors.white : Colors.black;
-    final secondaryTextColor = themeController.isDarkModeActive ? Colors.grey.shade400 : Colors.grey.shade600;
-    final iconColor = themeController.isDarkModeActive ? Colors.grey.shade400 : Colors.grey.shade600;
-    final shadowColor = themeController.isDarkModeActive ? Colors.black.withOpacity(0.3) : Colors.grey.withOpacity(0.1);
-    final errorColor = themeController.isDarkModeActive ? Colors.red.shade300 : Colors.red;
+    final backgroundColor = themeController.isDarkModeActive
+        ? Color(0xFF121212)
+        : Colors.white;
+    final cardColor = themeController.isDarkModeActive
+        ? Color(0xFF1E1E1E)
+        : Colors.white;
+    final textColor = themeController.isDarkModeActive
+        ? Colors.white
+        : Colors.black;
+    final secondaryTextColor = themeController.isDarkModeActive
+        ? Colors.grey.shade400
+        : Colors.grey.shade600;
+    final iconColor = themeController.isDarkModeActive
+        ? Colors.grey.shade400
+        : Colors.grey.shade600;
+    final shadowColor = themeController.isDarkModeActive
+        ? Colors.black.withOpacity(0.3)
+        : Colors.grey.withOpacity(0.1);
+    final errorColor = themeController.isDarkModeActive
+        ? Colors.red.shade300
+        : Colors.red;
 
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: _buildAppBar(screenWidth, textColor, backgroundColor),
       body: Obx(() {
-        if (_incomeController.isLoading.value && _incomeController.incomes.isEmpty) {
+        if (_incomeController.isLoading.value &&
+            _incomeController.incomes.isEmpty) {
           return Center(child: CircularProgressIndicator());
         }
 
-        if (_incomeController.errorMessage.value.isNotEmpty && _incomeController.incomes.isEmpty) {
+        if (_incomeController.errorMessage.value.isNotEmpty &&
+            _incomeController.incomes.isEmpty) {
           return Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -58,7 +73,9 @@ class IncomeListScreen extends StatelessWidget {
           onRefresh: _incomeController.refreshIncomes,
           child: ListView.builder(
             padding: EdgeInsets.all(screenWidth * 0.04),
-            itemCount: _incomeController.incomes.length + (_incomeController.hasMore.value ? 1 : 0),
+            itemCount:
+                _incomeController.incomes.length +
+                (_incomeController.hasMore.value ? 1 : 0),
             itemBuilder: (context, index) {
               if (index == _incomeController.incomes.length) {
                 return _buildLoadMoreItem(screenHeight, _incomeController);
@@ -84,7 +101,11 @@ class IncomeListScreen extends StatelessWidget {
     );
   }
 
-  PreferredSizeWidget _buildAppBar(double screenWidth, Color textColor, Color backgroundColor) {
+  PreferredSizeWidget _buildAppBar(
+    double screenWidth,
+    Color textColor,
+    Color backgroundColor,
+  ) {
     return AppBar(
       backgroundColor: backgroundColor,
       elevation: 0,
@@ -109,17 +130,17 @@ class IncomeListScreen extends StatelessWidget {
   }
 
   Widget _buildIncomeItem(
-      Income income,
-      double screenWidth,
-      double screenHeight,
-      Color cardColor,
-      Color textColor,
-      Color secondaryTextColor,
-      Color iconColor,
-      Color shadowColor,
-      ThemeController themeController,
-      IncomeController incomeController,
-      ) {
+    Income income,
+    double screenWidth,
+    double screenHeight,
+    Color cardColor,
+    Color textColor,
+    Color secondaryTextColor,
+    Color iconColor,
+    Color shadowColor,
+    ThemeController themeController,
+    IncomeController incomeController,
+  ) {
     return Container(
       margin: EdgeInsets.only(bottom: screenHeight * 0.015),
       padding: EdgeInsets.all(screenWidth * 0.04),
@@ -142,7 +163,9 @@ class IncomeListScreen extends StatelessWidget {
             width: screenWidth * 0.12,
             height: screenWidth * 0.12,
             decoration: BoxDecoration(
-              color: themeController.isDarkModeActive ? Color(0xFF2D2D2D) : Colors.grey.shade100,
+              color: themeController.isDarkModeActive
+                  ? Color(0xFF2D2D2D)
+                  : Colors.grey.shade100,
               borderRadius: BorderRadius.circular(screenWidth * 0.02),
             ),
             child: Center(
@@ -208,18 +231,36 @@ class IncomeListScreen extends StatelessWidget {
                 ),
               ),
               SizedBox(height: screenHeight * 0.01),
-              GestureDetector(
-                onTap: () {
-                  _showEditIncomeDialog(income, incomeController);
-                },
-                child: Container(
-                  padding: EdgeInsets.all(screenWidth * 0.02),
-                  child: Icon(
-                    Icons.edit,
-                    size: screenWidth * 0.05,
-                    color: iconColor,
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      _showEditIncomeDialog(income, incomeController);
+                    },
+                    child: Container(
+                      padding: EdgeInsets.all(screenWidth * 0.02),
+                      child: Icon(
+                        Icons.edit,
+                        size: screenWidth * 0.05,
+                        color: iconColor,
+                      ),
+                    ),
                   ),
-                ),
+                  GestureDetector(
+                    onTap: () {
+                      _showDeleteConfirmationDialog(Get.context!, income);
+                    },
+                    child: Container(
+                      padding: EdgeInsets.all(screenWidth * 0.02),
+                      child: Icon(
+                        Icons.delete,
+                        size: screenWidth * 0.05,
+                        color: Colors.redAccent,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
@@ -228,14 +269,15 @@ class IncomeListScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildLoadMoreItem(double screenHeight, IncomeController incomeController) {
+  Widget _buildLoadMoreItem(
+    double screenHeight,
+    IncomeController incomeController,
+  ) {
     return Obx(() {
       if (incomeController.isLoading.value) {
         return Container(
           padding: EdgeInsets.symmetric(vertical: screenHeight * 0.02),
-          child: Center(
-            child: CircularProgressIndicator(),
-          ),
+          child: Center(child: CircularProgressIndicator()),
         );
       }
 
@@ -261,17 +303,18 @@ class IncomeListScreen extends StatelessWidget {
 
     final icon = iconMap[source.toLowerCase()] ?? Icons.attach_money;
 
-    return Icon(
-      icon,
-      size: screenWidth * 0.06,
-      color: iconColor,
-    );
+    return Icon(icon, size: screenWidth * 0.06, color: iconColor);
   }
 
   void _showEditIncomeDialog(Income income, IncomeController incomeController) {
-    final amountController = TextEditingController(text: income.amount.toString());
+    final amountController = TextEditingController(
+      text: income.amount.toString(),
+    );
     // Auto-select existing amount text for quick editing
-    amountController.selection = TextSelection(baseOffset: 0, extentOffset: amountController.text.length);
+    amountController.selection = TextSelection(
+      baseOffset: 0,
+      extentOffset: amountController.text.length,
+    );
     String selectedSource = income.source;
     // Build source options dynamically to ensure the current value is present
     final List<String> baseSources = ['salary', 'rent', 'business', 'gift'];
@@ -285,16 +328,15 @@ class IncomeListScreen extends StatelessWidget {
     final cardColor = isDark ? const Color(0xFF1E1E1E) : Colors.white;
     final textColor = isDark ? Colors.white : Colors.black;
     final iconColor = isDark ? Colors.grey.shade300 : Colors.grey.shade600;
-    final fieldFillColor = isDark ? const Color(0xFF1A1A1A) : Colors.grey.shade100;
+    final fieldFillColor = isDark
+        ? const Color(0xFF1A1A1A)
+        : Colors.grey.shade100;
     final borderColor = isDark ? Colors.grey.shade700 : Colors.grey.shade300;
     final focusedColor = Theme.of(Get.context!).colorScheme.primary;
 
     Get.defaultDialog(
       title: 'edit_income'.tr,
-      titleStyle: TextStyle(
-        color: textColor,
-        fontWeight: FontWeight.w600,
-      ),
+      titleStyle: TextStyle(color: textColor, fontWeight: FontWeight.w600),
       backgroundColor: cardColor,
       barrierDismissible: true,
       radius: 16,
@@ -317,19 +359,27 @@ class IncomeListScreen extends StatelessWidget {
             TextField(
               controller: amountController,
               autofocus: true,
-              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+              keyboardType: const TextInputType.numberWithOptions(
+                decimal: true,
+              ),
               textInputAction: TextInputAction.done,
               inputFormatters: [
                 FilteringTextInputFormatter.allow(RegExp(r'[0-9\.]')),
               ],
               onTap: () {
-                amountController.selection = TextSelection(baseOffset: 0, extentOffset: amountController.text.length);
+                amountController.selection = TextSelection(
+                  baseOffset: 0,
+                  extentOffset: amountController.text.length,
+                );
               },
               decoration: InputDecoration(
                 prefixIcon: Icon(Icons.attach_money, color: iconColor),
                 filled: true,
                 fillColor: fieldFillColor,
-                contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 12,
+                ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                   borderSide: BorderSide(color: borderColor),
@@ -354,17 +404,17 @@ class IncomeListScreen extends StatelessWidget {
               value: sources.contains(selectedSource) ? selectedSource : null,
               isExpanded: true,
               style: TextStyle(color: textColor, fontSize: 14),
-              icon: Icon(Icons.arrow_drop_down_circle_outlined, color: iconColor),
+              icon: Icon(
+                Icons.arrow_drop_down_circle_outlined,
+                color: iconColor,
+              ),
               dropdownColor: cardColor,
               menuMaxHeight: 240,
               items: sources
                   .map(
                     (s) => DropdownMenuItem(
                       value: s,
-                      child: Text(
-                        s,
-                        style: TextStyle(color: textColor),
-                      ),
+                      child: Text(s, style: TextStyle(color: textColor)),
                     ),
                   )
                   .toList(),
@@ -375,7 +425,10 @@ class IncomeListScreen extends StatelessWidget {
                 prefixIcon: Icon(Icons.category_outlined, color: iconColor),
                 filled: true,
                 fillColor: fieldFillColor,
-                contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 10,
+                ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                   borderSide: BorderSide(color: borderColor),
@@ -401,24 +454,34 @@ class IncomeListScreen extends StatelessWidget {
               style: OutlinedButton.styleFrom(
                 foregroundColor: textColor,
                 side: BorderSide(color: borderColor),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
               ),
               onPressed: () => Get.back(),
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6.0),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 8.0,
+                  vertical: 6.0,
+                ),
                 child: Text('cancel'.tr),
               ),
             ),
             SizedBox(width: 12),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
               ),
               onPressed: () async {
                 final amtStr = amountController.text.trim();
                 final amt = double.tryParse(amtStr);
                 if (amt == null) {
-                  Get.snackbar('invalid_amount'.tr, 'please_enter_valid_number'.tr);
+                  Get.snackbar(
+                    'invalid_amount'.tr,
+                    'please_enter_valid_number'.tr,
+                  );
                   return;
                 }
 
@@ -435,13 +498,66 @@ class IncomeListScreen extends StatelessWidget {
                 }
               },
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10.0,
+                  vertical: 6.0,
+                ),
                 child: Text('save_action'.tr),
               ),
             ),
           ],
         ),
       ],
+    );
+  }
+
+  void _showDeleteConfirmationDialog(BuildContext context, Income income) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final themeController = Get.find<ThemeController>();
+    final isDark = themeController.isDarkModeActive;
+    final dialogBg = isDark ? const Color(0xFF1E1E1E) : Colors.white;
+    final titleColor = isDark ? Colors.white : Colors.black87;
+    final contentColor = isDark ? Colors.grey.shade300 : Colors.grey.shade700;
+
+    Get.defaultDialog(
+      title: 'delete_income'.tr,
+      titleStyle: TextStyle(
+        color: titleColor,
+        fontSize: screenWidth * 0.045,
+        fontWeight: FontWeight.w700,
+      ),
+      backgroundColor: dialogBg,
+      middleText: 'delete_income_confirmation'.tr,
+      middleTextStyle: TextStyle(
+        color: contentColor,
+        fontSize: screenWidth * 0.04,
+      ),
+      radius: screenWidth * 0.03,
+      textCancel: 'cancel'.tr,
+      cancelTextColor: titleColor,
+      textConfirm: 'delete'.tr,
+      confirmTextColor: Colors.white,
+      buttonColor: Colors.redAccent,
+      onConfirm: () async {
+        try {
+          await _incomeController.removeIncome(income.id);
+          Get.back(); // Close dialog
+          Get.snackbar(
+            'deleted'.tr,
+            'income_deleted_successfully'.tr,
+            backgroundColor: Colors.green,
+            colorText: Colors.white,
+          );
+        } catch (e) {
+          Get.back(); // Close dialog
+          Get.snackbar(
+            'failed'.tr,
+            e.toString(),
+            backgroundColor: Colors.redAccent,
+            colorText: Colors.white,
+          );
+        }
+      },
     );
   }
 }

@@ -20,6 +20,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:your_expense/add_exp/common/barcode_scanner_screen.dart';
 import 'package:your_expense/Analytics/expense_model.dart';
+import 'package:your_expense/services/subscription_service.dart';
 
 class AppColors {
   static const Color text900 = Color(0xFF1E1E1E);
@@ -356,6 +357,11 @@ class _ExpensePageState extends State<ExpensePage> {
   var _isProcessingOCR = false.obs;
 
   Future<void> _processOCRFromCamera() async {
+    final sub = Get.find<SubscriptionService>();
+    if (!sub.isActivePro) {
+      _showProGateDialog(isExpense: true);
+      return;
+    }
     try {
       _isProcessingOCR.value = true;
       // Web fallback: ask for manual text
@@ -381,6 +387,11 @@ class _ExpensePageState extends State<ExpensePage> {
   }
 
   Future<void> _processOCRFromGallery() async {
+    final sub = Get.find<SubscriptionService>();
+    if (!sub.isActivePro) {
+      _showProGateDialog(isExpense: true);
+      return;
+    }
     try {
       _isProcessingOCR.value = true;
       if (kIsWeb) {
@@ -405,6 +416,11 @@ class _ExpensePageState extends State<ExpensePage> {
   }
 
   Future<void> _processOCRFromBarcode() async {
+    final sub = Get.find<SubscriptionService>();
+    if (!sub.isActivePro) {
+      _showProGateDialog(isExpense: true);
+      return;
+    }
     if (kIsWeb) {
       await _promptAndProcessRawText(title: 'enterReceiptTextBarcode'.tr);
       return;
@@ -417,6 +433,88 @@ class _ExpensePageState extends State<ExpensePage> {
       return;
     }
     await _handleOcrRawText(scanned);
+  }
+
+  void _showProGateDialog({required bool isExpense}) {
+    Get.dialog(
+      Dialog(
+        backgroundColor: widget.isDarkMode ? const Color(0xFF1E1E1E) : Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        child: Stack(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.lock, color: const Color(0xFF2196F3), size: 48),
+                  const SizedBox(height: 12),
+                  Text(
+                    'upgradeToProToView'.tr,
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w700,
+                      color: widget.isDarkMode ? Colors.white : Colors.black,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'graphsAndReports'.tr,
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: widget.isDarkMode ? Colors.white70 : Colors.black54,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Get.back();
+                            Get.toNamed(AppRoutes.premiumPlans);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF2196F3),
+                          ),
+                          child: Text('upgrade_now'.tr),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: OutlinedButton(
+                          onPressed: () {
+                            Get.back();
+                            Get.toNamed(AppRoutes.advertisement, arguments: {
+                              'isFromExpense': isExpense,
+                            });
+                          },
+                          style: OutlinedButton.styleFrom(
+                            side: const BorderSide(color: Color(0xFF2196F3)),
+                          ),
+                          child: Text('watchVideoToUnlock'.tr),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            Positioned(
+              right: 8,
+              top: 8,
+              child: IconButton(
+                icon: Icon(Icons.close, color: widget.isDarkMode ? Colors.white70 : Colors.black54),
+                onPressed: () => Get.back(),
+              ),
+            ),
+          ],
+        ),
+      ),
+      barrierDismissible: true,
+    );
   }
 
   Future<void> _promptAndProcessRawText({String? title}) async {
@@ -949,6 +1047,13 @@ class _ExpensePageState extends State<ExpensePage> {
               _selectedDate = null;
               _selectedTime = null;
             });
+            try {
+              final home = Get.find<HomeController>();
+              home.setNavIndex(0);
+              Get.offAllNamed(AppRoutes.mainHome);
+            } catch (_) {
+              Get.offAllNamed(AppRoutes.mainHome);
+            }
           } else {
             final msg = _expenseController.errorMessage.value.isNotEmpty
                 ? _expenseController.errorMessage.value
@@ -1067,6 +1172,11 @@ class _IncomePageState extends State<IncomePage> {
   }
 
   Future<void> _simulateOcr(String option) async {
+    final sub = Get.find<SubscriptionService>();
+    if (!sub.isActivePro) {
+      _showProGateDialogIncome();
+      return;
+    }
     String rawText;
     if (option == 'camera' || option == 'gallery') {
       rawText = "income: salary, amount tk 5000 received on oct 2025";
@@ -1077,6 +1187,87 @@ class _IncomePageState extends State<IncomePage> {
     // For barcode, use barcode scanner package to get code, then format as rawText
     await Future.delayed(const Duration(seconds: 2)); // Simulate processing
     await _handleOcrRaw(rawText);
+  }
+
+  void _showProGateDialogIncome() {
+    final isDark = widget.isDarkMode;
+    Get.dialog(
+      Dialog(
+        backgroundColor: isDark ? const Color(0xFF1E1E1E) : Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        child: Stack(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.lock, color: const Color(0xFF2196F3), size: 48),
+                  const SizedBox(height: 12),
+                  Text(
+                    'upgradeToProToView'.tr,
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w700,
+                      color: isDark ? Colors.white : Colors.black,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'graphsAndReports'.tr,
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: isDark ? Colors.white70 : Colors.black54,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Get.back();
+                            Get.toNamed(AppRoutes.premiumPlans);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF2196F3),
+                          ),
+                          child: Text('upgrade_now'.tr),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: OutlinedButton(
+                          onPressed: () {
+                            Get.back();
+                            Get.toNamed(AppRoutes.advertisement, arguments: {'isFromExpense': false});
+                          },
+                          style: OutlinedButton.styleFrom(
+                            side: const BorderSide(color: Color(0xFF2196F3)),
+                          ),
+                          child: Text('watchVideoToUnlock'.tr),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            Positioned(
+              right: 8,
+              top: 8,
+              child: IconButton(
+                icon: Icon(Icons.close, color: isDark ? Colors.white70 : Colors.black54),
+                onPressed: () => Get.back(),
+              ),
+            ),
+          ],
+        ),
+      ),
+      barrierDismissible: true,
+    );
   }
 
   @override
@@ -1529,6 +1720,13 @@ class _IncomePageState extends State<IncomePage> {
             _selectedDate = null;
             _selectedTime = null;
           });
+          try {
+            final home = Get.find<HomeController>();
+            home.setNavIndex(0);
+            Get.offAllNamed(AppRoutes.mainHome);
+          } catch (_) {
+            Get.offAllNamed(AppRoutes.mainHome);
+          }
         } catch (e) {
           Get.snackbar('error'.tr, 'transactionError'.tr, snackPosition: SnackPosition.BOTTOM);
         } finally {

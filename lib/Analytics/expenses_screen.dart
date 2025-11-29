@@ -7,7 +7,6 @@ import 'package:your_expense/Settings/appearance/ThemeController.dart';
 import 'expense_controller.dart';
 import 'expense_model.dart';
 
-
 class ExpenseListScreen extends StatelessWidget {
   final ExpenseController _expenseController = Get.find();
   final ThemeController _themeController = Get.find();
@@ -18,23 +17,40 @@ class ExpenseListScreen extends StatelessWidget {
     final screenHeight = MediaQuery.of(context).size.height;
 
     // Define colors based on theme
-    final backgroundColor = _themeController.isDarkModeActive ? Color(0xFF121212) : Colors.white;
-    final cardColor = _themeController.isDarkModeActive ? Color(0xFF1E1E1E) : Colors.white;
-    final textColor = _themeController.isDarkModeActive ? Colors.white : Colors.black;
-    final secondaryTextColor = _themeController.isDarkModeActive ? Colors.grey.shade400 : Colors.grey.shade600;
-    final iconColor = _themeController.isDarkModeActive ? Colors.grey.shade400 : Colors.grey.shade600;
-    final shadowColor = _themeController.isDarkModeActive ? Colors.black.withOpacity(0.3) : Colors.grey.withOpacity(0.1);
+    final backgroundColor = _themeController.isDarkModeActive
+        ? Color(0xFF121212)
+        : Colors.white;
+    final cardColor = _themeController.isDarkModeActive
+        ? Color(0xFF1E1E1E)
+        : Colors.white;
+    final textColor = _themeController.isDarkModeActive
+        ? Colors.white
+        : Colors.black;
+    final secondaryTextColor = _themeController.isDarkModeActive
+        ? Colors.grey.shade400
+        : Colors.grey.shade600;
+    final iconColor = _themeController.isDarkModeActive
+        ? Colors.grey.shade400
+        : Colors.grey.shade600;
+    final shadowColor = _themeController.isDarkModeActive
+        ? Colors.black.withOpacity(0.3)
+        : Colors.grey.withOpacity(0.1);
 
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: _buildAppBar(screenWidth, textColor, backgroundColor),
       body: Obx(() {
-        if (_expenseController.isLoading.value && _expenseController.expenses.isEmpty) {
+        if (_expenseController.isLoading.value &&
+            _expenseController.expenses.isEmpty) {
           return Center(child: CircularProgressIndicator());
         }
 
         if (_expenseController.errorMessage.value.isNotEmpty) {
-          return _buildErrorWidget(_expenseController.errorMessage.value, textColor, secondaryTextColor);
+          return _buildErrorWidget(
+            _expenseController.errorMessage.value,
+            textColor,
+            secondaryTextColor,
+          );
         }
 
         if (_expenseController.expenses.isEmpty) {
@@ -73,12 +89,20 @@ class ExpenseListScreen extends StatelessWidget {
     );
   }
 
-  PreferredSizeWidget _buildAppBar(double screenWidth, Color textColor, Color backgroundColor) {
+  PreferredSizeWidget _buildAppBar(
+    double screenWidth,
+    Color textColor,
+    Color backgroundColor,
+  ) {
     return AppBar(
       backgroundColor: backgroundColor,
       elevation: 0,
       leading: IconButton(
-        icon: Icon(Icons.arrow_back_ios, color: textColor, size: screenWidth * 0.05),
+        icon: Icon(
+          Icons.arrow_back_ios,
+          color: textColor,
+          size: screenWidth * 0.05,
+        ),
         onPressed: () => Get.back(),
       ),
       title: Text(
@@ -100,16 +124,16 @@ class ExpenseListScreen extends StatelessWidget {
   }
 
   Widget _buildExpenseItem(
-      BuildContext context,
-      ExpenseItem expense,
-      double screenWidth,
-      double screenHeight,
-      Color cardColor,
-      Color textColor,
-      Color secondaryTextColor,
-      Color iconColor,
-      Color shadowColor,
-      ) {
+    BuildContext context,
+    ExpenseItem expense,
+    double screenWidth,
+    double screenHeight,
+    Color cardColor,
+    Color textColor,
+    Color secondaryTextColor,
+    Color iconColor,
+    Color shadowColor,
+  ) {
     return Container(
       margin: EdgeInsets.only(bottom: screenHeight * 0.015),
       padding: EdgeInsets.all(screenWidth * 0.04),
@@ -132,7 +156,9 @@ class ExpenseListScreen extends StatelessWidget {
             width: screenWidth * 0.12,
             height: screenWidth * 0.12,
             decoration: BoxDecoration(
-              color: _themeController.isDarkModeActive ? Color(0xFF2D2D2D) : Colors.grey.shade100,
+              color: _themeController.isDarkModeActive
+                  ? Color(0xFF2D2D2D)
+                  : Colors.grey.shade100,
               borderRadius: BorderRadius.circular(screenWidth * 0.02),
             ),
             child: Center(
@@ -161,7 +187,11 @@ class ExpenseListScreen extends StatelessWidget {
                 ),
                 SizedBox(height: screenHeight * 0.005),
                 Text(
-                  expense.note.isNotEmpty ? expense.note : (expense.category.isNotEmpty ? expense.category : 'no_description'.tr),
+                  expense.note.isNotEmpty
+                      ? expense.note
+                      : (expense.category.isNotEmpty
+                            ? expense.category
+                            : 'no_description'.tr),
                   style: TextStyle(
                     fontSize: screenWidth * 0.032,
                     color: secondaryTextColor,
@@ -193,9 +223,7 @@ class ExpenseListScreen extends StatelessWidget {
 
           // Amount and edit button
           ConstrainedBox(
-            constraints: BoxConstraints(
-              maxWidth: screenWidth * 0.28,
-            ),
+            constraints: BoxConstraints(maxWidth: screenWidth * 0.28),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
@@ -215,11 +243,30 @@ class ExpenseListScreen extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: screenHeight * 0.01),
-                IconButton(
-                  icon: Icon(Icons.edit, size: screenWidth * 0.05, color: iconColor),
-                  onPressed: () {
-                    _showEditExpenseDialog(context, expense);
-                  },
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      icon: Icon(
+                        Icons.edit,
+                        size: screenWidth * 0.05,
+                        color: iconColor,
+                      ),
+                      onPressed: () {
+                        _showEditExpenseDialog(context, expense);
+                      },
+                    ),
+                    IconButton(
+                      icon: Icon(
+                        Icons.delete,
+                        size: screenWidth * 0.05,
+                        color: Colors.redAccent,
+                      ),
+                      onPressed: () {
+                        _showDeleteConfirmationDialog(context, expense);
+                      },
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -229,7 +276,11 @@ class ExpenseListScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildErrorWidget(String error, Color textColor, Color secondaryTextColor) {
+  Widget _buildErrorWidget(
+    String error,
+    Color textColor,
+    Color secondaryTextColor,
+  ) {
     return Center(
       child: Padding(
         padding: EdgeInsets.all(20),
@@ -259,7 +310,11 @@ class ExpenseListScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildEmptyState(Color iconColor, Color textColor, Color secondaryTextColor) {
+  Widget _buildEmptyState(
+    Color iconColor,
+    Color textColor,
+    Color secondaryTextColor,
+  ) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -289,13 +344,25 @@ class ExpenseListScreen extends StatelessWidget {
     final labelColor = isDark ? Colors.grey.shade300 : Colors.grey.shade700;
     final fieldBg = isDark ? const Color(0xFF2A2A2A) : Colors.grey.shade100;
     final borderColor = isDark ? Colors.grey.shade700 : Colors.grey.shade300;
-    final focusBorderColor = isDark ? Colors.tealAccent.shade200 : Colors.blueAccent;
+    final focusBorderColor = isDark
+        ? Colors.tealAccent.shade200
+        : Colors.blueAccent;
     final errorColor = Colors.redAccent;
 
-    final amountController = TextEditingController(text: expense.amount.toStringAsFixed(2));
-    String? selectedCategory = expense.category.isNotEmpty ? expense.category : null;
+    final amountController = TextEditingController(
+      text: expense.amount.toStringAsFixed(2),
+    );
+    String? selectedCategory = expense.category.isNotEmpty
+        ? expense.category
+        : null;
 
-    final baseCategories = <String>['Food', 'Transport', 'Groceries', 'Eating out', 'Other'];
+    final baseCategories = <String>[
+      'Food',
+      'Transport',
+      'Groceries',
+      'Eating out',
+      'Other',
+    ];
     final Set<String> categories = {...baseCategories};
     if ((expense.category).isNotEmpty) {
       categories.add(expense.category);
@@ -337,7 +404,9 @@ class ExpenseListScreen extends StatelessWidget {
             TextField(
               controller: amountController,
               autofocus: true,
-              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+              keyboardType: const TextInputType.numberWithOptions(
+                decimal: true,
+              ),
               textInputAction: TextInputAction.done,
               inputFormatters: [
                 FilteringTextInputFormatter.allow(RegExp(r'[0-9.]')),
@@ -383,23 +452,27 @@ class ExpenseListScreen extends StatelessWidget {
             SizedBox(height: screenHeight * 0.008),
             DropdownButtonFormField<String>(
               isExpanded: true,
-              value: (selectedCategory != null && categoryOptions.contains(selectedCategory))
+              value:
+                  (selectedCategory != null &&
+                      categoryOptions.contains(selectedCategory))
                   ? selectedCategory
                   : null,
               icon: Icon(Icons.category, color: labelColor),
               dropdownColor: dialogBg,
               menuMaxHeight: screenHeight * 0.4,
               items: categoryOptions
-                  .map((c) => DropdownMenuItem<String>(
-                        value: c,
-                        child: Text(
-                          c,
-                          style: TextStyle(
-                            color: titleColor,
-                            fontSize: screenWidth * 0.04,
-                          ),
+                  .map(
+                    (c) => DropdownMenuItem<String>(
+                      value: c,
+                      child: Text(
+                        c,
+                        style: TextStyle(
+                          color: titleColor,
+                          fontSize: screenWidth * 0.04,
                         ),
-                      ))
+                      ),
+                    ),
+                  )
                   .toList(),
               onChanged: (val) => selectedCategory = val,
               decoration: InputDecoration(
@@ -497,6 +570,58 @@ class ExpenseListScreen extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  void _showDeleteConfirmationDialog(
+    BuildContext context,
+    ExpenseItem expense,
+  ) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isDark = _themeController.isDarkModeActive;
+    final dialogBg = isDark ? const Color(0xFF1E1E1E) : Colors.white;
+    final titleColor = isDark ? Colors.white : Colors.black87;
+    final contentColor = isDark ? Colors.grey.shade300 : Colors.grey.shade700;
+
+    Get.defaultDialog(
+      title: 'delete_expense'.tr,
+      titleStyle: TextStyle(
+        color: titleColor,
+        fontSize: screenWidth * 0.045,
+        fontWeight: FontWeight.w700,
+      ),
+      backgroundColor: dialogBg,
+      middleText: 'delete_expense_confirmation'.tr,
+      middleTextStyle: TextStyle(
+        color: contentColor,
+        fontSize: screenWidth * 0.04,
+      ),
+      radius: screenWidth * 0.03,
+      textCancel: 'cancel'.tr,
+      cancelTextColor: titleColor,
+      textConfirm: 'delete'.tr,
+      confirmTextColor: Colors.white,
+      buttonColor: Colors.redAccent,
+      onConfirm: () async {
+        final success = await _expenseController.deleteExpenseItem(expense.id);
+        if (success) {
+          Get.back(); // Close dialog
+          Get.snackbar(
+            'deleted'.tr,
+            'expense_deleted_successfully'.tr,
+            backgroundColor: Colors.green,
+            colorText: Colors.white,
+          );
+        } else {
+          Get.back(); // Close dialog
+          Get.snackbar(
+            'failed'.tr,
+            _expenseController.errorMessage.value,
+            backgroundColor: Colors.redAccent,
+            colorText: Colors.white,
+          );
+        }
+      },
     );
   }
 }

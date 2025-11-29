@@ -204,65 +204,112 @@ class MainHomeScreen extends StatelessWidget {
                             ),
                           ),
                           SizedBox(width: screenWidth * 0.02),
-                          Icon(Icons.keyboard_arrow_down, color: Colors.white, size: screenWidth * 0.05),
+                          Obx(() => IconButton(
+                                onPressed: () {
+                                  controller.isAvailableBalanceCollapsed.value =
+                                      !controller.isAvailableBalanceCollapsed.value;
+                                },
+                                icon: Icon(
+                                  controller.isAvailableBalanceCollapsed.value
+                                      ? Icons.keyboard_arrow_up
+                                      : Icons.keyboard_arrow_down,
+                                  color: Colors.white,
+                                  size: screenWidth * 0.05,
+                                ),
+                              )),
                         ],
                       ),
                       SizedBox(height: screenHeight * 0.02),
-                      Center(
-                        child: Obx(() => FittedBox(
-                          fit: BoxFit.scaleDown,
-                          child: Text(
-                            '\$${controller.availableBalance.value.toStringAsFixed(2)}',
-                            maxLines: 1,
-                            overflow: TextOverflow.visible,
-                            style: TextStyle(
-                              fontSize: screenWidth * 0.1,
-                              fontWeight: FontWeight.w700,
-                              color: Colors.white,
+                      Obx(() {
+                        if (controller.isAvailableBalanceCollapsed.value) {
+                          return Center(
+                            child: SizedBox(
+                              height: screenHeight * 0.06,
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  controller.isAvailableBalanceCollapsed.value = false;
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.white,
+                                  foregroundColor: const Color(0xFF2196F3),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(screenWidth * 0.03),
+                                  ),
+                                ),
+                                child: Text('See available balance'),
+                              ),
                             ),
-                          ),
-                        )),
-                      ),
-                      SizedBox(height: screenHeight * 0.03),
-                      // Fixed the stat cards layout to prevent overflow
-                      LayoutBuilder(
-                        builder: (context, constraints) {
-                          return Obx(() => Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Expanded(
-                                child: _buildStatCard(
-                                    'income'.tr,
-                                    '\$${controller.income.value.toStringAsFixed(2)}',
-                                    Icons.arrow_upward,
-                                    Colors.green,
-                                    screenWidth
+                          );
+                        }
+                        return Column(
+                          children: [
+                            Center(
+                              child: FittedBox(
+                                fit: BoxFit.scaleDown,
+                                child: Text(
+                                  '\$${controller.availableBalance.value.toStringAsFixed(2)}',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.visible,
+                                  style: TextStyle(
+                                    fontSize: screenWidth * 0.1,
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.white,
+                                  ),
                                 ),
                               ),
-                              SizedBox(width: screenWidth * 0.04),
-                              Expanded(
-                                child: _buildStatCard(
-                                    'expense'.tr,
-                                    '\$${controller.expense.value.toStringAsFixed(2)}',
-                                    Icons.arrow_downward,
-                                    Colors.orange,
-                                    screenWidth
-                                ),
-                              ),
-                              SizedBox(width: screenWidth * 0.04),
-                              Expanded(
-                                child: _buildStatCard(
-                                    'savings'.tr,
-                                    '\$${(controller.income.value - controller.expense.value).toStringAsFixed(2)}',
-                                    Icons.add,
-                                    Colors.white,
-                                    screenWidth
-                                ),
-                              ),
-                            ],
-                          ));
-                        },
-                      ),
+                            ),
+                            SizedBox(height: screenHeight * 0.03),
+                            LayoutBuilder(
+                              builder: (context, constraints) {
+                                final budget = controller.monthlyBudget.value;
+                                final inc = controller.income.value;
+                                final exp = controller.expense.value;
+                                final sav = inc - exp;
+                                final incPct = budget > 0 ? ((inc / budget) * 100).clamp(0, 999).toDouble() : 0.0;
+                                final expPct = budget > 0 ? ((exp / budget) * 100).clamp(0, 999).toDouble() : 0.0;
+                                final savPct = budget > 0 && sav > 0 ? ((sav / budget) * 100).clamp(0, 999).toDouble() : 0.0;
+                                return Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Expanded(
+                                      child: _buildStatCard(
+                                        'income'.tr,
+                                        '\$${inc.toStringAsFixed(2)}',
+                                        Icons.arrow_upward,
+                                        Colors.green,
+                                        screenWidth,
+                                        '+${incPct.toStringAsFixed(0)}%'
+                                      ),
+                                    ),
+                                    SizedBox(width: screenWidth * 0.04),
+                                    Expanded(
+                                      child: _buildStatCard(
+                                        'expense'.tr,
+                                        '\$${exp.toStringAsFixed(2)}',
+                                        Icons.arrow_downward,
+                                        Colors.orange,
+                                        screenWidth,
+                                        '-${expPct.toStringAsFixed(0)}%'
+                                      ),
+                                    ),
+                                    SizedBox(width: screenWidth * 0.04),
+                                    Expanded(
+                                      child: _buildStatCard(
+                                        'savings'.tr,
+                                        '\$${sav.toStringAsFixed(2)}',
+                                        Icons.add,
+                                        Colors.white,
+                                        screenWidth,
+                                        '+${savPct.toStringAsFixed(0)}%'
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              },
+                            ),
+                          ],
+                        );
+                      }),
                     ],
                   ),
                 ),
@@ -482,7 +529,7 @@ class MainHomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildStatCard(String title, String amount, IconData icon, Color color, double screenWidth) {
+  Widget _buildStatCard(String title, String amount, IconData icon, Color color, double screenWidth, String percentLabel) {
     return Container(
       constraints: BoxConstraints(minHeight: screenWidth * 0.20),
       decoration: BoxDecoration(
@@ -538,7 +585,7 @@ class MainHomeScreen extends StatelessWidget {
               FittedBox(
                 fit: BoxFit.scaleDown,
                 child: Text(
-                  '+15%',
+                  percentLabel,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(

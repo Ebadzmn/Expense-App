@@ -23,6 +23,8 @@ class _ComparisonPageScreenState extends State<ComparisonPageScreen> {
   late final TextEditingController productNameController;
   late final TextEditingController maxPriceController;
   late final ComparisonPageController comparisonCtrl;
+  String? _prevRoute;
+  bool _overlayDismissed = false;
 
   @override
   void initState() {
@@ -35,6 +37,7 @@ class _ComparisonPageScreenState extends State<ComparisonPageScreen> {
     // Position nav selection after first frame
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final homeCtrl = Get.find<HomeController>();
+      _prevRoute = Get.previousRoute;
       if (homeCtrl.selectedNavIndex.value != 2) {
         homeCtrl.selectedNavIndex.value = 2;
       }
@@ -45,6 +48,22 @@ class _ComparisonPageScreenState extends State<ComparisonPageScreen> {
   void dispose() {
     productNameController.dispose();
     maxPriceController.dispose();
+    try {
+      final homeCtrl = Get.find<HomeController>();
+      int idx = 0;
+      switch (_prevRoute) {
+        case AppRoutes.analytics:
+          idx = 1;
+          break;
+        case AppRoutes.settings:
+          idx = 3;
+          break;
+        case AppRoutes.mainHome:
+        default:
+          idx = 0;
+      }
+      homeCtrl.setNavIndex(idx);
+    } catch (_) {}
     super.dispose();
   }
 
@@ -69,7 +88,25 @@ class _ComparisonPageScreenState extends State<ComparisonPageScreen> {
             color: isDarkMode ? Colors.white : Colors.black,
             size: 20,
           ),
-          onPressed: () => Get.back(),
+          onPressed: () {
+            try {
+              final homeCtrl = Get.find<HomeController>();
+              int idx = 0;
+              switch (_prevRoute) {
+                case AppRoutes.analytics:
+                  idx = 1;
+                  break;
+                case AppRoutes.settings:
+                  idx = 3;
+                  break;
+                case AppRoutes.mainHome:
+                default:
+                  idx = 0;
+              }
+              homeCtrl.setNavIndex(idx);
+            } catch (_) {}
+            Get.back();
+          },
         ),
         title: Text(
           'compare_save'.tr,
@@ -82,11 +119,12 @@ class _ComparisonPageScreenState extends State<ComparisonPageScreen> {
         centerTitle: true,
       ),
       body: Stack(
+        fit: StackFit.expand,
         children: [
           SingleChildScrollView(
-        padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+            padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(height: screenHeight * 0.02),
 
@@ -375,7 +413,7 @@ class _ComparisonPageScreenState extends State<ComparisonPageScreen> {
           ],
         ),
       ),
-          if (!sub.isActivePro) _buildProGateOverlay(screenWidth, screenHeight, isDarkMode),
+          if (!sub.isActivePro && !_overlayDismissed) _buildProGateOverlay(screenWidth, screenHeight, isDarkMode),
         ],
       ),
       bottomNavigationBar: CustomBottomNavBar(
@@ -390,8 +428,8 @@ class _ComparisonPageScreenState extends State<ComparisonPageScreen> {
         color: Colors.black.withOpacity(0.45),
         child: Center(
           child: Container(
-            width: screenWidth * 0.85,
-            padding: EdgeInsets.all(screenWidth * 0.06),
+            width: screenWidth * 0.7,
+            padding: EdgeInsets.all(screenWidth * 0.04),
             decoration: BoxDecoration(
               color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
               borderRadius: BorderRadius.circular(screenWidth * 0.03),
@@ -400,30 +438,30 @@ class _ComparisonPageScreenState extends State<ComparisonPageScreen> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(Icons.lock, size: screenWidth * 0.12, color: const Color(0xFF2196F3)),
-                SizedBox(height: screenWidth * 0.04),
+                Icon(Icons.lock, size: screenWidth * 0.08, color: const Color(0xFF2196F3)),
+                SizedBox(height: screenWidth * 0.03),
                 Text(
                   'upgradeToProToView'.tr,
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontSize: screenWidth * 0.05,
+                    fontSize: screenWidth * 0.045,
                     fontWeight: FontWeight.w700,
                     color: isDark ? Colors.white : Colors.black,
                   ),
                 ),
-                SizedBox(height: screenWidth * 0.02),
+                SizedBox(height: screenWidth * 0.015),
                 Text(
                   'graphsAndReports'.tr,
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontSize: screenWidth * 0.04,
+                    fontSize: screenWidth * 0.035,
                     color: isDark ? Colors.grey.shade400 : Colors.grey.shade700,
                   ),
                 ),
-                SizedBox(height: screenWidth * 0.05),
+                SizedBox(height: screenWidth * 0.035),
                 SizedBox(
                   width: double.infinity,
-                  height: screenWidth * 0.12,
+                  height: screenWidth * 0.09,
                   child: ElevatedButton(
                     onPressed: () => Get.toNamed(AppRoutes.premiumPlans),
                     style: ElevatedButton.styleFrom(
@@ -432,7 +470,23 @@ class _ComparisonPageScreenState extends State<ComparisonPageScreen> {
                     ),
                     child: Text(
                       'upgrade_now'.tr,
-                      style: TextStyle(color: Colors.white, fontSize: screenWidth * 0.045, fontWeight: FontWeight.w600),
+                      style: TextStyle(color: Colors.white, fontSize: screenWidth * 0.04, fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                ),
+                SizedBox(height: screenWidth * 0.02),
+                SizedBox(
+                  width: double.infinity,
+                  height: screenWidth * 0.09,
+                  child: OutlinedButton(
+                    onPressed: () => Get.toNamed(AppRoutes.advertisement, arguments: {'isFromExpense': false}),
+                    style: OutlinedButton.styleFrom(
+                      side: const BorderSide(color: Color(0xFF2196F3)),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(screenWidth * 0.02)),
+                    ),
+                    child: Text(
+                      'watchVideoToUnlock'.tr,
+                      style: TextStyle(color: const Color(0xFF2196F3), fontSize: screenWidth * 0.035, fontWeight: FontWeight.w600),
                     ),
                   ),
                 ),

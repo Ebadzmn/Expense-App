@@ -65,7 +65,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
             color: themeController.isDarkModeActive ? Colors.white : Colors.black,
             size: screenWidth * 0.05,
           ),
-          onPressed: () => Get.back(),
+          onPressed: () {
+            homeController.setNavIndex(0);
+            Get.toNamed(AppRoutes.mainHome);
+          }
         ),
         title: Text(
           'settings'.tr,

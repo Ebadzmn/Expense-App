@@ -35,6 +35,7 @@ class HomeController extends GetxController {
   var income = 0.0.obs;
   var expense = 0.0.obs;
   var savings = 0.0.obs;
+  var isAvailableBalanceCollapsed = false.obs;
 
   var monthlyBudget = 0.0.obs;
   var spentAmount = 0.0.obs;

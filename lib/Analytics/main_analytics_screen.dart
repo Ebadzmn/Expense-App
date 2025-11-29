@@ -6,7 +6,6 @@ import 'package:intl/intl.dart';
 import 'package:your_expense/services/subscription_service.dart';
 import 'package:your_expense/routes/app_routes.dart';
 
-
 import '../home/home_controller.dart';
 import '../reuseablenav/reuseablenavui.dart';
 import 'analytics_controller.dart';
@@ -34,45 +33,82 @@ class AnalyticsScreen extends StatelessWidget {
     final Color backgroundColor = isDarkMode ? Color(0xFF121212) : Colors.white;
     final Color cardColor = isDarkMode ? Color(0xFF1E1E1E) : Colors.white;
     final Color textColor = isDarkMode ? Colors.white : Colors.black;
-    final Color secondaryTextColor = isDarkMode ? Colors.grey[400]! : Color(0xFF6A6A6A);
-    final Color iconBackgroundColor = isDarkMode ? Color(0xFF2A2A2A) : Colors.grey.shade200;
+    final Color secondaryTextColor = isDarkMode
+        ? Colors.grey[400]!
+        : Color(0xFF6A6A6A);
+    final Color iconBackgroundColor = isDarkMode
+        ? Color(0xFF2A2A2A)
+        : Colors.grey.shade200;
 
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: _buildAppBar(screenWidth, textColor, backgroundColor),
-      body: Obx(() => controller.isLoading.value
-          ? _buildLoadingIndicator()
-          : RefreshIndicator(
-              onRefresh: () async {
-                await controller.fetchIncomeSummary();
-                await controller.fetchExpenseSummary();
-              },
-              child: SingleChildScrollView(
-                physics: const AlwaysScrollableScrollPhysics(),
-                child: Padding(
-                  padding: EdgeInsets.all(screenWidth * 0.05),
-                  child: Column(
-                    children: [
-                      _buildChartTypeButtons(controller, screenWidth, iconBackgroundColor, textColor),
-                      SizedBox(height: screenHeight * 0.03),
-                      _buildMonthSelector(controller, screenWidth, screenHeight),
-                      SizedBox(height: screenHeight * 0.04),
-                      _buildChartsSection(controller, screenWidth, screenHeight, iconBackgroundColor, textColor),
-                      SizedBox(height: screenHeight * 0.03),
-                      _buildLegend(controller, screenWidth, textColor, secondaryTextColor),
-                      SizedBox(height: screenHeight * 0.04),
-                      _buildSummaryCards(controller, screenWidth, screenHeight, cardColor, textColor, secondaryTextColor),
-                      SizedBox(height: screenHeight * 0.04),
-                      _buildActionsSection(controller, screenWidth, screenHeight, cardColor, textColor),
-                      SizedBox(height: screenHeight * 0.02),
-                    ],
+      body: Obx(
+        () => controller.isLoading.value
+            ? _buildLoadingIndicator()
+            : RefreshIndicator(
+                onRefresh: () async {
+                  await controller.fetchIncomeSummary();
+                  await controller.fetchExpenseSummary();
+                },
+                child: SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  child: Padding(
+                    padding: EdgeInsets.all(screenWidth * 0.05),
+                    child: Column(
+                      children: [
+                        _buildChartTypeButtons(
+                          controller,
+                          screenWidth,
+                          iconBackgroundColor,
+                          textColor,
+                        ),
+                        SizedBox(height: screenHeight * 0.03),
+                        _buildMonthSelector(
+                          controller,
+                          screenWidth,
+                          screenHeight,
+                        ),
+                        SizedBox(height: screenHeight * 0.04),
+                        _buildChartsSection(
+                          controller,
+                          screenWidth,
+                          screenHeight,
+                          iconBackgroundColor,
+                          textColor,
+                        ),
+                        SizedBox(height: screenHeight * 0.03),
+                        _buildLegend(
+                          controller,
+                          screenWidth,
+                          textColor,
+                          secondaryTextColor,
+                        ),
+                        SizedBox(height: screenHeight * 0.04),
+                        _buildSummaryCards(
+                          controller,
+                          screenWidth,
+                          screenHeight,
+                          cardColor,
+                          textColor,
+                          secondaryTextColor,
+                        ),
+                        SizedBox(height: screenHeight * 0.04),
+                        _buildActionsSection(
+                          controller,
+                          screenWidth,
+                          screenHeight,
+                          cardColor,
+                          textColor,
+                        ),
+                        SizedBox(height: screenHeight * 0.02),
+                      ],
+                    ),
                   ),
                 ),
               ),
-            )),
-      bottomNavigationBar: CustomBottomNavBar(
-        isDarkMode: isDarkMode,
       ),
+      bottomNavigationBar: CustomBottomNavBar(isDarkMode: isDarkMode),
     );
   }
 
@@ -89,7 +125,11 @@ class AnalyticsScreen extends StatelessWidget {
     );
   }
 
-  PreferredSizeWidget _buildAppBar(double screenWidth, Color textColor, Color backgroundColor) {
+  PreferredSizeWidget _buildAppBar(
+    double screenWidth,
+    Color textColor,
+    Color backgroundColor,
+  ) {
     return AppBar(
       backgroundColor: backgroundColor,
       elevation: 0,
@@ -107,7 +147,12 @@ class AnalyticsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildChartTypeButtons(AnalyticsController controller, double screenWidth, Color backgroundColor, Color textColor) {
+  Widget _buildChartTypeButtons(
+    AnalyticsController controller,
+    double screenWidth,
+    Color backgroundColor,
+    Color textColor,
+  ) {
     return Container(
       decoration: BoxDecoration(
         color: backgroundColor,
@@ -116,15 +161,45 @@ class AnalyticsScreen extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Obx(() => _buildChartTypeButton('pie_chart'.tr, 0, controller, screenWidth, textColor)),
-          Obx(() => _buildChartTypeButton('bar_chart'.tr, 1, controller, screenWidth, textColor)),
-          Obx(() => _buildChartTypeButton('line_chart'.tr, 2, controller, screenWidth, textColor)),
+          Obx(
+            () => _buildChartTypeButton(
+              'pie_chart'.tr,
+              0,
+              controller,
+              screenWidth,
+              textColor,
+            ),
+          ),
+          Obx(
+            () => _buildChartTypeButton(
+              'bar_chart'.tr,
+              1,
+              controller,
+              screenWidth,
+              textColor,
+            ),
+          ),
+          Obx(
+            () => _buildChartTypeButton(
+              'line_chart'.tr,
+              2,
+              controller,
+              screenWidth,
+              textColor,
+            ),
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildChartTypeButton(String title, int index, AnalyticsController controller, double screenWidth, Color textColor) {
+  Widget _buildChartTypeButton(
+    String title,
+    int index,
+    AnalyticsController controller,
+    double screenWidth,
+    Color textColor,
+  ) {
     bool isSelected = controller.selectedChartType.value == index;
     return Expanded(
       child: GestureDetector(
@@ -149,7 +224,11 @@ class AnalyticsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildMonthSelector(AnalyticsController controller, double screenWidth, double screenHeight) {
+  Widget _buildMonthSelector(
+    AnalyticsController controller,
+    double screenWidth,
+    double screenHeight,
+  ) {
     return GestureDetector(
       onTap: () => _showMonthPicker(controller, screenWidth, screenHeight),
       child: Container(
@@ -184,7 +263,11 @@ class AnalyticsScreen extends StatelessWidget {
     );
   }
 
-  void _showMonthPicker(AnalyticsController controller, double screenWidth, double screenHeight) {
+  void _showMonthPicker(
+    AnalyticsController controller,
+    double screenWidth,
+    double screenHeight,
+  ) {
     final now = DateTime.now();
     final currentYear = now.year;
     final themeController = Get.find<ThemeController>();
@@ -244,8 +327,10 @@ class AnalyticsScreen extends StatelessWidget {
                 itemCount: 12,
                 itemBuilder: (context, index) {
                   final month = index + 1;
-                  final monthYear = '${currentYear}-${month.toString().padLeft(2, '0')}';
-                  final isSelected = controller.selectedMonth.value == monthYear;
+                  final monthYear =
+                      '${currentYear}-${month.toString().padLeft(2, '0')}';
+                  final isSelected =
+                      controller.selectedMonth.value == monthYear;
 
                   return GestureDetector(
                     onTap: () {
@@ -256,17 +341,23 @@ class AnalyticsScreen extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: isSelected
                             ? Color(0xFF2196F3)
-                            : (isDarkMode ? Color(0xFF2A2A2A) : Colors.grey[100]),
+                            : (isDarkMode
+                                  ? Color(0xFF2A2A2A)
+                                  : Colors.grey[100]),
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(
                           color: isSelected
                               ? Color(0xFF2196F3)
-                              : (isDarkMode ? Colors.grey[700]! : Colors.grey[300]!),
+                              : (isDarkMode
+                                    ? Colors.grey[700]!
+                                    : Colors.grey[300]!),
                         ),
                       ),
                       child: Center(
                         child: Text(
-                          DateFormat('MMM').format(DateTime(currentYear, month)),
+                          DateFormat(
+                            'MMM',
+                          ).format(DateTime(currentYear, month)),
                           style: TextStyle(
                             color: isSelected
                                 ? Colors.white
@@ -287,7 +378,12 @@ class AnalyticsScreen extends StatelessWidget {
   }
 
   // Data type dropdown
-  Widget _buildDataTypeDropdown(AnalyticsController controller, double screenWidth, Color backgroundColor, Color textColor) {
+  Widget _buildDataTypeDropdown(
+    AnalyticsController controller,
+    double screenWidth,
+    Color backgroundColor,
+    Color textColor,
+  ) {
     return Container(
       width: screenWidth * 0.4,
       padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.03),
@@ -296,47 +392,56 @@ class AnalyticsScreen extends StatelessWidget {
         borderRadius: BorderRadius.circular(screenWidth * 0.02),
         border: Border.all(color: Colors.grey.withOpacity(0.3)),
       ),
-      child: Obx(() => DropdownButtonHideUnderline(
-        child: DropdownButton<int>(
-          value: controller.selectedDataType.value,
-          icon: Icon(Icons.keyboard_arrow_down, color: textColor),
-          isExpanded: true,
-          dropdownColor: backgroundColor,
-          style: TextStyle(
-            color: textColor,
-            fontSize: screenWidth * 0.035,
-            fontWeight: FontWeight.w500,
+      child: Obx(
+        () => DropdownButtonHideUnderline(
+          child: DropdownButton<int>(
+            value: controller.selectedDataType.value,
+            icon: Icon(Icons.keyboard_arrow_down, color: textColor),
+            isExpanded: true,
+            dropdownColor: backgroundColor,
+            style: TextStyle(
+              color: textColor,
+              fontSize: screenWidth * 0.035,
+              fontWeight: FontWeight.w500,
+            ),
+            items: [
+              DropdownMenuItem(value: 0, child: Text('income'.tr)),
+              DropdownMenuItem(value: 1, child: Text('expenses'.tr)),
+              DropdownMenuItem(value: 2, child: Text('Both')),
+            ],
+            onChanged: (int? newValue) {
+              if (newValue != null) {
+                controller.selectDataType(newValue);
+              }
+            },
           ),
-          items: [
-            DropdownMenuItem(
-              value: 0,
-              child: Text('income'.tr),
-            ),
-            DropdownMenuItem(
-              value: 1,
-              child: Text('expenses'.tr),
-            ),
-          ],
-          onChanged: (int? newValue) {
-            if (newValue != null) {
-              controller.selectDataType(newValue);
-            }
-          },
         ),
-      )),
+      ),
     );
   }
 
   // Charts section
-  Widget _buildChartsSection(AnalyticsController controller, double screenWidth, double screenHeight, Color iconBackgroundColor, Color textColor) {
+  Widget _buildChartsSection(
+    AnalyticsController controller,
+    double screenWidth,
+    double screenHeight,
+    Color iconBackgroundColor,
+    Color textColor,
+  ) {
     return Obx(() {
       final currentData = controller.getCurrentData();
       final hasData = currentData.isNotEmpty;
 
-      print('🎨 Building ${controller.currentDataTypeName} chart - Has data: $hasData');
+      print(
+        '🎨 Building ${controller.currentDataTypeName} chart - Has data: $hasData',
+      );
 
       if (!hasData) {
-        return _buildNoDataPlaceholder(screenWidth, screenHeight, controller.getCurrentDataTypeTitle());
+        return _buildNoDataPlaceholder(
+          screenWidth,
+          screenHeight,
+          controller.getCurrentDataTypeTitle(),
+        );
       }
 
       return Column(
@@ -345,12 +450,20 @@ class AnalyticsScreen extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _buildChartTitle(controller.getCurrentDataTypeTitle(), screenWidth),
-              _buildDataTypeDropdown(controller, screenWidth, iconBackgroundColor, textColor),
+              _buildChartTitle(
+                controller.getCurrentDataTypeTitle(),
+                screenWidth,
+              ),
+              _buildDataTypeDropdown(
+                controller,
+                screenWidth,
+                iconBackgroundColor,
+                textColor,
+              ),
             ],
           ),
           SizedBox(height: screenHeight * 0.02),
-          _buildChart(controller, screenWidth, screenHeight),
+          _buildChart(controller, screenWidth, screenHeight, currentData),
         ],
       );
     });
@@ -367,57 +480,80 @@ class AnalyticsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildChart(AnalyticsController controller, double screenWidth, double screenHeight) {
+  Widget _buildChart(
+    AnalyticsController controller,
+    double screenWidth,
+    double screenHeight,
+    List<ChartData> data,
+  ) {
     return Container(
       height: screenHeight * 0.3,
       child: controller.selectedChartType.value == 0
-          ? _buildPieChart(controller, screenWidth, screenHeight)
+          ? _buildPieChart(controller, screenWidth, screenHeight, data)
           : controller.selectedChartType.value == 1
-          ? _buildBarChart(controller, screenWidth, screenHeight)
-          : _buildLineChart(controller, screenWidth, screenHeight),
+          ? _buildBarChart(controller, screenWidth, screenHeight, data)
+          : _buildLineChart(controller, screenWidth, screenHeight, data),
     );
   }
 
-  Widget _buildPieChart(AnalyticsController controller, double screenWidth, double screenHeight) {
-    final pieData = controller.getCurrentPieChartData();
-    print('🥧 Building ${controller.currentDataTypeName} pie chart with ${pieData.length} items');
+  Widget _buildPieChart(
+    AnalyticsController controller,
+    double screenWidth,
+    double screenHeight,
+    List<ChartData> data,
+  ) {
+    print(
+      '🥧 Building ${controller.currentDataTypeName} pie chart with ${data.length} items',
+    );
     return Center(
       child: CustomPaint(
         size: Size(screenWidth * 0.5, screenWidth * 0.5),
-        painter: PieChartPainter(pieData),
+        painter: PieChartPainter(data),
       ),
     );
   }
 
-  Widget _buildBarChart(AnalyticsController controller, double screenWidth, double screenHeight) {
-    final barData = controller.getCurrentBarChartData();
-    print('📊 Building ${controller.currentDataTypeName} bar chart with ${barData.length} items');
+  Widget _buildBarChart(
+    AnalyticsController controller,
+    double screenWidth,
+    double screenHeight,
+    List<ChartData> data,
+  ) {
+    print(
+      '📊 Building ${controller.currentDataTypeName} bar chart with ${data.length} items',
+    );
     return Center(
       child: Container(
         height: screenHeight * 0.25,
         width: screenWidth * 0.85,
-        child: CustomPaint(
-          painter: BarChartPainter(barData),
-        ),
+        child: CustomPaint(painter: BarChartPainter(data)),
       ),
     );
   }
 
-  Widget _buildLineChart(AnalyticsController controller, double screenWidth, double screenHeight) {
-    final lineData = controller.getCurrentLineChartData();
-    print('📈 Building ${controller.currentDataTypeName} line chart with ${lineData.length} items');
+  Widget _buildLineChart(
+    AnalyticsController controller,
+    double screenWidth,
+    double screenHeight,
+    List<ChartData> data,
+  ) {
+    print(
+      '📈 Building ${controller.currentDataTypeName} line chart with ${data.length} items',
+    );
     return Center(
       child: Container(
         height: screenHeight * 0.25,
         width: screenWidth * 0.85,
-        child: CustomPaint(
-          painter: LineChartPainter(lineData),
-        ),
+        child: CustomPaint(painter: LineChartPainter(data)),
       ),
     );
   }
 
-  Widget _buildNoDataPlaceholder(double screenWidth, double screenHeight, String dataType) {
+  Widget _buildNoDataPlaceholder(
+    double screenWidth,
+    double screenHeight,
+    String dataType,
+  ) {
     return Container(
       height: screenHeight * 0.35,
       child: Center(
@@ -451,7 +587,12 @@ class AnalyticsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildLegend(AnalyticsController controller, double screenWidth, Color textColor, Color secondaryTextColor) {
+  Widget _buildLegend(
+    AnalyticsController controller,
+    double screenWidth,
+    Color textColor,
+    Color secondaryTextColor,
+  ) {
     return Obx(() {
       final currentData = controller.getCurrentData();
       final currentTotal = controller.getCurrentTotal();
@@ -474,8 +615,14 @@ class AnalyticsScreen extends StatelessWidget {
     });
   }
 
-  Widget _buildLegendSection(String title, List<ChartData> data, double total,
-      double screenWidth, Color textColor, Color secondaryTextColor) {
+  Widget _buildLegendSection(
+    String title,
+    List<ChartData> data,
+    double total,
+    double screenWidth,
+    Color textColor,
+    Color secondaryTextColor,
+  ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -489,7 +636,9 @@ class AnalyticsScreen extends StatelessWidget {
         ),
         SizedBox(height: screenWidth * 0.02),
         ...data.map((item) {
-          final percentage = total > 0 ? (item.value / total * 100).toStringAsFixed(1) : '0.0';
+          final percentage = total > 0
+              ? (item.value / total * 100).toStringAsFixed(1)
+              : '0.0';
           print('📊 Legend item: ${item.label} - ${item.value} ($percentage%)');
           return _buildLegendItem(
             item.label,
@@ -503,7 +652,11 @@ class AnalyticsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildNoDataLegend(double screenWidth, Color textColor, String dataType) {
+  Widget _buildNoDataLegend(
+    double screenWidth,
+    Color textColor,
+    String dataType,
+  ) {
     return Container(
       padding: EdgeInsets.all(screenWidth * 0.04),
       decoration: BoxDecoration(
@@ -521,7 +674,13 @@ class AnalyticsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildLegendItem(String label, String amount, Color color, double screenWidth, Color textColor) {
+  Widget _buildLegendItem(
+    String label,
+    String amount,
+    Color color,
+    double screenWidth,
+    Color textColor,
+  ) {
     return Padding(
       padding: EdgeInsets.only(bottom: screenWidth * 0.02),
       child: Row(
@@ -529,10 +688,7 @@ class AnalyticsScreen extends StatelessWidget {
           Container(
             width: screenWidth * 0.025,
             height: screenWidth * 0.025,
-            decoration: BoxDecoration(
-              color: color,
-              shape: BoxShape.circle,
-            ),
+            decoration: BoxDecoration(color: color, shape: BoxShape.circle),
           ),
           SizedBox(width: screenWidth * 0.02),
           Expanded(
@@ -547,9 +703,49 @@ class AnalyticsScreen extends StatelessWidget {
           ),
           Text(
             amount,
-            style: TextStyle(
-              fontSize: screenWidth * 0.032,
-              color: textColor,
+            style: TextStyle(fontSize: screenWidth * 0.032, color: textColor),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSummaryCards(
+    AnalyticsController controller,
+    double screenWidth,
+    double screenHeight,
+    Color cardColor,
+    Color textColor,
+    Color secondaryTextColor,
+  ) {
+    return Obx(
+      () => Row(
+        children: [
+          Expanded(
+            child: _buildSummaryCard(
+              'total_expenses'.tr,
+              controller.getFormattedTotalExpenses(),
+              Icons.arrow_downward,
+              Colors.orange,
+              screenWidth,
+              screenHeight,
+              cardColor,
+              textColor,
+              secondaryTextColor,
+            ),
+          ),
+          SizedBox(width: screenWidth * 0.04),
+          Expanded(
+            child: _buildSummaryCard(
+              'total_income'.tr,
+              controller.getFormattedTotalIncome(),
+              Icons.arrow_upward,
+              Colors.green,
+              screenWidth,
+              screenHeight,
+              cardColor,
+              textColor,
+              secondaryTextColor,
             ),
           ),
         ],
@@ -557,42 +753,17 @@ class AnalyticsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildSummaryCards(AnalyticsController controller, double screenWidth, double screenHeight, Color cardColor, Color textColor, Color secondaryTextColor) {
-    return Obx(() => Row(
-      children: [
-        Expanded(
-          child: _buildSummaryCard(
-            'total_expenses'.tr,
-            controller.getFormattedTotalExpenses(),
-            Icons.arrow_downward,
-            Colors.orange,
-            screenWidth,
-            screenHeight,
-            cardColor,
-            textColor,
-            secondaryTextColor,
-          ),
-        ),
-        SizedBox(width: screenWidth * 0.04),
-        Expanded(
-          child: _buildSummaryCard(
-            'total_income'.tr,
-            controller.getFormattedTotalIncome(),
-            Icons.arrow_upward,
-            Colors.green,
-            screenWidth,
-            screenHeight,
-            cardColor,
-            textColor,
-            secondaryTextColor,
-          ),
-        ),
-      ],
-    ));
-  }
-
-  Widget _buildSummaryCard(String title, String amount, IconData icon, Color iconColor,
-      double screenWidth, double screenHeight, Color cardColor, Color textColor, Color secondaryTextColor) {
+  Widget _buildSummaryCard(
+    String title,
+    String amount,
+    IconData icon,
+    Color iconColor,
+    double screenWidth,
+    double screenHeight,
+    Color cardColor,
+    Color textColor,
+    Color secondaryTextColor,
+  ) {
     return Container(
       padding: EdgeInsets.all(screenWidth * 0.04),
       decoration: BoxDecoration(
@@ -632,7 +803,13 @@ class AnalyticsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildActionsSection(AnalyticsController controller, double screenWidth, double screenHeight, Color cardColor, Color textColor) {
+  Widget _buildActionsSection(
+    AnalyticsController controller,
+    double screenWidth,
+    double screenHeight,
+    Color cardColor,
+    Color textColor,
+  ) {
     final sub = Get.find<SubscriptionService>();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -648,16 +825,30 @@ class AnalyticsScreen extends StatelessWidget {
         SizedBox(height: screenHeight * 0.02),
         GestureDetector(
           onTap: controller.onExpensesClick,
-          child: _buildActionItem('expenses'.tr, screenWidth, cardColor, textColor),
+          child: _buildActionItem(
+            'expenses'.tr,
+            screenWidth,
+            cardColor,
+            textColor,
+          ),
         ),
         GestureDetector(
           onTap: controller.onIncomeClick,
-          child: _buildActionItem('income'.tr, screenWidth, cardColor, textColor),
+          child: _buildActionItem(
+            'income'.tr,
+            screenWidth,
+            cardColor,
+            textColor,
+          ),
         ),
         GestureDetector(
           onTap: () {
             if (!sub.isActivePro) {
-              Get.snackbar('Pro Required', 'Export report is only available for Pro users.', snackPosition: SnackPosition.BOTTOM);
+              Get.snackbar(
+                'Pro Required',
+                'Export report is only available for Pro users.',
+                snackPosition: SnackPosition.BOTTOM,
+              );
               Get.toNamed(AppRoutes.premiumPlans);
             } else {
               controller.onExportReportClick();
@@ -674,7 +865,12 @@ class AnalyticsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildActionItem(String title, double screenWidth, Color cardColor, Color textColor) {
+  Widget _buildActionItem(
+    String title,
+    double screenWidth,
+    Color cardColor,
+    Color textColor,
+  ) {
     return Container(
       margin: EdgeInsets.only(bottom: screenWidth * 0.03),
       padding: EdgeInsets.all(screenWidth * 0.04),
@@ -824,10 +1020,19 @@ class BarChartPainter extends CustomPainter {
       canvas.drawRRect(rect, barPaint);
 
       final valueText = TextPainter(
-        text: TextSpan(text: '\$${data[i].value.toInt()}', style: categoryTextStyle),
+        text: TextSpan(
+          text: '\$${data[i].value.toInt()}',
+          style: categoryTextStyle,
+        ),
         textDirection: ui.TextDirection.ltr,
       )..layout();
-      valueText.paint(canvas, Offset(currentX + (barWidth - valueText.width) / 2, y - valueText.height - 2));
+      valueText.paint(
+        canvas,
+        Offset(
+          currentX + (barWidth - valueText.width) / 2,
+          y - valueText.height - 2,
+        ),
+      );
 
       final labelPainter = TextPainter(
         text: TextSpan(text: data[i].label, style: categoryTextStyle),

@@ -25,7 +25,7 @@ android {
 
     defaultConfig {
         applicationId = "com.mashiur.expenseapp" // ✅ Unique applicationId
-        minSdk = flutter.minSdkVersion
+        minSdk = 23
         targetSdk = 36
         // Read from pubspec.yaml: e.g., version: 1.0.1+2
         versionCode = flutter.versionCode

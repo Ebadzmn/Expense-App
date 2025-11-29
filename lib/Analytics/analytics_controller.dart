@@ -95,7 +95,8 @@ class AnalyticsController extends GetxController {
             final month = selectedMonth.value;
             double rawTotal = 0.0;
             for (final e in items) {
-              final ym = '${e.createdAt.year}-${e.createdAt.month.toString().padLeft(2, '0')}';
+              final ym =
+                  '${e.createdAt.year}-${e.createdAt.month.toString().padLeft(2, '0')}';
               if (ym == month) rawTotal += e.amount;
             }
             if (rawTotal > totalExpenses.value) {
@@ -124,7 +125,9 @@ class AnalyticsController extends GetxController {
 
   Future<bool> _fetchIncomeSummaryWithParamKey(String key) async {
     try {
-      print('🔄 Fetching income summary for month: ${selectedMonth.value} with key "$key"');
+      print(
+        '🔄 Fetching income summary for month: ${selectedMonth.value} with key "$key"',
+      );
       final response = await _apiService.request(
         'GET',
         '${_configService.baseUrl}/income/summary',
@@ -134,7 +137,11 @@ class AnalyticsController extends GetxController {
       if (response is Map && response['success'] == true) {
         final data = response['data'];
         totalIncome.value = (data['totalIncome'] as num?)?.toDouble() ?? 0.0;
-        final breakdown = (data['breakdown'] as List?)?.whereType<Map<String, dynamic>>().toList() ?? [];
+        final breakdown =
+            (data['breakdown'] as List?)
+                ?.whereType<Map<String, dynamic>>()
+                .toList() ??
+            [];
         incomeData.clear();
         final incomeColors = [
           const Color(0xFF00BCD4),
@@ -147,9 +154,16 @@ class AnalyticsController extends GetxController {
         for (int i = 0; i < breakdown.length; i++) {
           final source = breakdown[i];
           final color = incomeColors[i % incomeColors.length];
-          final sourceName = (source['source'] ?? source['category'] ?? source['categoryName'] ?? '').toString();
+          final sourceName =
+              (source['source'] ??
+                      source['category'] ??
+                      source['categoryName'] ??
+                      '')
+                  .toString();
           final amount = (source['amount'] as num?)?.toDouble() ?? 0.0;
-          incomeData.add(ChartData(label: sourceName, value: amount, color: color));
+          incomeData.add(
+            ChartData(label: sourceName, value: amount, color: color),
+          );
         }
         update();
         return true;
@@ -163,7 +177,9 @@ class AnalyticsController extends GetxController {
 
   Future<bool> _fetchExpenseSummaryWithParamKey(String key) async {
     try {
-      print('🔄 Fetching expense summary for month: ${selectedMonth.value} with key "$key"');
+      print(
+        '🔄 Fetching expense summary for month: ${selectedMonth.value} with key "$key"',
+      );
       final response = await _apiService.request(
         'GET',
         '${_configService.baseUrl}/expense/summary',
@@ -173,7 +189,11 @@ class AnalyticsController extends GetxController {
       if (response is Map && response['success'] == true) {
         final data = response['data'];
         totalExpenses.value = (data['totalExpense'] as num?)?.toDouble() ?? 0.0;
-        final breakdown = (data['breakdown'] as List?)?.whereType<Map<String, dynamic>>().toList() ?? [];
+        final breakdown =
+            (data['breakdown'] as List?)
+                ?.whereType<Map<String, dynamic>>()
+                .toList() ??
+            [];
         expenseData.clear();
         final expenseColors = [
           const Color(0xFFFF5252),
@@ -186,9 +206,16 @@ class AnalyticsController extends GetxController {
         for (int i = 0; i < breakdown.length; i++) {
           final category = breakdown[i];
           final color = expenseColors[i % expenseColors.length];
-          final categoryName = (category['categoryName'] ?? category['category'] ?? category['source'] ?? '').toString();
+          final categoryName =
+              (category['categoryName'] ??
+                      category['category'] ??
+                      category['source'] ??
+                      '')
+                  .toString();
           final amount = (category['amount'] as num?)?.toDouble() ?? 0.0;
-          expenseData.add(ChartData(label: categoryName, value: amount, color: color));
+          expenseData.add(
+            ChartData(label: categoryName, value: amount, color: color),
+          );
         }
         update();
         return true;
@@ -202,11 +229,14 @@ class AnalyticsController extends GetxController {
 
   Future<void> _buildExpenseBreakdownFromRaw() async {
     try {
-      print('🛠️ Building expense breakdown locally for ${selectedMonth.value}');
+      print(
+        '🛠️ Building expense breakdown locally for ${selectedMonth.value}',
+      );
       final items = await _expenseService.getExpenses();
       final month = selectedMonth.value;
       final filtered = items.where((e) {
-        final ym = '${e.createdAt.year}-${e.createdAt.month.toString().padLeft(2, '0')}';
+        final ym =
+            '${e.createdAt.year}-${e.createdAt.month.toString().padLeft(2, '0')}';
         return ym == month;
       }).toList();
       final Map<String, double> grouped = {};
@@ -242,7 +272,11 @@ class AnalyticsController extends GetxController {
     try {
       print('🛠️ Building income breakdown locally for ${selectedMonth.value}');
       // Fetch a large page to avoid truncation
-      final resp = await _incomeService.getIncomes(page: 1, limit: 1000, month: selectedMonth.value);
+      final resp = await _incomeService.getIncomes(
+        page: 1,
+        limit: 1000,
+        month: selectedMonth.value,
+      );
       final items = resp.data;
       final Map<String, double> grouped = {};
       for (final inc in items) {
@@ -276,10 +310,7 @@ class AnalyticsController extends GetxController {
   Future<void> fetchAllData() async {
     try {
       isLoading.value = true;
-      await Future.wait([
-        fetchIncomeSummary(),
-        fetchExpenseSummary(),
-      ]);
+      await Future.wait([fetchIncomeSummary(), fetchExpenseSummary()]);
     } catch (e) {
       print('❌ Error fetching all data: $e');
     } finally {
@@ -293,7 +324,7 @@ class AnalyticsController extends GetxController {
   }
 
   // Data type methods
-  List<String> get dataTypes => ['Income', 'Expense'];
+  List<String> get dataTypes => ['Income', 'Expense', 'Both'];
 
   String get currentDataTypeName => dataTypes[selectedDataType.value];
 
@@ -304,14 +335,25 @@ class AnalyticsController extends GetxController {
 
   // Get current data based on selection
   List<ChartData> getCurrentData() {
+    if (selectedDataType.value == 2) {
+      return [...incomeData, ...expenseData];
+    }
     return selectedDataType.value == 0 ? incomeData : expenseData;
   }
 
   double getCurrentTotal() {
-    return selectedDataType.value == 0 ? totalIncome.value : totalExpenses.value;
+    if (selectedDataType.value == 2) {
+      return totalIncome.value + totalExpenses.value;
+    }
+    return selectedDataType.value == 0
+        ? totalIncome.value
+        : totalExpenses.value;
   }
 
   String getCurrentDataTypeTitle() {
+    if (selectedDataType.value == 2) {
+      return 'Income & Expenses'.tr;
+    }
     return selectedDataType.value == 0 ? 'income'.tr : 'expenses'.tr;
   }
 
@@ -333,13 +375,21 @@ class AnalyticsController extends GetxController {
     // Fallback sample data
     return selectedDataType.value == 0
         ? [
-      ChartData(label: 'Salary', value: 26000, color: Colors.blue),
-      ChartData(label: 'Rent', value: 8470, color: Colors.green),
-    ]
+            ChartData(label: 'Salary', value: 26000, color: Colors.blue),
+            ChartData(label: 'Rent', value: 8470, color: Colors.green),
+          ]
         : [
-      ChartData(label: 'Shopping', value: 700, color: const Color(0xFFFF5252)),
-      ChartData(label: 'Medicine', value: 700, color: const Color(0xFF4CAF50)),
-    ];
+            ChartData(
+              label: 'Shopping',
+              value: 700,
+              color: const Color(0xFFFF5252),
+            ),
+            ChartData(
+              label: 'Medicine',
+              value: 700,
+              color: const Color(0xFF4CAF50),
+            ),
+          ];
   }
 
   // Legacy methods for backward compatibility
@@ -398,9 +448,10 @@ class AnalyticsController extends GetxController {
   }
 
   void onExpensesClick() {
-    Get.toNamed(AppRoutes.expensesScreen, arguments: {
-      'month': selectedMonth.value,
-    });
+    Get.toNamed(
+      AppRoutes.expensesScreen,
+      arguments: {'month': selectedMonth.value},
+    );
   }
 
   void onIncomeClick() {

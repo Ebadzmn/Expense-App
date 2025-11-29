@@ -15,6 +15,7 @@ import 'package:your_expense/Analytics/expense_model.dart';
 import 'package:your_expense/home/home_controller.dart';
 import 'package:your_expense/add_exp/common/barcode_scanner_screen.dart';
 import 'package:your_expense/services/subscription_service.dart';
+import 'package:your_expense/routes/app_routes.dart';
 
 
 class ProExpensesIncomeController extends GetxController {
@@ -373,7 +374,13 @@ class ProExpensesIncomeController extends GetxController {
         amountController.clear();
         descriptionController.clear();
         clearSelections();
-        Get.back();
+        try {
+          final home = Get.find<HomeController>();
+          home.setNavIndex(0);
+          Get.offAllNamed(AppRoutes.mainHome);
+        } catch (_) {
+          Get.offAllNamed(AppRoutes.mainHome);
+        }
       } else {
         _showScaffoldMessage(
           _expenseController.errorMessage.value.isNotEmpty
@@ -419,7 +426,13 @@ class ProExpensesIncomeController extends GetxController {
         amountController.clear();
         descriptionController.clear();
         clearSelections();
-        Get.back();
+        try {
+          final home = Get.find<HomeController>();
+          home.setNavIndex(0);
+          Get.offAllNamed(AppRoutes.mainHome);
+        } catch (_) {
+          Get.offAllNamed(AppRoutes.mainHome);
+        }
       } catch (e) {
         _showScaffoldMessage('Failed to add income', isError: true);
       } finally {

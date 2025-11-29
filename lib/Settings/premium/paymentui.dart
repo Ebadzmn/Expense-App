@@ -32,7 +32,9 @@ class _PremiumPlansScreenState extends State<PremiumPlansScreen> {
   void initState() {
     super.initState();
     themeController = Get.find<ThemeController>();
-    iap = Get.isRegistered<IapService>() ? Get.find<IapService>() : Get.put(IapService());
+    iap = Get.isRegistered<IapService>()
+        ? Get.find<IapService>()
+        : Get.put(IapService());
     // init IAP (will also query products and listen for purchases)
     print('[IAP] PremiumPlansScreen init: calling iap.init()');
     iap.init();
@@ -54,375 +56,455 @@ class _PremiumPlansScreenState extends State<PremiumPlansScreen> {
     final double screenHeight = MediaQuery.of(context).size.height;
     final sub = Get.find<SubscriptionService>();
 
-    return Obx(() => Scaffold(
-          backgroundColor: themeController.isDarkModeActive ? const Color(0xFF121212) : const Color(0xFFF8F9FA),
-          appBar: AppBar(
-            backgroundColor: themeController.isDarkModeActive ? const Color(0xFF1E1E1E) : const Color(0xFFF8F9FA),
-            elevation: 0,
-            leading: IconButton(
-              icon: Icon(
-                Icons.arrow_back_ios,
-                color: themeController.isDarkModeActive ? Colors.white : Colors.black,
-                size: screenWidth * 0.05,
-              ),
-              onPressed: () {
-                Get.back();
-              },
+    return Obx(
+      () => Scaffold(
+        backgroundColor: themeController.isDarkModeActive
+            ? const Color(0xFF121212)
+            : const Color(0xFFF8F9FA),
+        appBar: AppBar(
+          backgroundColor: themeController.isDarkModeActive
+              ? const Color(0xFF1E1E1E)
+              : const Color(0xFFF8F9FA),
+          elevation: 0,
+          leading: IconButton(
+            icon: Icon(
+              Icons.arrow_back_ios,
+              color: themeController.isDarkModeActive
+                  ? Colors.white
+                  : Colors.black,
+              size: screenWidth * 0.05,
             ),
-            title: Text(
-              'premium_plans'.tr,
-              style: TextStyle(
-                color: themeController.isDarkModeActive ? Colors.white : Colors.black,
-                fontSize: screenWidth * 0.045,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            centerTitle: true,
+            onPressed: () {
+              Get.back();
+            },
           ),
-          body: (sub.isPro.value && sub.isActivePro)
-              // Pro user view
-              ? _buildProUserScreen(screenWidth, screenHeight)
-              // Normal purchase flow view
-              : SingleChildScrollView(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(height: screenHeight * 0.03),
+          title: Text(
+            'premium_plans'.tr,
+            style: TextStyle(
+              color: themeController.isDarkModeActive
+                  ? Colors.white
+                  : Colors.black,
+              fontSize: screenWidth * 0.045,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          centerTitle: true,
+        ),
+        body: (sub.isPro.value && sub.isActivePro)
+            // Pro user view
+            ? _buildProUserScreen(screenWidth, screenHeight)
+            // Normal purchase flow view
+            : SingleChildScrollView(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(height: screenHeight * 0.03),
 
-                  // Restore Purchases (iOS only)
-                  if (defaultTargetPlatform == TargetPlatform.iOS)
-                    SizedBox(
-                      width: double.infinity,
-                      height: screenHeight * 0.06,
-                      child: ValueListenableBuilder<bool>(
-                        valueListenable: iap.isLoading,
-                        builder: (context, loading, __) {
-                          return OutlinedButton(
-                            onPressed: loading
-                                ? null
-                                : () async {
-                                    try {
-                                      iap.isLoading.value = true;
-                                      await iap.restorePurchases();
-                                    } finally {
-                                      iap.isLoading.value = false;
-                                    }
-                                  },
-                            style: OutlinedButton.styleFrom(
-                              side: BorderSide(color: const Color(0xFF2196F3)),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(screenWidth * 0.03),
-                              ),
-                            ),
-                            child: loading
-                                ? const SizedBox(
-                                    width: 18,
-                                    height: 18,
-                                    child: CircularProgressIndicator(strokeWidth: 2),
-                                  )
-                                : Text(
-                                    'Restore Purchases',
-                                    style: TextStyle(
-                                      color: const Color(0xFF2196F3),
-                                      fontSize: screenWidth * 0.04,
-                                      fontWeight: FontWeight.w600,
+                      // Restore Purchases (iOS only)
+                      if (defaultTargetPlatform == TargetPlatform.iOS)
+                        SizedBox(
+                          width: double.infinity,
+                          height: screenHeight * 0.06,
+                          child: ValueListenableBuilder<bool>(
+                            valueListenable: iap.isLoading,
+                            builder: (context, loading, __) {
+                              return OutlinedButton(
+                                onPressed: loading
+                                    ? null
+                                    : () async {
+                                        try {
+                                          iap.isLoading.value = true;
+                                          await iap.restorePurchases();
+                                        } finally {
+                                          iap.isLoading.value = false;
+                                        }
+                                      },
+                                style: OutlinedButton.styleFrom(
+                                  side: BorderSide(
+                                    color: const Color(0xFF2196F3),
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(
+                                      screenWidth * 0.03,
                                     ),
                                   ),
+                                ),
+                                child: loading
+                                    ? const SizedBox(
+                                        width: 18,
+                                        height: 18,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                        ),
+                                      )
+                                    : Text(
+                                        'Restore Purchases',
+                                        style: TextStyle(
+                                          color: const Color(0xFF2196F3),
+                                          fontSize: screenWidth * 0.04,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                              );
+                            },
+                          ),
+                        ),
+
+                      // Header Section
+                      Text(
+                        'premium_header'.tr,
+                        style: TextStyle(
+                          fontSize: screenWidth * 0.05,
+                          fontWeight: FontWeight.w600,
+                          color: themeController.isDarkModeActive
+                              ? Colors.white
+                              : Colors.black,
+                        ),
+                      ),
+                      SizedBox(height: screenHeight * 0.01),
+                      Text(
+                        'premium_subheader'.tr,
+                        style: TextStyle(
+                          fontSize: screenWidth * 0.035,
+                          color: themeController.isDarkModeActive
+                              ? Colors.grey[400]
+                              : const Color(0xFF6B7280),
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+
+                      SizedBox(height: screenHeight * 0.04),
+
+                      // Monthly Plan
+                      ValueListenableBuilder<List<ProductDetails>>(
+                        valueListenable: iap.products,
+                        builder: (context, products, _) {
+                          // debug print for quick diagnosis
+                          debugPrint(
+                            'IAP products: ${products.map((p) => p.id).toList()}',
+                          );
+
+                          ProductDetails? monthly;
+                          try {
+                            monthly = products.firstWhere(
+                              (p) => p.id == IapService.monthlyId,
+                            );
+                          } catch (_) {
+                            monthly = null;
+                          }
+
+                          final displayTitle =
+                              (monthly?.title?.isNotEmpty == true)
+                              ? monthly!.title
+                              : 'monthly_plan'.tr;
+                          final displayPrice =
+                              monthly?.price ?? 'monthly_price'.tr;
+
+                          return GestureDetector(
+                            onTap: () {
+                              setState(
+                                () => selectedProductId = IapService.monthlyId,
+                              );
+                              debugPrint(
+                                'Selected product id: ' +
+                                    (selectedProductId ?? 'null'),
+                              );
+                            },
+                            child: _buildPlanCard(
+                              title: displayTitle,
+                              price: displayPrice,
+                              // trialText: 'free_trial'.tr,
+                              isRecommended: false,
+                              isSelected:
+                                  selectedProductId == IapService.monthlyId,
+                              screenWidth: screenWidth,
+                              screenHeight: screenHeight,
+                              isDarkMode: themeController.isDarkModeActive,
+                            ),
                           );
                         },
                       ),
-                    ),
 
-                  // Header Section
-                  Text(
-                    'premium_header'.tr,
-                    style: TextStyle(
-                      fontSize: screenWidth * 0.05,
-                      fontWeight: FontWeight.w600,
-                      color: themeController.isDarkModeActive ? Colors.white : Colors.black,
-                    ),
-                  ),
-                  SizedBox(height: screenHeight * 0.01),
-                  Text(
-                    'premium_subheader'.tr,
-                    style: TextStyle(
-                      fontSize: screenWidth * 0.035,
-                      color: themeController.isDarkModeActive ? Colors.grey[400] : const Color(0xFF6B7280),
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
+                      SizedBox(height: screenHeight * 0.02),
 
-                  SizedBox(height: screenHeight * 0.04),
-
-                  // Monthly Plan
-                  ValueListenableBuilder<List<ProductDetails>>(
-                    valueListenable: iap.products,
-                    builder: (context, products, _) {
-                      // debug print for quick diagnosis
-                      debugPrint('IAP products: ${products.map((p) => p.id).toList()}');
-
-                      ProductDetails? monthly;
-                      try {
-                        monthly = products.firstWhere((p) => p.id == IapService.monthlyId);
-                      } catch (_) {
-                        monthly = null;
-                      }
-
-                      final displayTitle = (monthly?.title?.isNotEmpty == true) ? monthly!.title : 'monthly_plan'.tr;
-                      final displayPrice = monthly?.price ?? 'monthly_price'.tr;
-
-                      return GestureDetector(
-                        onTap: () {
-                          setState(() => selectedProductId = IapService.monthlyId);
-                          debugPrint('Selected product id: ' + (selectedProductId ?? 'null'));
-                        },
-                        child: _buildPlanCard(
-                          title: displayTitle,
-                          price: displayPrice,
-                          // trialText: 'free_trial'.tr,
-                          isRecommended: false,
-                          isSelected: selectedProductId == IapService.monthlyId,
-                          screenWidth: screenWidth,
-                          screenHeight: screenHeight,
-                          isDarkMode: themeController.isDarkModeActive,
-                        ),
-                      );
-                    },
-                  ),
-
-                  SizedBox(height: screenHeight * 0.02),
-
-                  // Yearly Plan
-                  ValueListenableBuilder<List<ProductDetails>>(
-                    valueListenable: iap.products,
-                    builder: (context, products, _) {
-                      ProductDetails? yearly;
-                      try {
-                        yearly = products.firstWhere((p) => p.id == IapService.yearlyId);
-                      } catch (_) {
-                        yearly = null;
-                      }
-
-                      final displayTitle = (yearly?.title?.isNotEmpty == true) ? yearly!.title : 'yearly_plan'.tr;
-                      final displayPrice = yearly?.price ?? 'yearly_price'.tr;
-
-                      return GestureDetector(
-                        onTap: () {
-                          // if yearly product not available, don't change selection to it
-                          if (yearly == null) {
-                            Get.snackbar(
-                              'Not available',
-                              'Yearly plan is not available yet. Try reinstalling the app from Play Store or wait a few minutes.'.tr,
-                              snackPosition: SnackPosition.BOTTOM,
+                      // Yearly Plan
+                      ValueListenableBuilder<List<ProductDetails>>(
+                        valueListenable: iap.products,
+                        builder: (context, products, _) {
+                          ProductDetails? yearly;
+                          try {
+                            yearly = products.firstWhere(
+                              (p) => p.id == IapService.yearlyId,
                             );
-                            return;
+                          } catch (_) {
+                            yearly = null;
                           }
-                          setState(() => selectedProductId = IapService.yearlyId);
-                          debugPrint('Selected product id: ' + (selectedProductId ?? 'null'));
+
+                          final displayTitle =
+                              (yearly?.title?.isNotEmpty == true)
+                              ? yearly!.title
+                              : 'yearly_plan'.tr;
+                          final displayPrice =
+                              yearly?.price ?? 'yearly_price'.tr;
+
+                          return GestureDetector(
+                            onTap: () {
+                              // if yearly product not available, don't change selection to it
+                              if (yearly == null) {
+                                Get.snackbar(
+                                  'Not available',
+                                  'Yearly plan is not available yet. Try reinstalling the app from Play Store or wait a few minutes.'
+                                      .tr,
+                                  snackPosition: SnackPosition.BOTTOM,
+                                );
+                                return;
+                              }
+                              setState(
+                                () => selectedProductId = IapService.yearlyId,
+                              );
+                              debugPrint(
+                                'Selected product id: ' +
+                                    (selectedProductId ?? 'null'),
+                              );
+                            },
+                            child: _buildPlanCard(
+                              title: displayTitle,
+                              price: displayPrice,
+
+                              isRecommended: true,
+                              isSelected:
+                                  selectedProductId == IapService.yearlyId,
+                              screenWidth: screenWidth,
+                              screenHeight: screenHeight,
+                              saveText: 'save_percentage'.tr,
+                              isDarkMode: themeController.isDarkModeActive,
+                            ),
+                          );
                         },
-                        child: _buildPlanCard(
-                          title: displayTitle,
-                          price: displayPrice,
-                        
-                          isRecommended: true,
-                          isSelected: selectedProductId == IapService.yearlyId,
-                          screenWidth: screenWidth,
-                          screenHeight: screenHeight,
-                          saveText: 'save_percentage'.tr,
-                          isDarkMode: themeController.isDarkModeActive,
+                      ),
+
+                      SizedBox(height: screenHeight * 0.04),
+
+                      // What's Included Section
+                      Text(
+                        'whats_included'.tr,
+                        style: TextStyle(
+                          fontSize: screenWidth * 0.04,
+                          fontWeight: FontWeight.w600,
+                          color: themeController.isDarkModeActive
+                              ? Colors.white
+                              : Colors.black,
                         ),
-                      );
-                    },
-                  ),
+                      ),
 
-                  SizedBox(height: screenHeight * 0.04),
+                      SizedBox(height: screenHeight * 0.02),
 
-                  // What's Included Section
-                  Text(
-                    'whats_included'.tr,
-                    style: TextStyle(
-                      fontSize: screenWidth * 0.04,
-                      fontWeight: FontWeight.w600,
-                      color: themeController.isDarkModeActive ? Colors.white : Colors.black,
-                    ),
-                  ),
+                      _buildFeatureItem(
+                        'feature_1'.tr,
+                        screenWidth,
+                        screenHeight,
+                        isDarkMode: themeController.isDarkModeActive,
+                      ),
 
-                  SizedBox(height: screenHeight * 0.02),
+                      _buildFeatureItem(
+                        'feature_2'.tr,
+                        screenWidth,
+                        screenHeight,
+                        isDarkMode: themeController.isDarkModeActive,
+                      ),
 
-                  _buildFeatureItem(
-                    'feature_1'.tr,
-                    screenWidth,
-                    screenHeight,
-                    isDarkMode: themeController.isDarkModeActive,
-                  ),
+                      _buildFeatureItem(
+                        'feature_3'.tr,
+                        screenWidth,
+                        screenHeight,
+                        isDarkMode: themeController.isDarkModeActive,
+                      ),
 
-                  _buildFeatureItem(
-                    'feature_2'.tr,
-                    screenWidth,
-                    screenHeight,
-                    isDarkMode: themeController.isDarkModeActive,
-                  ),
+                      SizedBox(height: screenHeight * 0.06),
 
-                  _buildFeatureItem(
-                    'feature_3'.tr,
-                    screenWidth,
-                    screenHeight,
-                    isDarkMode: themeController.isDarkModeActive,
-                  ),
-
-                  SizedBox(height: screenHeight * 0.06),
-
-                  // Store availability notice (helps iOS/web users understand requirements)
-                  ValueListenableBuilder<bool>(
-                    valueListenable: iap.isAvailable,
-                    builder: (context, available, _) {
-                      if (available) return const SizedBox.shrink();
-                      final bool isiOS = defaultTargetPlatform == TargetPlatform.iOS;
-                      return Container(
-                        width: double.infinity,
-                        padding: EdgeInsets.symmetric(
-                          horizontal: screenWidth * 0.04,
-                          vertical: screenHeight * 0.015,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Colors.orange.shade100,
-                          borderRadius: BorderRadius.circular(screenWidth * 0.03),
-                          border: Border.all(color: Colors.orange.shade300),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
+                      // Store availability notice (helps iOS/web users understand requirements)
+                      ValueListenableBuilder<bool>(
+                        valueListenable: iap.isAvailable,
+                        builder: (context, available, _) {
+                          if (available) return const SizedBox.shrink();
+                          final bool isiOS =
+                              defaultTargetPlatform == TargetPlatform.iOS;
+                          return Container(
+                            width: double.infinity,
+                            padding: EdgeInsets.symmetric(
+                              horizontal: screenWidth * 0.04,
+                              vertical: screenHeight * 0.015,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.orange.shade100,
+                              borderRadius: BorderRadius.circular(
+                                screenWidth * 0.03,
+                              ),
+                              border: Border.all(color: Colors.orange.shade300),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Icon(Icons.info_outline, color: Colors.orange.shade700),
-                                SizedBox(width: screenWidth * 0.02),
+                                Row(
+                                  children: [
+                                    Icon(
+                                      Icons.info_outline,
+                                      color: Colors.orange.shade700,
+                                    ),
+                                    SizedBox(width: screenWidth * 0.02),
+                                    Text(
+                                      'Store not available'.tr,
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: screenWidth * 0.04,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: screenHeight * 0.01),
                                 Text(
-                                  'Store not available'.tr,
+                                  isiOS
+                                      ? 'iOS e in-app purchase dekhte TestFlight diye install korun, App Store Connect e product IDs set kore Sandbox account e login korun.'
+                                      : 'This device does not support in-app purchases. Please install from Play Store or App Store.',
                                   style: TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: screenWidth * 0.04,
+                                    fontSize: screenWidth * 0.032,
+                                    color: const Color(0xFF6B7280),
                                   ),
                                 ),
                               ],
                             ),
-                            SizedBox(height: screenHeight * 0.01),
-                            Text(
-                              isiOS
-                                  ? 'iOS e in-app purchase dekhte TestFlight diye install korun, App Store Connect e product IDs set kore Sandbox account e login korun.'
-                                  : 'This device does not support in-app purchases. Please install from Play Store or App Store.',
-                              style: TextStyle(
-                                fontSize: screenWidth * 0.032,
-                                color: const Color(0xFF6B7280),
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
+                          );
+                        },
+                      ),
 
-                  // Upgrade Button
-                  ValueListenableBuilder<List<ProductDetails>>(
-                    valueListenable: iap.products,
-                    builder: (context, products, _) {
-                      // find selected ProductDetails (may be null)
-                      ProductDetails? selected;
-                      try {
-                        selected = products.firstWhere((p) => p.id == selectedProductId);
-                      } catch (_) {
-                        selected = null;
-                      }
+                      // Upgrade Button
+                      ValueListenableBuilder<List<ProductDetails>>(
+                        valueListenable: iap.products,
+                        builder: (context, products, _) {
+                          // find selected ProductDetails (may be null)
+                          ProductDetails? selected;
+                          try {
+                            selected = products.firstWhere(
+                              (p) => p.id == selectedProductId,
+                            );
+                          } catch (_) {
+                            selected = null;
+                          }
 
-                      return SizedBox(
-                        width: double.infinity,
-                        height: screenHeight * 0.06,
-                        child: ValueListenableBuilder<bool>(
-                          valueListenable: iap.isLoading,
-                          builder: (context, loading, __) {
-                            final bool isDisabledStyle = loading || selected == null;
+                          return SizedBox(
+                            width: double.infinity,
+                            height: screenHeight * 0.06,
+                            child: ValueListenableBuilder<bool>(
+                              valueListenable: iap.isLoading,
+                              builder: (context, loading, __) {
+                                final bool isDisabledStyle =
+                                    loading || selected == null;
 
-                            return ElevatedButton(
-                              onPressed: () async {
-                                // prevent double taps while loading
-                                if (loading) return;
+                                return ElevatedButton(
+                                  onPressed: () async {
+                                    // prevent double taps while loading
+                                    if (loading) return;
 
-                                // Guard: if store is not available (e.g., web or unsupported), block upgrade
-                                if (!iap.isAvailable.value) {
-                                  Get.snackbar(
-                                    'Store not available',
-                                    'In-app purchases are not available on this device. Please use Play Store or App Store.',
-                                    snackPosition: SnackPosition.BOTTOM,
-                                  );
-                                  return;
-                                }
+                                    // Guard: if store is not available (e.g., web or unsupported), block upgrade
+                                    if (!iap.isAvailable.value) {
+                                      Get.snackbar(
+                                        'Store not available',
+                                        'In-app purchases are not available on this device. Please use Play Store or App Store.',
+                                        snackPosition: SnackPosition.BOTTOM,
+                                      );
+                                      return;
+                                    }
 
-                                // If no plan selected, block and prompt selection
-                                if (selected == null) {
-                                  Get.snackbar('Select a plan', 'Please choose Monthly or Yearly before upgrading.', snackPosition: SnackPosition.BOTTOM);
-                                  return;
-                                }
+                                    // If no plan selected, block and prompt selection
+                                    if (selected == null) {
+                                      Get.snackbar(
+                                        'Select a plan',
+                                        'Please choose Monthly or Yearly before upgrading.',
+                                        snackPosition: SnackPosition.BOTTOM,
+                                      );
+                                      return;
+                                    }
 
-                                // normal flow
-                                debugPrint('Upgrade pressed for product id: ' + (selected.id));
-                                await iap.buy(selected!);
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: isDisabledStyle ? Colors.grey : const Color(0xFF2196F3),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(screenWidth * 0.03),
-                                ),
-                                elevation: 0,
-                              ),
-                              child: loading
-                                  ? const SizedBox(
-                                      width: 18,
-                                      height: 18,
-                                      child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
-                                    )
-                                  : Text(
-                                      selected == null ? 'Select a plan' : 'upgrade_now'.tr,
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: screenWidth * 0.04,
-                                        fontWeight: FontWeight.w600,
+                                    // normal flow
+                                    debugPrint(
+                                      'Upgrade pressed for product id: ' +
+                                          (selected.id),
+                                    );
+                                    await iap.buy(selected!);
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: isDisabledStyle
+                                        ? Colors.grey
+                                        : const Color(0xFF2196F3),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(
+                                        screenWidth * 0.03,
                                       ),
                                     ),
-                            );
-                          },
-                        ),
-                      );
-                    },
-                  ),
-
-                  SizedBox(height: screenHeight * 0.03),
-
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      TextButton(
-                        onPressed: () async {
-                          final cfg = Get.find<ConfigService>();
-                          await launchUrl(Uri.parse(cfg.privacyPolicyUrl), mode: LaunchMode.externalApplication);
+                                    elevation: 0,
+                                  ),
+                                  child: loading
+                                      ? const SizedBox(
+                                          width: 18,
+                                          height: 18,
+                                          child: CircularProgressIndicator(
+                                            strokeWidth: 2,
+                                            color: Colors.white,
+                                          ),
+                                        )
+                                      : Text(
+                                          selected == null
+                                              ? 'Select a plan'
+                                              : 'upgrade_now'.tr,
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: screenWidth * 0.04,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                );
+                              },
+                            ),
+                          );
                         },
-                        child: const Text('Privacy Policy'),
                       ),
-                      const SizedBox(width: 16),
-                      TextButton(
-                        onPressed: () async {
-                          final cfg = Get.find<ConfigService>();
-                          await launchUrl(Uri.parse(cfg.termsOfUseUrl), mode: LaunchMode.externalApplication);
-                        },
-                        child: const Text('Terms of Use'),
+
+                      SizedBox(height: screenHeight * 0.03),
+
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          TextButton(
+                            onPressed: () async {
+                              final cfg = Get.find<ConfigService>();
+                              await launchUrl(
+                                Uri.parse(cfg.privacyPolicyUrl),
+                                mode: LaunchMode.externalApplication,
+                              );
+                            },
+                            child: const Text('Privacy Policy'),
+                          ),
+                          const SizedBox(width: 16),
+                          TextButton(
+                            onPressed: () async {
+                              final cfg = Get.find<ConfigService>();
+                              await launchUrl(
+                                Uri.parse(cfg.termsOfUseUrl),
+                                mode: LaunchMode.externalApplication,
+                              );
+                            },
+                            child: const Text('Terms of Use'),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                ],
+                ),
               ),
-            ),
-          ),
-        ));
+      ),
+    );
   }
 
   Widget _buildProUserScreen(double screenWidth, double screenHeight) {
@@ -439,7 +521,11 @@ class _PremiumPlansScreenState extends State<PremiumPlansScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Icon(Icons.workspace_premium, size: screenWidth * 0.2, color: const Color(0xFF2196F3)),
+            Icon(
+              Icons.workspace_premium,
+              size: screenWidth * 0.2,
+              color: const Color(0xFF2196F3),
+            ),
             SizedBox(height: screenHeight * 0.02),
             Text(
               'payment_success_title'.tr,
@@ -461,7 +547,10 @@ class _PremiumPlansScreenState extends State<PremiumPlansScreen> {
             ),
             SizedBox(height: screenHeight * 0.03),
             Container(
-              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.04, vertical: screenHeight * 0.015),
+              padding: EdgeInsets.symmetric(
+                horizontal: screenWidth * 0.04,
+                vertical: screenHeight * 0.015,
+              ),
               decoration: BoxDecoration(
                 color: isDarkMode ? const Color(0xFF1E1E1E) : Colors.white,
                 borderRadius: BorderRadius.circular(screenWidth * 0.03),
@@ -472,7 +561,11 @@ class _PremiumPlansScreenState extends State<PremiumPlansScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.verified, color: Colors.green, size: screenWidth * 0.06),
+                      Icon(
+                        Icons.verified,
+                        color: Colors.green,
+                        size: screenWidth * 0.06,
+                      ),
                       SizedBox(width: screenWidth * 0.02),
                       Text(
                         'Premium Active',
@@ -491,11 +584,21 @@ class _PremiumPlansScreenState extends State<PremiumPlansScreen> {
                   // Show raw entitlement snapshot based on server-derived state
                   Text(
                     'isPremium: ' + (serverPremium ? 'true' : 'false'),
-                    style: TextStyle(fontSize: screenWidth * 0.032, color: isDarkMode ? Colors.grey[300] : const Color(0xFF6B7280)),
+                    style: TextStyle(
+                      fontSize: screenWidth * 0.032,
+                      color: isDarkMode
+                          ? Colors.grey[300]
+                          : const Color(0xFF6B7280),
+                    ),
                   ),
                   Text(
                     'daysLeft: ' + ((serverDays ?? 0).toString()),
-                    style: TextStyle(fontSize: screenWidth * 0.032, color: isDarkMode ? Colors.grey[300] : const Color(0xFF6B7280)),
+                    style: TextStyle(
+                      fontSize: screenWidth * 0.032,
+                      color: isDarkMode
+                          ? Colors.grey[300]
+                          : const Color(0xFF6B7280),
+                    ),
                   ),
                 ],
               ),
@@ -510,12 +613,18 @@ class _PremiumPlansScreenState extends State<PremiumPlansScreen> {
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF2196F3),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(screenWidth * 0.03)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(screenWidth * 0.03),
+                  ),
                   elevation: 0,
                 ),
                 child: Text(
                   'Continue',
-                  style: TextStyle(color: Colors.white, fontSize: screenWidth * 0.04, fontWeight: FontWeight.w600),
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: screenWidth * 0.04,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
             ),
@@ -528,7 +637,7 @@ class _PremiumPlansScreenState extends State<PremiumPlansScreen> {
   Widget _buildPlanCard({
     required String title,
     required String price,
-   
+
     required bool isRecommended,
     required bool isSelected,
     required double screenWidth,
@@ -541,7 +650,9 @@ class _PremiumPlansScreenState extends State<PremiumPlansScreen> {
         color: isDarkMode ? const Color(0xFF1E1E1E) : Colors.white,
         borderRadius: BorderRadius.circular(screenWidth * 0.03),
         border: Border.all(
-          color: isSelected ? const Color(0xFF2196F3) : (isDarkMode ? Colors.grey.shade700 : Colors.grey.shade300),
+          color: isSelected
+              ? const Color(0xFF2196F3)
+              : (isDarkMode ? Colors.grey.shade700 : Colors.grey.shade300),
           width: isSelected ? 2 : 1,
         ),
         boxShadow: [
@@ -566,7 +677,11 @@ class _PremiumPlansScreenState extends State<PremiumPlansScreen> {
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(
-                      color: isSelected ? const Color(0xFF2196F3) : (isDarkMode ? Colors.grey.shade600 : Colors.grey.shade400),
+                      color: isSelected
+                          ? const Color(0xFF2196F3)
+                          : (isDarkMode
+                                ? Colors.grey.shade600
+                                : Colors.grey.shade400),
                       width: 2,
                     ),
                   ),
@@ -601,14 +716,15 @@ class _PremiumPlansScreenState extends State<PremiumPlansScreen> {
                         price,
                         style: TextStyle(
                           fontSize: screenWidth * 0.035,
-                          color: isDarkMode ? Colors.grey[400] : const Color(0xFF6B7280),
+                          color: isDarkMode
+                              ? Colors.grey[400]
+                              : const Color(0xFF6B7280),
                           fontWeight: FontWeight.w400,
                         ),
                       ),
                     ],
                   ),
                 ),
-           
               ],
             ),
             if (saveText != null || isRecommended) ...[
@@ -665,7 +781,12 @@ class _PremiumPlansScreenState extends State<PremiumPlansScreen> {
     );
   }
 
-  Widget _buildFeatureItem(String text, double screenWidth, double screenHeight, {required bool isDarkMode}) {
+  Widget _buildFeatureItem(
+    String text,
+    double screenWidth,
+    double screenHeight, {
+    required bool isDarkMode,
+  }) {
     return Container(
       margin: EdgeInsets.only(bottom: screenHeight * 0.015),
       child: Row(
