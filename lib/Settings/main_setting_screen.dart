@@ -54,7 +54,29 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
 
-    return Scaffold(
+    return WillPopScope(
+      onWillPop: () async {
+        try {
+          final prev = Get.previousRoute;
+          int idx = 0;
+          switch (prev) {
+            case AppRoutes.mainHome:
+              idx = 0;
+              break;
+            case AppRoutes.analytics:
+              idx = 1;
+              break;
+            case AppRoutes.comparison:
+              idx = 2;
+              break;
+            default:
+              idx = 0;
+          }
+          homeController.setNavIndex(idx);
+        } catch (_) {}
+        return true;
+      },
+      child: Scaffold(
       backgroundColor: themeController.isDarkModeActive ? Color(0xFF121212) : Colors.white,
       appBar: AppBar(
         backgroundColor: themeController.isDarkModeActive ? Color(0xFF1E1E1E) : Colors.white,
@@ -301,6 +323,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       bottomNavigationBar: CustomBottomNavBar(
         isDarkMode: themeController.isDarkModeActive,
       ),
+    ),
     );
   }
 

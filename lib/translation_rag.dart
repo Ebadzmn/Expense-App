@@ -4,34 +4,37 @@ class AppTranslations extends Translations {
   @override
   Map<String, Map<String, String>> get keys => {
     'en_US': {
-    "otp_resent": "OTP Resent",
-    "otp_resent_message": "A new OTP has been sent to your email address.",
-    "otp_resend_failed": "Failed to Resend OTP",
-    "dont_get_code_resend": "Don't get any code? Resend",
-    "email_change_description": "After changing your email address, you will be able to login by your new mail.",
+      "otp_resent": "OTP Resent",
+      "otp_resent_message": "A new OTP has been sent to your email address.",
+      "otp_resend_failed": "Failed to Resend OTP",
+      "dont_get_code_resend": "Don't get any code? Resend",
+      "email_change_description":
+          "After changing your email address, you will be able to login by your new mail.",
 
-    'fill_all_fields': 'Please fill all fields',
-    'invalid_email': 'Invalid email format',
-    'email_mismatch': 'New email and confirm email do not match',
-    'current_email_mismatch': 'Current email does not match the account email',
-    'failed_to_send_otp': 'Failed to send OTP. Please try again',
-    'failed_to_store_email': 'Failed to store email. Please try again',
-    'failed_to_retrieve_email': 'Failed to retrieve email. Please try again',
-    'failed_to_resend_otp': 'Failed to resend OTP. Please try again',
-    'incomplete_code': 'Incomplete OTP',
-    'enter_complete_code': 'Please enter the complete 4-digit OTP',
-    'failed_to_verify_otp': 'Failed to verify OTP. Please try again',
-    'email_changed_successfully': 'Email changed successfully. Please log in with the new email',
-    'success': 'Success',
-    'code_resent': 'Code Resent',
-    'new_code_sent': 'A new verification code has been sent',
-    'verification': 'Verification',
-    'verification_code': 'Verification Code',
-    'sentCode': 'We have sent a verification code to your email',
-    'enterCode': 'Enter 4-digit code',
-    'dont_get_code': "Didn't get a code? ",
-    'resend': 'Resend',
-    'codeExpires': 'Code expires in {time}',
+      'fill_all_fields': 'Please fill all fields',
+      'invalid_email': 'Invalid email format',
+      'email_mismatch': 'New email and confirm email do not match',
+      'current_email_mismatch':
+          'Current email does not match the account email',
+      'failed_to_send_otp': 'Failed to send OTP. Please try again',
+      'failed_to_store_email': 'Failed to store email. Please try again',
+      'failed_to_retrieve_email': 'Failed to retrieve email. Please try again',
+      'failed_to_resend_otp': 'Failed to resend OTP. Please try again',
+      'incomplete_code': 'Incomplete OTP',
+      'enter_complete_code': 'Please enter the complete 4-digit OTP',
+      'failed_to_verify_otp': 'Failed to verify OTP. Please try again',
+      'email_changed_successfully':
+          'Email changed successfully. Please log in with the new email',
+      'success': 'Success',
+      'code_resent': 'Code Resent',
+      'new_code_sent': 'A new verification code has been sent',
+      'verification': 'Verification',
+      'verification_code': 'Verification Code',
+      'sentCode': 'We have sent a verification code to your email',
+      'enterCode': 'Enter 4-digit code',
+      'dont_get_code': "Didn't get a code? ",
+      'resend': 'Resend',
+      'codeExpires': 'Code expires in {time}',
 
       "retry": "Retry",
       "loading_budget_distribution": "Loading budget distribution...",
@@ -49,11 +52,13 @@ class AppTranslations extends Translations {
       'enter_amount': 'Enter amount',
       'confirm': 'Confirm',
       'distribute_budget_by_category': 'Distribute your budget by category',
-      'upgrade_to_premium_to_unlock': 'upgrade to Premium to unlock this feature',
+      'upgrade_to_premium_to_unlock':
+          'upgrade to Premium to unlock this feature',
       //rate and help
       'rateAndImproveTitle': 'Rate & Help Us Improve',
       'saveAndGrowTogether': 'Let\'s save and grow together!',
-      'shareYourThoughts': 'Share your thoughts on how we can improve\nthe app — we\'ll use your feedback to make\nthe experience more effective.',
+      'shareYourThoughts':
+          'Share your thoughts on how we can improve\nthe app — we\'ll use your feedback to make\nthe experience more effective.',
       'rateExperience': 'How would you rate your experience?',
       'feedbackHint': 'Write your feedback here...',
       'sendFeedback': 'Send Feedback',
@@ -75,6 +80,22 @@ class AppTranslations extends Translations {
       'galleryFeature': 'Gallery picker feature will be implemented',
       'transactionSuccess': 'Transaction added successfully',
       'transactionError': 'Failed to add transaction',
+      'warning': 'Warning',
+      'apiError': 'API error occurred',
+      'ocrError': 'OCR error',
+      'noTextFound': 'No text found',
+      'cameraOcrFailed': 'Camera OCR failed',
+      'galleryOcrFailed': 'Gallery OCR failed',
+      'ocrUnableExtract': 'Unable to extract data from text',
+      'noDataReturned': 'No data returned',
+      'ocrExpenseCreated': 'Expense created from OCR',
+      'ocrRequestFailed': 'OCR request failed',
+      'ocrSupportsExpensesOnly': 'OCR supports expenses only',
+      'enterReceiptTextBarcode': 'Enter barcode/receipt text',
+      'enterReceiptText': 'Enter receipt text',
+      'pasteReceiptText': 'Paste receipt text here',
+      'textEmpty': 'Text cannot be empty',
+      'post': 'Post',
       'enterAmountError': 'Please enter amount',
       'selectExpenseCategoryError': 'Please select expense category',
       'selectIncomeCategoryError': 'Please select income category',
@@ -111,6 +132,7 @@ class AppTranslations extends Translations {
       'feb1520241430': 'Feb 15, 2024 - 14:30',
       'setDateTime': 'Set Date & Time',
       'feb152024': 'Feb 15, 2024',
+      'tapToSet': 'Tap to set',
       'add': 'Add',
       // Category translations
       'food': 'Food',
@@ -127,11 +149,13 @@ class AppTranslations extends Translations {
       'watchAdTitle': 'Watch Ad to Unlock Pro',
       'watchAdSubtitle': 'Watch Ad to Unlock Pro Features',
       'watchAdDescription': 'Watch Video to Unlock Pro Features (30s)',
-      'proFeaturesUnlockMessage': 'After watching the ad, both Expense and Income Pro features will be unlocked',
+      'proFeaturesUnlockMessage':
+          'After watching the ad, both Expense and Income Pro features will be unlocked',
       'secondsRemaining': '%seconds% seconds remaining',
       'cancel': 'Cancel',
       'proUnlockedTitle': 'Pro Features Unlocked!',
-      'proUnlockedMessage': 'Both Expense and Income Pro features are now unlocked.',
+      'proUnlockedMessage':
+          'Both Expense and Income Pro features are now unlocked.',
       //addexpincome
       'addExpense': 'Add Expense',
       'addIncome': 'Add Income',
@@ -189,7 +213,8 @@ class AppTranslations extends Translations {
       'light_theme': 'Light',
       'dark_theme': 'Dark',
       'use_system_settings': 'Use system settings',
-      'system_settings_desc': 'Your theme will automatically match your system\npreferences',
+      'system_settings_desc':
+          'Your theme will automatically match your system\npreferences',
       //confirmfaceid
       'initializing_camera': 'Initializing camera...',
       'no_camera_found': 'No camera found',
@@ -198,7 +223,8 @@ class AppTranslations extends Translations {
       'camera_not_ready': 'Camera not ready. Please wait.',
       'keep_face_in_circle': 'Keep your face in the circle',
       'faceid_saved': 'Face ID Saved!',
-      'faceid_saved_desc': 'Your Face ID has been successfully saved.\nYou can now use it to unlock the app.',
+      'faceid_saved_desc':
+          'Your Face ID has been successfully saved.\nYou can now use it to unlock the app.',
       'scanning': 'Scanning...',
       'seconds_remaining': 'seconds remaining',
       'tap_to_begin': 'Tap "Authenticate Using Face ID" to begin',
@@ -220,7 +246,8 @@ class AppTranslations extends Translations {
 
       //pinlock
       'set_pin': 'Set a PIN',
-      'pin_description': 'PIN must be at least 4 digits, but a 6-digit PIN is recommended for added security.',
+      'pin_description':
+          'PIN must be at least 4 digits, but a 6-digit PIN is recommended for added security.',
       'invalid_pin': 'Invalid PIN',
       'pin_min_length': 'PIN must be at least 4 digits',
       'clear': 'Clear',
@@ -239,11 +266,14 @@ class AppTranslations extends Translations {
       'enable_faceid_desc': 'Use your FaceID to log in faster and securely',
       'faceid_app_launch': 'FaceID for App Launch',
       'faceid_app_launch_desc': 'Require FaceID when opening the app',
-      'security_info': 'Your FaceID are securely stored on your device. We never upload or access them.',
+      'security_info':
+          'Your FaceID are securely stored on your device. We never upload or access them.',
       //language
       'language_settings': 'Language Settings',
-      'language_settings_desc': 'Choose your preferred language for the app interface',
-      'language_warning': 'Some changes may require restarting the app to fully apply',
+      'language_settings_desc':
+          'Choose your preferred language for the app interface',
+      'language_warning':
+          'Some changes may require restarting the app to fully apply',
       'apply_changes': 'Apply Changes',
       //notification
       'notification_settings': 'Notification Settings',
@@ -251,26 +281,33 @@ class AppTranslations extends Translations {
       'enable_all_notifications_desc': 'Control all notification preferences',
       'general_notifications': 'General Notifications',
       'push_notification': 'Push notification',
-      'push_notification_desc': 'Receive important alerts when you\'re not using the app.',
+      'push_notification_desc':
+          'Receive important alerts when you\'re not using the app.',
       'automatic_renewal': 'Automatic Renewal',
-      'automatic_renewal_desc': 'Keep your subscription active without interruption. Turn this off if you prefer to renew manually.',
+      'automatic_renewal_desc':
+          'Keep your subscription active without interruption. Turn this off if you prefer to renew manually.',
       'financial_alerts': 'Financial Alerts',
       'monthly_alerts': 'Monthly Expense and Income Alerts',
-      'monthly_alerts_desc': 'Get notified after month end about expense and income.',
+      'monthly_alerts_desc':
+          'Get notified after month end about expense and income.',
       'budget_limit_warning': 'Budget Limit Warning',
-      'budget_limit_warning_desc': 'Receive a warning when you\'re nearing your monthly budget.',
+      'budget_limit_warning_desc':
+          'Receive a warning when you\'re nearing your monthly budget.',
       'other_notifications': 'Other Notifications',
       'promotional_notifications': 'Promotional Notifications',
-      'promotional_notifications_desc': 'Get updates about new features or offers',
+      'promotional_notifications_desc':
+          'Get updates about new features or offers',
       'auto_save_message': 'Changes will save automatically',
       //paymentsuccess
       'payment_success_title': "You're all set! Welcome to Premium",
-      'payment_success_subtitle': "Enjoy unlimited access, advanced features, and\na smoother financial journey.",
+      'payment_success_subtitle':
+          "Enjoy unlimited access, advanced features, and\na smoother financial journey.",
       'continue_button': 'Continue',
 
       //complitepayment
       'complete_payment': 'Complete Payment',
-      'payment_header': "You're just one step away from unlocking premium features",
+      'payment_header':
+          "You're just one step away from unlocking premium features",
       'choose_payment_method': 'Choose Payment Method',
       'card_payment': 'Card Payment',
       'card_payment_desc': 'Visa, Mastercard, Amex',
@@ -290,7 +327,8 @@ class AppTranslations extends Translations {
       //premiumplans
       'premium_plans': 'Premium Plans',
       'premium_header': 'Unlock Premium Features',
-      'premium_subheader': 'Get more control over your finances with\nadvanced tools',
+      'premium_subheader':
+          'Get more control over your finances with\nadvanced tools',
       'monthly_plan': 'Monthly Plan',
       'monthly_price': '€3.99/month',
       'yearly_plan': 'Yearly Plan',
@@ -315,7 +353,8 @@ class AppTranslations extends Translations {
       'codeResent': 'Code Resent',
       'newCodeSent': 'A new verification code has been sent',
       'incompleteCode': 'Incomplete Code',
-      'enterCompleteCode': 'Please enter the complete 6-digit verification code',
+      'enterCompleteCode':
+          'Please enter the complete 6-digit verification code',
       //passwordcahgescreen
       'password_change': 'Password Change',
       'set_new_password': 'Set new password',
@@ -327,7 +366,8 @@ class AppTranslations extends Translations {
       'confirm_new_password': 'Confirm new password',
       'confirm_new_password_field': 'Confirm your new password',
       'continue': 'Continue',
-      'password_requirements': 'Your password must be at least 10 characters. Include multiple words to make it more secure.',
+      'password_requirements':
+          'Your password must be at least 10 characters. Include multiple words to make it more secure.',
       'error': 'Error',
       'enter_current_password_error': 'Please enter your current password',
       'passwords_not_match': 'Passwords do not match',
@@ -344,10 +384,12 @@ class AppTranslations extends Translations {
       'codeResent': 'Code Resent',
       'newCodeSent': 'A new verification code has been sent',
       'incompleteCode': 'Incomplete Code',
-      'enterCompleteCode': 'Please enter the complete 6-digit verification code',
+      'enterCompleteCode':
+          'Please enter the complete 6-digit verification code',
       //changeemail
       'change_email': 'Change Email',
-      'email_change_description': 'Update your email address to keep your account secure.',
+      'email_change_description':
+          'Update your email address to keep your account secure.',
       'current_email': 'Current Email',
       'new_email': 'New Email',
       'confirm_email': 'Confirm Email',
@@ -358,7 +400,8 @@ class AppTranslations extends Translations {
       'email_mismatch': 'Emails do not match!',
       // Edit Name Screen Translations
       'edit_name': 'Edit Name',
-      'name_appearance_info': 'Your name will appear on your profile and transactions',
+      'name_appearance_info':
+          'Your name will appear on your profile and transactions',
       'first_name': 'First Name',
       'enter_first_name': 'Enter first name',
       'first_name_required': 'Please enter your first name',
@@ -392,7 +435,8 @@ class AppTranslations extends Translations {
       'loading_terms': 'Loading terms and conditions...',
       'error_loading_terms': 'Error loading terms',
       'retry': 'Retry',
-      'terms_intro': 'Please read these Terms and Conditions carefully before using our mobile application. By accessing or using our app, you agree to be bound by these terms.',
+      'terms_intro':
+          'Please read these Terms and Conditions carefully before using our mobile application. By accessing or using our app, you agree to be bound by these terms.',
       'no_terms_available': 'No terms and conditions available.',
       'logout': 'Logout',
       'logout_confirmation': 'Are you sure you want to logout?',
@@ -401,21 +445,22 @@ class AppTranslations extends Translations {
       'personal_information': 'Personal Information',
       'change_photo': 'Change Photo',
       'photo_snackbar_title': 'Photo',
-      'photo_snackbar_message': 'Change photo functionality will be implemented',
+      'photo_snackbar_message':
+          'Change photo functionality will be implemented',
       'full_name': 'Full name',
       'full_name_subtitle': 'Change profile image, name or password',
       'email_address': 'Email Address',
       'change_password': 'Change Password',
       'delete_account': 'Delete Account',
       'delete_account_title': 'Delete Account',
-      'delete_account_message': 'Are you sure you want to delete your account? This action cannot be undone.',
+      'delete_account_message':
+          'Are you sure you want to delete your account? This action cannot be undone.',
       'cancel': 'Cancel',
       'delete': 'Delete',
       'account_deleted': 'Account Deleted',
       'account_deleted_message': 'Your account has been deleted successfully',
+
       //totalsavingpro
-
-
       'totalSaving': 'Total saving',
       'monthly': 'Monthly',
       'withoutAppsTotal': 'Without apps total',
@@ -433,7 +478,8 @@ class AppTranslations extends Translations {
       //totalsavingadd
       'comparisonPage': 'Comparison Page',
       'watchVideoToUnlock': 'Watch Video to Unlock',
-      'watchVideoDescription': 'Watch a short video to find products\nat the best price for free',
+      'watchVideoDescription':
+          'Watch a short video to find products\nat the best price for free',
       'upgradeToPro': 'Upgrade to Pro',
       'proFeatures': 'No ads • Unlimited comparisons • Premium features',
       'unlocked': 'Unlocked!',
@@ -488,7 +534,8 @@ class AppTranslations extends Translations {
       //comparison
       'compare_save': 'Compare & save',
       'find_better_deals': 'Find Better Deals',
-      'find_better_deals_desc': "Enter what you bought. We'll help you find it cheaper.",
+      'find_better_deals_desc':
+          "Enter what you bought. We'll help you find it cheaper.",
       'product_name': 'Product Name',
       'price_paid': 'Price Paid',
       'enter_amount': '\$ Enter amount',
@@ -498,6 +545,34 @@ class AppTranslations extends Translations {
       'copy_link': 'Copy Link',
       'compare': 'Compare',
       'confirm_purchase': 'Confirm Purchase',
+      'enter_product_name': 'Enter product name',
+      'max_price': 'Max Price',
+      'please_enter_product_name': 'Please enter a product name',
+      'please_enter_valid_price': 'Please enter a valid price',
+      'searching': 'Searching...',
+      'search': 'Search',
+      'no_deals_found': 'No deals found',
+      'try_different_product_or_increase_price': 'Try a different product name or increase max price.',
+      'better_deals_found_count': 'Better Deals Found ({count})',
+      'unknown_site': 'Unknown Site',
+      'save_percent': 'Save {percent}%',
+      'best_deal': 'Best Deal',
+      'no_link_available_to_copy': 'No link available to copy',
+      'product_link_copied': 'Product link from {siteName} copied to clipboard',
+      'failed_to_copy_link': 'Failed to copy link: {error}',
+      'compare_with_site': 'Compare {site}',
+      'original_price_max': 'Original Price (Max)',
+      'price_with_tool': 'Price With Tool',
+      'product_category': 'Product Category',
+      'enter_product_category': 'Enter product category',
+      'savings_preview': 'Savings Preview',
+      'you_save_label': 'You Save:',
+      'please_enter_valid_original_price': 'Please enter a valid original price',
+      'please_enter_valid_price_with_tool': 'Please enter a valid price with tool',
+      'please_enter_product_category': 'Please enter a product category',
+      'savings_record_created_successfully': 'Savings record created successfully!',
+      'failed_to_create_savings_record': 'Failed to create savings record',
+      'purchase_confirm_show_graph': 'Purchase Confirm and show graph',
 
       //analysis
       'analytics': 'Analytics',
@@ -506,7 +581,8 @@ class AppTranslations extends Translations {
       'line_chart': 'Line Chart',
       'loading_analytics': 'Loading analytics data...',
       'no_data_selected_month': 'No  data available for selected month',
-      'select_different_month_or_add_transactions': 'Select a different month or add transactions',
+      'select_different_month_or_add_transactions':
+          'Select a different month or add transactions',
       'no_data_available': 'No  data available',
       'data_breakdown': ' Breakdown',
       'expenses': 'Expenses',
@@ -517,10 +593,12 @@ class AppTranslations extends Translations {
       'no_description': 'No description',
       'failed_to_load_expenses': 'Failed to load expenses',
       'no_expenses_found': 'No expenses found',
-      'start_adding_expenses_to_see_them': 'Start adding expenses to see them here',
+      'start_adding_expenses_to_see_them':
+          'Start adding expenses to see them here',
       'load_more': 'Load More',
       'edit_income': 'Edit Income',
-      'edit_functionality_to_be_implemented': 'Edit functionality to be implemented',
+      'edit_functionality_to_be_implemented':
+          'Edit functionality to be implemented',
       'save_action': 'Save',
       // Totals
       'total_expenses': 'Total Expenses',
@@ -543,7 +621,8 @@ class AppTranslations extends Translations {
       'current_monthly_budget': 'Current Monthly Budget',
       'edit_your_budget': 'Edit Your Budget',
       'enter_amount': '\$ Enter amount',
-      'budget_change_info': 'Changing your budget will update your available balance on the home page.',
+      'budget_change_info':
+          'Changing your budget will update your available balance on the home page.',
       'confirm': 'Confirm',
       'select_category': 'Select Category',
       'food': 'Food',
@@ -559,24 +638,22 @@ class AppTranslations extends Translations {
       'monthly_budget_pro': 'Monthly Budget Pro',
       'watch_video_unlock': 'Watch Video to Unlock',
       'video_message':
-      'Watch a short video to unlock monthly\nbudget planning features for free',
+          'Watch a short video to unlock monthly\nbudget planning features for free',
       'upgrade_to_pro': 'Upgrade to Pro',
       'no_ads_info': 'No ads • Unlimited budgets • Premium features',
       'unlocked': 'Unlocked!',
-      'unlocked_message':
-      'You can now access the monthly budget feature',
+      'unlocked_message': 'You can now access the monthly budget feature',
       //monthly budget non pro
       'upgrade_title': 'Upgrade to Pro to Edit',
       'upgrade_subtitle': 'Get full access to budget editing features',
       'upgrade_now': 'Upgrade Now',
       'maybe_later': 'Maybe Later',
 
-
       //homescreen
-
       'hi_user': 'Hi Daniel',
       'location': 'Romagna, Modena, Italy',
       'available_balance': 'Available Balance',
+      'see_available_balance': 'See available balance',
       'income': 'Income',
       'expense': 'Expense',
       'savings': 'Savings',
@@ -616,9 +693,6 @@ class AppTranslations extends Translations {
       'november': 'November',
       'december': 'December',
 
-
-
-
       // Registration Screen
       'registration': 'Registration',
       'full_name': 'Full Name',
@@ -634,7 +708,8 @@ class AppTranslations extends Translations {
       'already_account': 'Already have an account?',
       'login': 'Login',
       'terms_required': 'Terms Required',
-      'accept_terms_message': 'You need to accept the terms and conditions to create an account.',
+      'accept_terms_message':
+          'You need to accept the terms and conditions to create an account.',
       'terms_agreement': 'By creating an account or signing you agree to our ',
       'terms_conditions': 'Terms and Conditions',
       'verification': 'Verification',
@@ -651,7 +726,8 @@ class AppTranslations extends Translations {
       'resend_in': 'Resend in @seconds s',
       //setup your faceid
       'set_your_face_id': 'Set Your Face ID',
-      'face_id_description': 'Secure your account with Face ID authentication. Quickly log in without typing your password every time.',
+      'face_id_description':
+          'Secure your account with Face ID authentication. Quickly log in without typing your password every time.',
       'setup_face_id': 'Setup Face ID',
       'skip_for_now': 'Skip for now',
       'registration': 'Registration',
@@ -661,7 +737,8 @@ class AppTranslations extends Translations {
       'face_id_success_msg': 'Face ID has been set up successfully!',
       //
       'face_verification': 'Face Verification',
-      'position_face_instruction': 'Position your face within the circle and tap the button below to start verification',
+      'position_face_instruction':
+          'Position your face within the circle and tap the button below to start verification',
       'verifying_message': 'Verifying... Keep your face in the circle',
       'authenticate_face_id': 'Authenticate Using Face ID',
       'back_to_signup': 'Back to Sign Up',
@@ -671,12 +748,14 @@ class AppTranslations extends Translations {
       'camera_error_msg': 'Unable to access camera. Please check permissions.',
       //face confirmation
       'faceid_added': 'FaceID Added Successfully!',
-      'faceid_protected': 'Your account is protected with FaceID authentication.',
+      'faceid_protected':
+          'Your account is protected with FaceID authentication.',
       'continue': 'Continue',
       //forgetpassemail
       'forget_password': 'Forget password',
       'enter_email_phone': 'Enter your email or phone number',
-      'notification_info': 'You may receive notifications via SMS or email from us for security and login purposes.',
+      'notification_info':
+          'You may receive notifications via SMS or email from us for security and login purposes.',
       'continue': 'Continue',
       //forgetpasswordotp
       'verification_code': 'Verification code',
@@ -714,14 +793,16 @@ class AppTranslations extends Translations {
       "auto_upload_monthly": "Automatically upload reports monthly",
       "download": "Download",
       "upload_successful": "Upload Successful",
-      "upload_success_message": "Your selected data has been\nUploaded to Google Drive",
-      "ok": "OK"
+      "upload_success_message":
+          "Your selected data has been\nUploaded to Google Drive",
+      "ok": "OK",
     },
     'es_ES': {
       //rate and help
       'rateAndImproveTitle': 'Califica y Ayúdanos a Mejorar',
       'saveAndGrowTogether': '¡Ahorremos y crezcamos juntos!',
-      'shareYourThoughts': 'Comparte tus ideas sobre cómo podemos mejorar\nla aplicación: usaremos tus comentarios para hacer\nla experiencia más efectiva.',
+      'shareYourThoughts':
+          'Comparte tus ideas sobre cómo podemos mejorar\nla aplicación: usaremos tus comentarios para hacer\nla experiencia más efectiva.',
       'rateExperience': '¿Cómo calificarías tu experiencia?',
       'feedbackHint': 'Escribe tus comentarios aquí...',
       'sendFeedback': 'Enviar Comentarios',
@@ -743,6 +824,21 @@ class AppTranslations extends Translations {
       'galleryFeature': 'La función de selector de galería se implementará',
       'transactionSuccess': 'Transacción agregada exitosamente',
       'transactionError': 'Error al agregar la transacción',
+      'warning': 'Advertencia',
+      'apiError': 'Ocurrió un error de API',
+      'ocrError': 'Error de OCR',
+      'noTextFound': 'No se encontró texto',
+      'cameraOcrFailed': 'Falló la OCR de la cámara',
+      'galleryOcrFailed': 'Falló la OCR de la galería',
+      'ocrUnableExtract': 'No se pueden extraer datos del texto',
+      'noDataReturned': 'No se devolvieron datos',
+      'ocrExpenseCreated': 'Gasto creado desde OCR',
+      'ocrRequestFailed': 'Solicitud OCR fallida',
+      'enterReceiptTextBarcode': 'Ingresar texto de código de barras/recibo',
+      'enterReceiptText': 'Ingresar texto del recibo',
+      'pasteReceiptText': 'Pegue el texto del recibo aquí',
+      'textEmpty': 'El texto no puede estar vacío',
+      'post': 'Publicar',
       'enterAmountError': 'Por favor ingrese el monto',
       'selectExpenseCategoryError': 'Por favor seleccione categoría de gasto',
       'selectIncomeCategoryError': 'Por favor seleccione categoría de ingreso',
@@ -779,6 +875,7 @@ class AppTranslations extends Translations {
       'feb1520241430': '15 feb 2024 - 14:30',
       'setDateTime': 'Establecer Fecha y Hora',
       'feb152024': '15 feb 2024',
+      'tapToSet': 'Toca para establecer',
       'add': 'Agregar',
       // Category translations
       'food': 'Comida',
@@ -795,11 +892,13 @@ class AppTranslations extends Translations {
       'watchAdTitle': 'Ver Anuncio para Desbloquear Pro',
       'watchAdSubtitle': 'Ver Anuncio para Desbloquear Funciones Pro',
       'watchAdDescription': 'Ver Video para Desbloquear Funciones Pro (30s)',
-      'proFeaturesUnlockMessage': 'Después de ver el anuncio, se desbloquearán las funciones Pro de Gastos e Ingresos',
+      'proFeaturesUnlockMessage':
+          'Después de ver el anuncio, se desbloquearán las funciones Pro de Gastos e Ingresos',
       'secondsRemaining': 'Faltan %seconds% segundos',
       'cancel': 'Cancelar',
       'proUnlockedTitle': '¡Funciones Pro Desbloqueadas!',
-      'proUnlockedMessage': 'Las funciones Pro de Gastos e Ingresos ahora están desbloqueadas.',
+      'proUnlockedMessage':
+          'Las funciones Pro de Gastos e Ingresos ahora están desbloqueadas.',
       //addexpincome
       'addExpense': 'Agregar Gasto',
       'addIncome': 'Agregar Ingreso',
@@ -830,6 +929,7 @@ class AppTranslations extends Translations {
       'feb152024': '15 feb 2024',
       'watchVideoForFree': 'Ver un video corto para agregar gratis',
       'upgradeToPro': 'Actualizar a Pro para eliminar anuncios',
+      'ocrSupportsExpensesOnly': 'El OCR solo admite gastos',
       //login
       'welcomeBack': 'Bienvenido de nuevo',
       'loginToAccount': 'Inicia sesión en tu cuenta',
@@ -845,7 +945,8 @@ class AppTranslations extends Translations {
       'register': 'Registrarse',
       //currency
       'currency_exchange': 'Cambio de Moneda',
-      'choose_currency_desc': 'Elige tu moneda para la interfaz de la aplicación',
+      'choose_currency_desc':
+          'Elige tu moneda para la interfaz de la aplicación',
       'usd_name': 'Dólar Estadounidense (\$)',
       'gbp_name': 'Libra Esterlina (£)',
       'eur_name': 'Euro (€)',
@@ -857,7 +958,8 @@ class AppTranslations extends Translations {
       'light_theme': 'Claro',
       'dark_theme': 'Oscuro',
       'use_system_settings': 'Usar configuración del sistema',
-      'system_settings_desc': 'Tu tema coincidirá automáticamente con las\npreferencias de tu sistema',
+      'system_settings_desc':
+          'Tu tema coincidirá automáticamente con las\npreferencias de tu sistema',
 
       //confirmfaceid
       'initializing_camera': 'Inicializando cámara...',
@@ -867,7 +969,8 @@ class AppTranslations extends Translations {
       'camera_not_ready': 'Cámara no lista. Por favor espere.',
       'keep_face_in_circle': 'Mantén tu rostro en el círculo',
       'faceid_saved': '¡Face ID Guardado!',
-      'faceid_saved_desc': 'Tu Face ID se ha guardado correctamente.\nAhora puedes usarlo para desbloquear la aplicación.',
+      'faceid_saved_desc':
+          'Tu Face ID se ha guardado correctamente.\nAhora puedes usarlo para desbloquear la aplicación.',
       'scanning': 'Escaneando...',
       'seconds_remaining': 'segundos restantes',
       'tap_to_begin': 'Toca "Autenticar con Face ID" para comenzar',
@@ -880,7 +983,8 @@ class AppTranslations extends Translations {
       'cancel': 'Cancelar',
       //confirmpin
       'confirm_pin': 'Confirmar PIN',
-      'confirm_pin_desc': 'Por favor, vuelva a introducir su PIN para confirmar',
+      'confirm_pin_desc':
+          'Por favor, vuelva a introducir su PIN para confirmar',
       'success': 'Éxito',
       'pin_set_success': '¡El PIN se ha establecido correctamente!',
       'error': 'Error',
@@ -888,7 +992,8 @@ class AppTranslations extends Translations {
       'confirm': 'Confirmar',
       //pinlock
       'set_pin': 'Establecer PIN',
-      'pin_description': 'El PIN debe tener al menos 4 dígitos, pero se recomienda un PIN de 6 dígitos para mayor seguridad.',
+      'pin_description':
+          'El PIN debe tener al menos 4 dígitos, pero se recomienda un PIN de 6 dígitos para mayor seguridad.',
       'invalid_pin': 'PIN inválido',
       'pin_min_length': 'El PIN debe tener al menos 4 dígitos',
       'clear': 'Limpiar',
@@ -904,43 +1009,55 @@ class AppTranslations extends Translations {
       'none_option_desc': 'Continuar como invitado',
       'security_settings': 'Configuración de Seguridad',
       'enable_faceid': 'Activar FaceID',
-      'enable_faceid_desc': 'Usa tu FaceID para iniciar sesión más rápido y seguro',
+      'enable_faceid_desc':
+          'Usa tu FaceID para iniciar sesión más rápido y seguro',
       'faceid_app_launch': 'FaceID para Inicio de App',
       'faceid_app_launch_desc': 'Requerir FaceID al abrir la aplicación',
-      'security_info': 'Tu FaceID se almacena de forma segura en tu dispositivo. Nunca lo subimos ni accedemos a él.',
+      'security_info':
+          'Tu FaceID se almacena de forma segura en tu dispositivo. Nunca lo subimos ni accedemos a él.',
       //language
       'language_settings': 'Configuración de Idioma',
-      'language_settings_desc': 'Elige tu idioma preferido para la interfaz de la aplicación',
-      'language_warning': 'Algunos cambios pueden requerir reiniciar la aplicación para aplicarse completamente',
+      'language_settings_desc':
+          'Elige tu idioma preferido para la interfaz de la aplicación',
+      'language_warning':
+          'Algunos cambios pueden requerir reiniciar la aplicación para aplicarse completamente',
       'apply_changes': 'Aplicar Cambios',
 
       //notification
       'notification_settings': 'Configuración de Notificaciones',
       'enable_all_notifications': 'Activar Todas las Notificaciones',
-      'enable_all_notifications_desc': 'Controlar todas las preferencias de notificación',
+      'enable_all_notifications_desc':
+          'Controlar todas las preferencias de notificación',
       'general_notifications': 'Notificaciones Generales',
       'push_notification': 'Notificación push',
-      'push_notification_desc': 'Recibe alertas importantes cuando no estés usando la aplicación.',
+      'push_notification_desc':
+          'Recibe alertas importantes cuando no estés usando la aplicación.',
       'automatic_renewal': 'Renovación Automática',
-      'automatic_renewal_desc': 'Mantén tu suscripción activa sin interrupciones. Desactívalo si prefieres renovar manualmente.',
+      'automatic_renewal_desc':
+          'Mantén tu suscripción activa sin interrupciones. Desactívalo si prefieres renovar manualmente.',
       'financial_alerts': 'Alertas Financieras',
       'monthly_alerts': 'Alertas Mensuales de Gastos e Ingresos',
-      'monthly_alerts_desc': 'Recibe notificaciones después del fin de mes sobre gastos e ingresos.',
+      'monthly_alerts_desc':
+          'Recibe notificaciones después del fin de mes sobre gastos e ingresos.',
       'budget_limit_warning': 'Advertencia de Límite de Presupuesto',
-      'budget_limit_warning_desc': 'Recibe una advertencia cuando te acerques a tu presupuesto mensual.',
+      'budget_limit_warning_desc':
+          'Recibe una advertencia cuando te acerques a tu presupuesto mensual.',
       'other_notifications': 'Otras Notificaciones',
       'promotional_notifications': 'Notificaciones Promocionales',
-      'promotional_notifications_desc': 'Recibe actualizaciones sobre nuevas funciones u ofertas',
+      'promotional_notifications_desc':
+          'Recibe actualizaciones sobre nuevas funciones u ofertas',
       'auto_save_message': 'Los cambios se guardarán automáticamente',
       //paymentsuccess
       'payment_success_title': "¡Todo listo! Bienvenido a Premium",
-      'payment_success_subtitle': "Disfruta de acceso ilimitado, funciones avanzadas y\nun viaje financiero más fluido.",
+      'payment_success_subtitle':
+          "Disfruta de acceso ilimitado, funciones avanzadas y\nun viaje financiero más fluido.",
       'continue_button': 'Continuar',
 
       //premiumplans
       'premium_plans': 'Planes Premium',
       'premium_header': 'Desbloquea Funciones Premium',
-      'premium_subheader': 'Obtén más control sobre tus finanzas con\nherramientas avanzadas',
+      'premium_subheader':
+          'Obtén más control sobre tus finanzas con\nherramientas avanzadas',
       'monthly_plan': 'Plan Mensual',
       'monthly_price': '3,99€/mes',
       'yearly_plan': 'Plan Anual',
@@ -967,7 +1084,8 @@ class AppTranslations extends Translations {
       'codeResent': 'Código reenviado',
       'newCodeSent': 'Se ha enviado un nuevo código de verificación',
       'incompleteCode': 'Código incompleto',
-      'enterCompleteCode': 'Por favor ingrese el código de verificación de 6 dígitos completo',
+      'enterCompleteCode':
+          'Por favor ingrese el código de verificación de 6 dígitos completo',
       // passwordcahgescreen
       'password_change': 'Cambio de contraseña',
       'set_new_password': 'Establecer nueva contraseña',
@@ -979,11 +1097,13 @@ class AppTranslations extends Translations {
       'confirm_new_password': 'Confirmar nueva contraseña',
       'confirm_new_password_field': 'Confirme su nueva contraseña',
       'continue': 'Continuar',
-      'password_requirements': 'Su contraseña debe tener al menos 10 caracteres. Incluya múltiples palabras para hacerla más segura.',
+      'password_requirements':
+          'Su contraseña debe tener al menos 10 caracteres. Incluya múltiples palabras para hacerla más segura.',
       'error': 'Error',
       'enter_current_password_error': 'Por favor ingrese su contraseña actual',
       'passwords_not_match': 'Las contraseñas no coinciden',
-      'password_length_error': 'La contraseña debe tener al menos 10 caracteres',
+      'password_length_error':
+          'La contraseña debe tener al menos 10 caracteres',
       //changeemailverification
       'verification': 'Verificación',
       'verificationCode': 'Código de verificación',
@@ -996,10 +1116,12 @@ class AppTranslations extends Translations {
       'codeResent': 'Código reenviado',
       'newCodeSent': 'Se ha enviado un nuevo código de verificación',
       'incompleteCode': 'Código incompleto',
-      'enterCompleteCode': 'Por favor ingrese el código de verificación de 6 dígitos completo',
+      'enterCompleteCode':
+          'Por favor ingrese el código de verificación de 6 dígitos completo',
       //changeemail
       'change_email': 'Cambiar correo',
-      'email_change_description': 'Actualiza tu correo para mantener tu cuenta segura.',
+      'email_change_description':
+          'Actualiza tu correo para mantener tu cuenta segura.',
       'current_email': 'Correo actual',
       'new_email': 'Nuevo correo',
       'confirm_email': 'Confirmar correo',
@@ -1010,7 +1132,8 @@ class AppTranslations extends Translations {
       'email_mismatch': '¡Los correos no coinciden!',
       // Edit Name Screen Translations
       'edit_name': 'Editar Nombre',
-      'name_appearance_info': 'Tu nombre aparecerá en tu perfil y transacciones',
+      'name_appearance_info':
+          'Tu nombre aparecerá en tu perfil y transacciones',
       'first_name': 'Nombre',
       'enter_first_name': 'Ingresa tu nombre',
       'first_name_required': 'Por favor ingresa tu nombre',
@@ -1027,7 +1150,8 @@ class AppTranslations extends Translations {
       'premium_plans': 'Planes Premium',
       'premium_plans_subtitle': 'Actualiza para desbloquear funciones premium',
       'notification_setting': 'Configuración de Notificaciones',
-      'notification_setting_subtitle': 'Gestionar notificaciones push y alertas',
+      'notification_setting_subtitle':
+          'Gestionar notificaciones push y alertas',
       'language': 'Idioma',
       'language_subtitle': 'Cambia tu idioma preferido',
       'app_unlock': 'Desbloqueo de App',
@@ -1037,12 +1161,14 @@ class AppTranslations extends Translations {
       'currency_change': 'Cambio de Moneda',
       'currency_change_subtitle': 'Cambia tu moneda',
       'terms_conditions': 'Términos y Condiciones',
-      'terms_conditions_subtitle': 'Lee los términos y condiciones antes de usar',
+      'terms_conditions_subtitle':
+          'Lee los términos y condiciones antes de usar',
       'terms_title': 'Términos y Condiciones',
       'loading_terms': 'Cargando términos y condiciones...',
       'error_loading_terms': 'Error al cargar los términos',
       'retry': 'Reintentar',
-      'terms_intro': 'Por favor, lea estos Términos y Condiciones cuidadosamente antes de usar nuestra aplicación móvil. Al acceder o utilizar nuestra app, acepta estar sujeto a estos términos.',
+      'terms_intro':
+          'Por favor, lea estos Términos y Condiciones cuidadosamente antes de usar nuestra aplicación móvil. Al acceder o utilizar nuestra app, acepta estar sujeto a estos términos.',
       'no_terms_available': 'No hay términos y condiciones disponibles.',
       'version_label': 'Versión:',
       'effective_date_label': 'Fecha de vigencia:',
@@ -1060,7 +1186,8 @@ class AppTranslations extends Translations {
       'change_password': 'Cambiar contraseña',
       'delete_account': 'Eliminar cuenta',
       'delete_account_title': 'Eliminar cuenta',
-      'delete_account_message': '¿Seguro que deseas eliminar tu cuenta? Esta acción no se puede deshacer.',
+      'delete_account_message':
+          '¿Seguro que deseas eliminar tu cuenta? Esta acción no se puede deshacer.',
       'cancel': 'Cancelar',
       'delete': 'Eliminar',
       'account_deleted': 'Cuenta eliminada',
@@ -1084,9 +1211,11 @@ class AppTranslations extends Translations {
       //totalsavingadd
       'comparisonPage': 'Página de Comparación',
       'watchVideoToUnlock': 'Ver Video para Desbloquear',
-      'watchVideoDescription': 'Mira un video corto para encontrar productos\nal mejor precio gratis',
+      'watchVideoDescription':
+          'Mira un video corto para encontrar productos\nal mejor precio gratis',
       'upgradeToPro': 'Actualizar a Pro',
-      'proFeatures': 'Sin anuncios • Comparaciones ilimitadas • Funciones premium',
+      'proFeatures':
+          'Sin anuncios • Comparaciones ilimitadas • Funciones premium',
       'unlocked': '¡Desbloqueado!',
       'unlockMessage': 'Ahora puedes comparar productos al mejor precio',
       //noprototalsaving
@@ -1139,7 +1268,8 @@ class AppTranslations extends Translations {
       //comparison
       'compare_save': 'Comparar y ahorrar',
       'find_better_deals': 'Encuentra mejores ofertas',
-      'find_better_deals_desc': 'Introduce lo que compraste. Te ayudaremos a encontrarlo más barato.',
+      'find_better_deals_desc':
+          'Introduce lo que compraste. Te ayudaremos a encontrarlo más barato.',
       'product_name': 'Nombre del producto',
       'price_paid': 'Precio pagado',
       'enter_amount': '\$ Ingresar monto',
@@ -1149,14 +1279,72 @@ class AppTranslations extends Translations {
       'copy_link': 'Copiar enlace',
       'compare': 'Comparar',
       'confirm_purchase': 'Confirmar compra',
+      'enter_product_name': 'Insira o nome do produto',
+      'max_price': 'Preço máximo',
+      'please_enter_product_name': 'Por favor insira o nome do produto',
+      'please_enter_valid_price': 'Por favor insira um preço válido',
+      'searching': 'A procurar...',
+      'search': 'Pesquisar',
+      'no_deals_found': 'Nenhuma oferta encontrada',
+      'try_different_product_or_increase_price': 'Tente um nome diferente ou aumente o preço máximo.',
+      'better_deals_found_count': 'Melhores ofertas encontradas ({count})',
+      'unknown_site': 'Site desconhecido',
+      'save_percent': 'Poupe {percent}%',
+      'best_deal': 'Melhor oferta',
+      'no_link_available_to_copy': 'Não há link disponível para copiar',
+      'product_link_copied': 'Link do produto de {siteName} copiado para a área de transferência',
+      'failed_to_copy_link': 'Falha ao copiar o link: {error}',
+      'compare_with_site': 'Comparar {site}',
+      'original_price_max': 'Preço original (máx.)',
+      'price_with_tool': 'Preço com ferramenta',
+      'product_category': 'Categoria do produto',
+      'enter_product_category': 'Insira a categoria do produto',
+      'savings_preview': 'Pré-visualização de poupança',
+      'you_save_label': 'Você poupa:',
+      'please_enter_valid_original_price': 'Por favor insira um preço original válido',
+      'please_enter_valid_price_with_tool': 'Por favor insira um preço válido com ferramenta',
+      'please_enter_product_category': 'Por favor insira uma categoria de produto',
+      'savings_record_created_successfully': 'Registo de poupança criado com sucesso!',
+      'failed_to_create_savings_record': 'Falha ao criar registo de poupança',
+      'purchase_confirm_show_graph': 'Confirmar compra e mostrar gráfico',
+      'enter_product_name': 'Ingrese el nombre del producto',
+      'max_price': 'Precio máximo',
+      'please_enter_product_name': 'Por favor ingrese el nombre del producto',
+      'please_enter_valid_price': 'Por favor ingrese un precio válido',
+      'searching': 'Buscando...',
+      'search': 'Buscar',
+      'no_deals_found': 'No se encontraron ofertas',
+      'try_different_product_or_increase_price': 'Pruebe un nombre diferente o aumente el precio máximo.',
+      'better_deals_found_count': 'Mejores ofertas encontradas ({count})',
+      'unknown_site': 'Sitio desconocido',
+      'save_percent': 'Ahorra {percent}%',
+      'best_deal': 'Mejor oferta',
+      'no_link_available_to_copy': 'No hay enlace disponible para copiar',
+      'product_link_copied': 'Enlace del producto de {siteName} copiado al portapapeles',
+      'failed_to_copy_link': 'Error al copiar enlace: {error}',
+      'compare_with_site': 'Comparar {site}',
+      'original_price_max': 'Precio original (máx.)',
+      'price_with_tool': 'Precio con herramienta',
+      'product_category': 'Categoría del producto',
+      'enter_product_category': 'Ingrese la categoría del producto',
+      'savings_preview': 'Vista previa del ahorro',
+      'you_save_label': 'Ahorras:',
+      'please_enter_valid_original_price': 'Por favor ingrese un precio original válido',
+      'please_enter_valid_price_with_tool': 'Por favor ingrese un precio válido con herramienta',
+      'please_enter_product_category': 'Por favor ingrese una categoría de producto',
+      'savings_record_created_successfully': '¡Registro de ahorro creado con éxito!',
+      'failed_to_create_savings_record': 'Error al crear el registro de ahorro',
+      'purchase_confirm_show_graph': 'Confirmar compra y mostrar gráfico',
       //analysis
       'analytics': 'Analítica',
       'pie_chart': 'Gráfico Circular',
       'bar_chart': 'Gráfico de Barras',
       'line_chart': 'Gráfico de Líneas',
       'loading_analytics': 'Cargando datos de analítica...',
-      'no_data_selected_month': 'No hay datos de {dataType} para el mes seleccionado',
-      'select_different_month_or_add_transactions': 'Seleccione otro mes o agregue transacciones',
+      'no_data_selected_month':
+          'No hay datos de {dataType} para el mes seleccionado',
+      'select_different_month_or_add_transactions':
+          'Seleccione otro mes o agregue transacciones',
       'no_data_available': 'No hay datos de {dataType} disponibles',
       'data_breakdown': 'Desglose de {dataType}',
       'expenses': 'Gastos',
@@ -1167,10 +1355,12 @@ class AppTranslations extends Translations {
       'no_description': 'Sin descripción',
       'failed_to_load_expenses': 'Error al cargar los gastos',
       'no_expenses_found': 'No se encontraron gastos',
-      'start_adding_expenses_to_see_them': 'Comienza a agregar gastos para verlos aquí',
+      'start_adding_expenses_to_see_them':
+          'Comienza a agregar gastos para verlos aquí',
       'load_more': 'Cargar más',
       'edit_income': 'Editar Ingreso',
-      'edit_functionality_to_be_implemented': 'La funcionalidad de edición se implementará',
+      'edit_functionality_to_be_implemented':
+          'La funcionalidad de edición se implementará',
       'save_action': 'Guardar',
       // Totals
       'total_expenses': 'Gastos Totales',
@@ -1193,7 +1383,8 @@ class AppTranslations extends Translations {
       'current_monthly_budget': 'Presupuesto Mensual Actual',
       'edit_your_budget': 'Editar Tu Presupuesto',
       'enter_amount': '\$ Ingresar monto',
-      'budget_change_info': 'Cambiar tu presupuesto actualizará tu saldo disponible en la página de inicio.',
+      'budget_change_info':
+          'Cambiar tu presupuesto actualizará tu saldo disponible en la página de inicio.',
       'confirm': 'Confirmar',
       'select_category': 'Seleccionar Categoría',
       'food': 'Comida',
@@ -1209,21 +1400,25 @@ class AppTranslations extends Translations {
       'monthly_budget_pro': 'Presupuesto Mensual Pro',
       'watch_video_unlock': 'Ver video para desbloquear',
       'video_message':
-      'Mira un video corto para desbloquear las funciones de planificación del presupuesto mensual',
+          'Mira un video corto para desbloquear las funciones de planificación del presupuesto mensual',
       'upgrade_to_pro': 'Actualizar a Pro',
-      'no_ads_info': 'Sin anuncios • Presupuestos ilimitados • Funciones premium',
+      'no_ads_info':
+          'Sin anuncios • Presupuestos ilimitados • Funciones premium',
       'unlocked': '¡Desbloqueado!',
-      'unlocked_message': 'Ahora puedes acceder a la función de presupuesto mensual',
+      'unlocked_message':
+          'Ahora puedes acceder a la función de presupuesto mensual',
 
       //monthlybudgetnonpro
       'upgrade_title': 'Actualiza a Pro para editar',
-      'upgrade_subtitle': 'Obtén acceso completo a las funciones de edición de presupuesto',
+      'upgrade_subtitle':
+          'Obtén acceso completo a las funciones de edición de presupuesto',
       'upgrade_now': 'Actualizar ahora',
       'maybe_later': 'Quizás más tarde',
       //homescreen
       'hi_user': 'Hola Daniel',
       'location': 'Romaña, Módena, Italia',
       'available_balance': 'Saldo disponible',
+      'see_available_balance': 'Ver saldo disponible',
       'income': 'Ingresos',
       'expense': 'Gastos',
       'savings': 'Ahorros',
@@ -1277,8 +1472,10 @@ class AppTranslations extends Translations {
       'already_account': '¿Ya tienes una cuenta?',
       'login': 'Iniciar sesión',
       'terms_required': 'Términos Requeridos',
-      'accept_terms_message': 'Debes aceptar los términos y condiciones para crear una cuenta.',
-      'terms_agreement': 'Al crear una cuenta o iniciar sesión, aceptas nuestros ',
+      'accept_terms_message':
+          'Debes aceptar los términos y condiciones para crear una cuenta.',
+      'terms_agreement':
+          'Al crear una cuenta o iniciar sesión, aceptas nuestros ',
       'terms_conditions': 'Términos y Condiciones',
       'verification': 'Verificación',
       'face_id': 'ID Facial',
@@ -1294,7 +1491,8 @@ class AppTranslations extends Translations {
       'resend_in': 'Reenviar en @seconds s',
       //setup your face id
       'set_your_face_id': 'Configura tu Face ID',
-      'face_id_description': 'Protege tu cuenta con la autenticación Face ID. Inicia sesión rápidamente sin escribir tu contraseña cada vez.',
+      'face_id_description':
+          'Protege tu cuenta con la autenticación Face ID. Inicia sesión rápidamente sin escribir tu contraseña cada vez.',
       'setup_face_id': 'Configurar Face ID',
       'skip_for_now': 'Omitir por ahora',
       'registration': 'Registro',
@@ -1304,22 +1502,26 @@ class AppTranslations extends Translations {
       'face_id_success_msg': '¡El Face ID se ha configurado con éxito!',
       //
       'face_verification': 'Verificación Facial',
-      'position_face_instruction': 'Coloca tu rostro dentro del círculo y toca el botón de abajo para iniciar la verificación',
+      'position_face_instruction':
+          'Coloca tu rostro dentro del círculo y toca el botón de abajo para iniciar la verificación',
       'verifying_message': 'Verificando... Mantén tu rostro en el círculo',
       'authenticate_face_id': 'Autenticar con Face ID',
       'back_to_signup': 'Volver a Registrarse',
       'verification_done': '¡Verificación Completa!',
       'face_auth_successful': 'Autenticación facial exitosa',
       'camera_error': 'Error de Cámara',
-      'camera_error_msg': 'No se puede acceder a la cámara. Verifica los permisos.',
+      'camera_error_msg':
+          'No se puede acceder a la cámara. Verifica los permisos.',
       //
       'faceid_added': '¡FaceID agregado con éxito!',
-      'faceid_protected': 'Tu cuenta está protegida con la autenticación FaceID.',
+      'faceid_protected':
+          'Tu cuenta está protegida con la autenticación FaceID.',
       'continue': 'Continuar',
       //forgetpasswordemail
       'forget_password': 'Olvidar contraseña',
       'enter_email_phone': 'Ingrese su correo electrónico o número de teléfono',
-      'notification_info': 'Puede recibir notificaciones por SMS o correo electrónico de nuestra parte por motivos de seguridad e inicio de sesión.',
+      'notification_info':
+          'Puede recibir notificaciones por SMS o correo electrónico de nuestra parte por motivos de seguridad e inicio de sesión.',
       'continue': 'Continuar',
       //forgetpasswordotp
       'verification_code': 'Código de verificación',
@@ -1357,7 +1559,8 @@ class AppTranslations extends Translations {
       "auto_upload_monthly": "Subir informes automáticamente cada mes",
       "download": "Descargar",
       "upload_successful": "Subida exitosa",
-      "upload_success_message": "Tus datos seleccionados han sido\nSubidos a Google Drive",
+      "upload_success_message":
+          "Tus datos seleccionados han sido\nSubidos a Google Drive",
       "ok": "Aceptar",
       //complitepayment
       'complete_payment': 'Completar Pago',
@@ -1378,16 +1581,13 @@ class AppTranslations extends Translations {
       'name_on_card': 'Nombre en la Tarjeta',
       'name_on_card_hint': 'Juan Pérez',
       'pay_now': 'Pagar Ahora',
-
-
-
-
     },
     'it_IT': {
       //rate and help
       'rateAndImproveTitle': 'Valuta e Aiutaci a Migliorare',
       'saveAndGrowTogether': 'Risparmiamo e cresciamo insieme!',
-      'shareYourThoughts': 'Condividi le tue idee su come possiamo migliorare\nl\'app: useremo il tuo feedback per rendere\nl\'esperienza più efficace.',
+      'shareYourThoughts':
+          'Condividi le tue idee su come possiamo migliorare\nl\'app: useremo il tuo feedback per rendere\nl\'esperienza più efficace.',
       'rateExperience': 'Come valuteresti la tua esperienza?',
       'feedbackHint': 'Scrivi il tuo feedback qui...',
       'sendFeedback': 'Invia Feedback',
@@ -1409,10 +1609,28 @@ class AppTranslations extends Translations {
       'galleryFeature': 'La funzione selettore galleria sarà implementata',
       'transactionSuccess': 'Transazione aggiunta con successo',
       'transactionError': 'Errore nell\'aggiunta della transazione',
+      'warning': 'Avviso',
+      'apiError': 'Si è verificato un errore API',
+      'ocrError': 'Errore OCR',
+      'noTextFound': 'Nessun testo trovato',
+      'cameraOcrFailed': 'OCR della fotocamera non riuscita',
+      'galleryOcrFailed': 'OCR della galleria non riuscita',
+      'ocrUnableExtract': 'Impossibile estrarre dati dal testo',
+      'noDataReturned': 'Nessun dato restituito',
+      'ocrExpenseCreated': 'Spesa creata da OCR',
+      'ocrRequestFailed': 'Richiesta OCR non riuscita',
+      'enterReceiptTextBarcode': 'Inserisci testo del codice a barre/ricevuta',
+      'enterReceiptText': 'Inserisci testo della ricevuta',
+      'pasteReceiptText': 'Incolla qui il testo della ricevuta',
+      'textEmpty': 'Il testo non può essere vuoto',
+      'post': 'Invia',
       'enterAmountError': 'Si prega di inserire l\'importo',
-      'selectExpenseCategoryError': 'Si prega di selezionare la categoria di spesa',
-      'selectIncomeCategoryError': 'Si prega di selezionare la categoria di entrata',
-      'selectPaymentMethodError': 'Si prega di selezionare il metodo di pagamento',
+      'selectExpenseCategoryError':
+          'Si prega di selezionare la categoria di spesa',
+      'selectIncomeCategoryError':
+          'Si prega di selezionare la categoria di entrata',
+      'selectPaymentMethodError':
+          'Si prega di selezionare il metodo di pagamento',
 
       // Income categories
       'salary': 'Stipendio',
@@ -1445,6 +1663,7 @@ class AppTranslations extends Translations {
       'feb1520241430': '15 feb 2024 - 14:30',
       'setDateTime': 'Imposta Data e Ora',
       'feb152024': '15 feb 2024',
+      'tapToSet': 'Tocca per impostare',
       'add': 'Aggiungi',
       // Category translations
       'food': 'Cibo',
@@ -1460,12 +1679,15 @@ class AppTranslations extends Translations {
       //addforprouser
       'watchAdTitle': 'Guarda l\'Annuncio per Sbloccare Pro',
       'watchAdSubtitle': 'Guarda l\'Annuncio per Sbloccare le Funzioni Pro',
-      'watchAdDescription': 'Guarda il Video per Sbloccare le Funzioni Pro (30s)',
-      'proFeaturesUnlockMessage': 'Dopo aver visto l\'annuncio, verranno sbloccate le funzioni Pro di Spese e Entrate',
+      'watchAdDescription':
+          'Guarda il Video per Sbloccare le Funzioni Pro (30s)',
+      'proFeaturesUnlockMessage':
+          'Dopo aver visto l\'annuncio, verranno sbloccate le funzioni Pro di Spese e Entrate',
       'secondsRemaining': '%seconds% secondi rimanenti',
       'cancel': 'Annulla',
       'proUnlockedTitle': 'Funzioni Pro Sbloccate!',
-      'proUnlockedMessage': 'Le funzioni Pro di Spese e Entrate sono ora sbloccate.',
+      'proUnlockedMessage':
+          'Le funzioni Pro di Spese e Entrate sono ora sbloccate.',
       //addexpincome
       'addExpense': 'Aggiungi Spesa',
       'addIncome': 'Aggiungi Entrata',
@@ -1496,6 +1718,7 @@ class AppTranslations extends Translations {
       'feb152024': '15 feb 2024',
       'watchVideoForFree': 'Guarda un video breve per aggiungere gratuitamente',
       'upgradeToPro': 'Passa a Pro per rimuovere gli annunci',
+      'ocrSupportsExpensesOnly': 'L\'OCR supporta solo le spese',
       //login
       'welcomeBack': 'Bentornato',
       'loginToAccount': 'Accedi al tuo account',
@@ -1511,7 +1734,8 @@ class AppTranslations extends Translations {
       'register': 'Registrati',
       //currency
       'currency_exchange': 'Cambio Valuta',
-      'choose_currency_desc': 'Scegli la tua valuta per l\'interfaccia dell\'app',
+      'choose_currency_desc':
+          'Scegli la tua valuta per l\'interfaccia dell\'app',
       'usd_name': 'Dollaro Americano (\$)',
       'gbp_name': 'Sterlina Britannica (£)',
       'eur_name': 'Euro (€)',
@@ -1523,7 +1747,8 @@ class AppTranslations extends Translations {
       'light_theme': 'Chiaro',
       'dark_theme': 'Scuro',
       'use_system_settings': 'Usa impostazioni di sistema',
-      'system_settings_desc': 'Il tuo tema corrisponderà automaticamente alle\npreferenze di sistema',
+      'system_settings_desc':
+          'Il tuo tema corrisponderà automaticamente alle\npreferenze di sistema',
 
       //confirmfaceid
       'initializing_camera': 'Inizializzazione fotocamera...',
@@ -1533,7 +1758,8 @@ class AppTranslations extends Translations {
       'camera_not_ready': 'Fotocamera non pronta. Attendere prego.',
       'keep_face_in_circle': 'Mantieni il volto nel cerchio',
       'faceid_saved': 'Face ID Salvato!',
-      'faceid_saved_desc': 'Il tuo Face ID è stato salvato con successo.\nOra puoi usarlo per sbloccare l\'app.',
+      'faceid_saved_desc':
+          'Il tuo Face ID è stato salvato con successo.\nOra puoi usarlo per sbloccare l\'app.',
       'scanning': 'Scansione...',
       'seconds_remaining': 'secondi rimanenti',
       'tap_to_begin': 'Tocca "Autentica con Face ID" per iniziare',
@@ -1555,7 +1781,8 @@ class AppTranslations extends Translations {
 
       //pinlock
       'set_pin': 'Imposta un PIN',
-      'pin_description': 'Il PIN deve essere di almeno 4 cifre, ma si consiglia un PIN a 6 cifre per una maggiore sicurezza.',
+      'pin_description':
+          'Il PIN deve essere di almeno 4 cifre, ma si consiglia un PIN a 6 cifre per una maggiore sicurezza.',
       'invalid_pin': 'PIN non valido',
       'pin_min_length': 'Il PIN deve essere di almeno 4 cifre',
       'clear': 'Cancella',
@@ -1571,41 +1798,53 @@ class AppTranslations extends Translations {
       'none_option_desc': 'Continua come ospite',
       'security_settings': 'Impostazioni di Sicurezza',
       'enable_faceid': 'Abilita FaceID',
-      'enable_faceid_desc': 'Usa il tuo FaceID per accedere più velocemente e in sicurezza',
+      'enable_faceid_desc':
+          'Usa il tuo FaceID per accedere più velocemente e in sicurezza',
       'faceid_app_launch': 'FaceID per Apertura App',
       'faceid_app_launch_desc': 'Richiedi FaceID quando apri l\'app',
-      'security_info': 'Il tuo FaceID è archiviato in modo sicuro sul tuo dispositivo. Non lo carichiamo mai né vi accediamo.',
+      'security_info':
+          'Il tuo FaceID è archiviato in modo sicuro sul tuo dispositivo. Non lo carichiamo mai né vi accediamo.',
       //language
       'language_settings': 'Impostazioni Lingua',
-      'language_settings_desc': 'Scegli la tua lingua preferita per l\'interfaccia dell\'app',
-      'language_warning': 'Alcune modifiche potrebbero richiedere il riavvio dell\'app per essere applicate completamente',
+      'language_settings_desc':
+          'Scegli la tua lingua preferita per l\'interfaccia dell\'app',
+      'language_warning':
+          'Alcune modifiche potrebbero richiedere il riavvio dell\'app per essere applicate completamente',
       'apply_changes': 'Applica Modifiche',
 
       //notification
       'notification_settings': 'Impostazioni Notifiche',
       'enable_all_notifications': 'Abilita Tutte le Notifiche',
-      'enable_all_notifications_desc': 'Controlla tutte le preferenze di notifica',
+      'enable_all_notifications_desc':
+          'Controlla tutte le preferenze di notifica',
       'general_notifications': 'Notifiche Generali',
       'push_notification': 'Notifica push',
-      'push_notification_desc': 'Ricevi avvisi importanti quando non stai utilizzando l\'app.',
+      'push_notification_desc':
+          'Ricevi avvisi importanti quando non stai utilizzando l\'app.',
       'automatic_renewal': 'Rinnovo Automatico',
-      'automatic_renewal_desc': 'Mantieni la tua sottoscrizione attiva senza interruzioni. Disattivalo se preferisci rinnovare manualmente.',
+      'automatic_renewal_desc':
+          'Mantieni la tua sottoscrizione attiva senza interruzioni. Disattivalo se preferisci rinnovare manualmente.',
       'financial_alerts': 'Avvisi Finanziari',
       'monthly_alerts': 'Avvisi Mensili di Spese e Entrate',
-      'monthly_alerts_desc': 'Ricevi notifiche dopo la fine del mese su spese e entrate.',
+      'monthly_alerts_desc':
+          'Ricevi notifiche dopo la fine del mese su spese e entrate.',
       'budget_limit_warning': 'Avviso Limite Budget',
-      'budget_limit_warning_desc': 'Ricevi un avviso quando ti avvicini al tuo budget mensile.',
+      'budget_limit_warning_desc':
+          'Ricevi un avviso quando ti avvicini al tuo budget mensile.',
       'other_notifications': 'Altre Notifiche',
       'promotional_notifications': 'Notifiche Promozionali',
-      'promotional_notifications_desc': 'Ricevi aggiornamenti su nuove funzionalità o offerte',
+      'promotional_notifications_desc':
+          'Ricevi aggiornamenti su nuove funzionalità o offerte',
       'auto_save_message': 'Le modifiche verranno salvate automaticamente',
       //paymentsuccess
       'payment_success_title': "Tutto pronto! Benvenuto in Premium",
-      'payment_success_subtitle': "Goditi accesso illimitato, funzionalità avanzate e\nun percorso finanziario più fluido.",
+      'payment_success_subtitle':
+          "Goditi accesso illimitato, funzionalità avanzate e\nun percorso finanziario più fluido.",
       'continue_button': 'Continua',
       //completepayment
       'complete_payment': 'Completa Pagamento',
-      'payment_header': "Sei a un solo passo dallo sblocco delle funzionalità premium",
+      'payment_header':
+          "Sei a un solo passo dallo sblocco delle funzionalità premium",
       'choose_payment_method': 'Scegli Metodo di Pagamento',
       'card_payment': 'Pagamento con Carta',
       'card_payment_desc': 'Visa, Mastercard, Amex',
@@ -1625,7 +1864,8 @@ class AppTranslations extends Translations {
       //premiumplans
       'premium_plans': 'Piani Premium',
       'premium_header': 'Sblocca Funzionalità Premium',
-      'premium_subheader': 'Ottieni più controllo sulle tue finanze con\nstrumenti avanzati',
+      'premium_subheader':
+          'Ottieni più controllo sulle tue finanze con\nstrumenti avanzati',
       'monthly_plan': 'Piano Mensile',
       'monthly_price': '3,99€/mese',
       'yearly_plan': 'Piano Annuale',
@@ -1651,7 +1891,8 @@ class AppTranslations extends Translations {
       'codeResent': 'Codice rinviato',
       'newCodeSent': 'È stato inviato un nuovo codice di verifica',
       'incompleteCode': 'Codice incompleto',
-      'enterCompleteCode': 'Inserisci il codice di verifica completo di 6 cifre',
+      'enterCompleteCode':
+          'Inserisci il codice di verifica completo di 6 cifre',
       //passwordcahgescreen
       'password_change': 'Cambio password',
       'set_new_password': 'Imposta nuova password',
@@ -1663,9 +1904,11 @@ class AppTranslations extends Translations {
       'confirm_new_password': 'Conferma nuova password',
       'confirm_new_password_field': 'Conferma la tua nuova password',
       'continue': 'Continua',
-      'password_requirements': 'La tua password deve essere di almeno 10 caratteri. Includi più parole per renderla più sicura.',
+      'password_requirements':
+          'La tua password deve essere di almeno 10 caratteri. Includi più parole per renderla più sicura.',
       'error': 'Errore',
-      'enter_current_password_error': 'Per favore inserisci la tua password attuale',
+      'enter_current_password_error':
+          'Per favore inserisci la tua password attuale',
       'passwords_not_match': 'Le password non corrispondono',
       'password_length_error': 'La password deve essere di almeno 10 caratteri',
       //changeemailverification
@@ -1680,11 +1923,13 @@ class AppTranslations extends Translations {
       'codeResent': 'Codice reinviato',
       'newCodeSent': 'È stato inviato un nuovo codice di verifica',
       'incompleteCode': 'Codice incompleto',
-      'enterCompleteCode': 'Inserisci il codice di verifica completo di 6 cifre',
+      'enterCompleteCode':
+          'Inserisci il codice di verifica completo di 6 cifre',
 
       //changeemail
       'change_email': 'Cambia Email',
-      'email_change_description': 'Aggiorna la tua email per mantenere sicuro il tuo account.',
+      'email_change_description':
+          'Aggiorna la tua email per mantenere sicuro il tuo account.',
       'current_email': 'Email attuale',
       'new_email': 'Nuova email',
       'confirm_email': 'Conferma email',
@@ -1695,7 +1940,8 @@ class AppTranslations extends Translations {
       'email_mismatch': 'Le email non corrispondono!',
       // Edit Name Screen Translations
       'edit_name': 'Modifica Nome',
-      'name_appearance_info': 'Il tuo nome apparirà sul tuo profilo e sulle transazioni',
+      'name_appearance_info':
+          'Il tuo nome apparirà sul tuo profilo e sulle transazioni',
       'first_name': 'Nome',
       'enter_first_name': 'Inserisci il nome',
       'first_name_required': 'Per favore inserisci il tuo nome',
@@ -1722,12 +1968,14 @@ class AppTranslations extends Translations {
       'currency_change': 'Cambio Valuta',
       'currency_change_subtitle': 'Cambia la tua valuta',
       'terms_conditions': 'Termini e Condizioni',
-      'terms_conditions_subtitle': 'Leggi i termini e condizioni prima dell\'uso',
+      'terms_conditions_subtitle':
+          'Leggi i termini e condizioni prima dell\'uso',
       'terms_title': 'Termini e Condizioni',
       'loading_terms': 'Caricamento dei termini e condizioni...',
       'error_loading_terms': 'Errore nel caricamento dei termini',
       'retry': 'Riprova',
-      'terms_intro': 'Si prega di leggere attentamente questi Termini e Condizioni prima di utilizzare la nostra applicazione mobile. Accedendo o utilizzando l\'app, accetti di essere vincolato da questi termini.',
+      'terms_intro':
+          'Si prega di leggere attentamente questi Termini e Condizioni prima di utilizzare la nostra applicazione mobile. Accedendo o utilizzando l\'app, accetti di essere vincolato da questi termini.',
       'no_terms_available': 'Nessun termine e condizione disponibile.',
       'version_label': 'Versione:',
       'effective_date_label': 'Data di efficacia:',
@@ -1745,11 +1993,13 @@ class AppTranslations extends Translations {
       'change_password': 'Cambia password',
       'delete_account': 'Elimina account',
       'delete_account_title': 'Elimina account',
-      'delete_account_message': 'Sei sicuro di voler eliminare il tuo account? Questa azione non può essere annullata.',
+      'delete_account_message':
+          'Sei sicuro di voler eliminare il tuo account? Questa azione non può essere annullata.',
       'cancel': 'Annulla',
       'delete': 'Elimina',
       'account_deleted': 'Account eliminato',
-      'account_deleted_message': 'Il tuo account è stato eliminato con successo',
+      'account_deleted_message':
+          'Il tuo account è stato eliminato con successo',
       //totalsavingpro
       'totalSavings': 'Risparmi Totali',
       'totalSaving': 'Risparmio totale',
@@ -1769,9 +2019,11 @@ class AppTranslations extends Translations {
       //totalsavingadd
       'comparisonPage': 'Pagina di Confronto',
       'watchVideoToUnlock': 'Guarda il Video per Sbloccare',
-      'watchVideoDescription': 'Guarda un breve video per trovare prodotti\nal miglior prezzo gratuitamente',
+      'watchVideoDescription':
+          'Guarda un breve video per trovare prodotti\nal miglior prezzo gratuitamente',
       'upgradeToPro': 'Aggiorna a Pro',
-      'proFeatures': 'Nessuna pubblicità • Confronti illimitati • Funzionalità premium',
+      'proFeatures':
+          'Nessuna pubblicità • Confronti illimitati • Funzionalità premium',
       'unlocked': 'Sbloccato!',
       'unlockMessage': 'Ora puoi confrontare prodotti al miglior prezzo',
       //noprototalsaving
@@ -1824,7 +2076,8 @@ class AppTranslations extends Translations {
       //comparison
       'compare_save': 'Confronta e risparmia',
       'find_better_deals': 'Trova offerte migliori',
-      'find_better_deals_desc': "Inserisci ciò che hai acquistato. Ti aiuteremo a trovarlo a meno.",
+      'find_better_deals_desc':
+          "Inserisci ciò che hai acquistato. Ti aiuteremo a trovarlo a meno.",
       'product_name': 'Nome del prodotto',
       'price_paid': 'Prezzo pagato',
       'enter_amount': '\$ Inserisci importo',
@@ -1834,14 +2087,44 @@ class AppTranslations extends Translations {
       'copy_link': 'Copia link',
       'compare': 'Confronta',
       'confirm_purchase': 'Conferma acquisto',
+      'enter_product_name': 'Inserisci nome del prodotto',
+      'max_price': 'Prezzo massimo',
+      'please_enter_product_name': 'Per favore inserisci il nome del prodotto',
+      'please_enter_valid_price': 'Per favore inserisci un prezzo valido',
+      'searching': 'Ricerca in corso...',
+      'search': 'Cerca',
+      'no_deals_found': 'Nessuna offerta trovata',
+      'try_different_product_or_increase_price': 'Prova un nome diverso o aumenta il prezzo massimo.',
+      'better_deals_found_count': 'Migliori offerte trovate ({count})',
+      'unknown_site': 'Sito sconosciuto',
+      'save_percent': 'Risparmia {percent}%',
+      'best_deal': 'Migliore offerta',
+      'no_link_available_to_copy': 'Nessun link disponibile da copiare',
+      'product_link_copied': 'Link del prodotto da {siteName} copiato negli appunti',
+      'failed_to_copy_link': 'Impossibile copiare il link: {error}',
+      'compare_with_site': 'Confronta {site}',
+      'original_price_max': 'Prezzo originale (max)',
+      'price_with_tool': 'Prezzo con strumento',
+      'product_category': 'Categoria prodotto',
+      'enter_product_category': 'Inserisci la categoria del prodotto',
+      'savings_preview': 'Anteprima risparmio',
+      'you_save_label': 'Risparmi:',
+      'please_enter_valid_original_price': 'Per favore inserisci un prezzo originale valido',
+      'please_enter_valid_price_with_tool': 'Per favore inserisci un prezzo valido con strumento',
+      'please_enter_product_category': 'Per favore inserisci una categoria prodotto',
+      'savings_record_created_successfully': 'Record di risparmio creato con successo!',
+      'failed_to_create_savings_record': 'Impossibile creare il record di risparmio',
+      'purchase_confirm_show_graph': 'Conferma acquisto e mostra grafico',
       //analysis
       'analytics': 'Analisi',
       'pie_chart': 'Grafico a Torta',
       'bar_chart': 'Grafico a Barre',
       'line_chart': 'Grafico a Linee',
       'loading_analytics': 'Caricamento dati di analisi...',
-      'no_data_selected_month': 'Nessun dato di {dataType} disponibile per il mese selezionato',
-      'select_different_month_or_add_transactions': 'Seleziona un mese diverso o aggiungi transazioni',
+      'no_data_selected_month':
+          'Nessun dato di {dataType} disponibile per il mese selezionato',
+      'select_different_month_or_add_transactions':
+          'Seleziona un mese diverso o aggiungi transazioni',
       'no_data_available': 'Nessun dato di {dataType} disponibile',
       'data_breakdown': 'Dettaglio {dataType}',
       'expenses': 'Spese',
@@ -1866,7 +2149,8 @@ class AppTranslations extends Translations {
       'current_monthly_budget': 'Budget Mensile Attuale',
       'edit_your_budget': 'Modifica il Tuo Budget',
       'enter_amount': '\$ Inserisci importo',
-      'budget_change_info': 'Modificare il budget aggiornerà il saldo disponibile nella pagina principale.',
+      'budget_change_info':
+          'Modificare il budget aggiornerà il saldo disponibile nella pagina principale.',
       'confirm': 'Conferma',
       'select_category': 'Seleziona Categoria',
       'food': 'Cibo',
@@ -1882,20 +2166,23 @@ class AppTranslations extends Translations {
       'monthly_budget_pro': 'Budget Mensile Pro',
       'watch_video_unlock': 'Guarda video per sbloccare',
       'video_message':
-      'Guarda un breve video per sbloccare le funzionalità di pianificazione del budget mensile',
+          'Guarda un breve video per sbloccare le funzionalità di pianificazione del budget mensile',
       'upgrade_to_pro': 'Passa a Pro',
-      'no_ads_info': 'Nessuna pubblicità • Budget illimitati • Funzioni premium',
+      'no_ads_info':
+          'Nessuna pubblicità • Budget illimitati • Funzioni premium',
       'unlocked': 'Sbloccato!',
       'unlocked_message': 'Ora puoi accedere alla funzione di budget mensile',
       //monthlybudgetnonpro
       'upgrade_title': 'Passa a Pro per modificare',
-      'upgrade_subtitle': 'Ottieni pieno accesso alle funzioni di modifica del budget',
+      'upgrade_subtitle':
+          'Ottieni pieno accesso alle funzioni di modifica del budget',
       'upgrade_now': 'Aggiorna ora',
       'maybe_later': 'Forse dopo',
       //homescreen
       'hi_user': 'Ciao Daniel',
       'location': 'Romagna, Modena, Italia',
       'available_balance': 'Saldo disponibile',
+      'see_available_balance': 'Vedi saldo disponibile',
       'income': 'Entrate',
       'expense': 'Spese',
       'savings': 'Risparmi',
@@ -1949,7 +2236,8 @@ class AppTranslations extends Translations {
       'already_account': 'Hai già un account?',
       'login': 'Accedi',
       'terms_required': 'Termini Richiesti',
-      'accept_terms_message': 'Devi accettare i termini e le condizioni per creare un account.',
+      'accept_terms_message':
+          'Devi accettare i termini e le condizioni per creare un account.',
       'terms_agreement': 'Creando un account o accedendo, accetti i nostri ',
       'terms_conditions': 'Termini e Condizioni',
       'verification': 'Verifica',
@@ -1957,7 +2245,8 @@ class AppTranslations extends Translations {
       'registration_step': 'Registrazione',
       //setup your face id
       'set_your_face_id': 'Imposta il tuo Face ID',
-      'face_id_description': 'Proteggi il tuo account con l’autenticazione Face ID. Accedi rapidamente senza digitare la password ogni volta.',
+      'face_id_description':
+          'Proteggi il tuo account con l’autenticazione Face ID. Accedi rapidamente senza digitare la password ogni volta.',
       'setup_face_id': 'Configura Face ID',
       'skip_for_now': 'Salta per ora',
       'registration': 'Registrazione',
@@ -1967,14 +2256,16 @@ class AppTranslations extends Translations {
       'face_id_success_msg': 'Face ID è stato configurato con successo!',
       //
       'face_verification': 'Verificação Facial',
-      'position_face_instruction': 'Posicione seu rosto dentro do círculo e toque no botão abaixo para iniciar a verificação',
+      'position_face_instruction':
+          'Posicione seu rosto dentro do círculo e toque no botão abaixo para iniciar a verificação',
       'verifying_message': 'Verificando... Mantenha o rosto no círculo',
       'authenticate_face_id': 'Autenticar com Face ID',
       'back_to_signup': 'Voltar para Cadastro',
       'verification_done': 'Verificação Concluída!',
       'face_auth_successful': 'Autenticação facial bem-sucedida',
       'camera_error': 'Erro de Câmera',
-      'camera_error_msg': 'Não foi possível acessar a câmera. Verifique as permissões.',
+      'camera_error_msg':
+          'Não foi possível acessar a câmera. Verifique as permissões.',
 
       // Email Verification Screen
       'verification_title': 'Verifica',
@@ -1986,22 +2277,26 @@ class AppTranslations extends Translations {
       'resend_in': 'Reinvia tra @seconds s',
       //
       'face_verification': 'Verifica Facciale',
-      'position_face_instruction': 'Posiziona il tuo volto nel cerchio e tocca il pulsante in basso per avviare la verifica',
+      'position_face_instruction':
+          'Posiziona il tuo volto nel cerchio e tocca il pulsante in basso per avviare la verifica',
       'verifying_message': 'Verifica in corso... Mantieni il volto nel cerchio',
       'authenticate_face_id': 'Autentica con Face ID',
       'back_to_signup': 'Torna alla Registrazione',
       'verification_done': 'Verifica Completata!',
       'face_auth_successful': 'Autenticazione facciale riuscita',
       'camera_error': 'Errore Fotocamera',
-      'camera_error_msg': 'Impossibile accedere alla fotocamera. Controlla i permessi.',
+      'camera_error_msg':
+          'Impossibile accedere alla fotocamera. Controlla i permessi.',
       //
       'faceid_added': 'FaceID aggiunto con successo!',
-      'faceid_protected': 'Il tuo account è protetto con l’autenticazione FaceID.',
+      'faceid_protected':
+          'Il tuo account è protetto con l’autenticazione FaceID.',
       'continue': 'Continua',
       //forgetpasswordemail
       'forget_password': 'Password dimenticata',
       'enter_email_phone': 'Inserisci la tua email o numero di telefono',
-      'notification_info': 'Potresti ricevere notifiche via SMS o email da noi per motivi di sicurezza e accesso.',
+      'notification_info':
+          'Potresti ricevere notifiche via SMS o email da noi per motivi di sicurezza e accesso.',
       'continue': 'Continua',
       //forgetpasswordotp
       'verification_code': 'Codice di verifica',
@@ -2039,16 +2334,16 @@ class AppTranslations extends Translations {
       "auto_upload_monthly": "Carica report automaticamente ogni mese",
       "download": "Scarica",
       "upload_successful": "Caricamento riuscito",
-      "upload_success_message": "I tuoi dati selezionati sono stati\nCaricati su Google Drive",
-      "ok": "OK"
-
-
+      "upload_success_message":
+          "I tuoi dati selezionati sono stati\nCaricati su Google Drive",
+      "ok": "OK",
     },
     'pt_PT': {
       //rate and help
       'rateAndImproveTitle': 'Avalie e Ajude-nos a Melhorar',
       'saveAndGrowTogether': 'Vamos economizar e crescer juntos!',
-      'shareYourThoughts': 'Compartilhe suas ideias sobre como podemos melhorar\no aplicativo: usaremos seu feedback para tornar\na experiência mais eficaz.',
+      'shareYourThoughts':
+          'Compartilhe suas ideias sobre como podemos melhorar\no aplicativo: usaremos seu feedback para tornar\na experiência mais eficaz.',
       'rateExperience': 'Como você avalia sua experiência?',
       'feedbackHint': 'Escreva seu feedback aqui...',
       'sendFeedback': 'Enviar Feedback',
@@ -2070,9 +2365,26 @@ class AppTranslations extends Translations {
       'galleryFeature': 'A função de seletor de galeria será implementada',
       'transactionSuccess': 'Transação adicionada com sucesso',
       'transactionError': 'Erro ao adicionar transação',
+      'warning': 'Aviso',
+      'apiError': 'Ocorreu um erro de API',
+      'ocrError': 'Erro de OCR',
+      'noTextFound': 'Nenhum texto encontrado',
+      'cameraOcrFailed': 'Falha na OCR da câmera',
+      'galleryOcrFailed': 'Falha na OCR da galeria',
+      'ocrUnableExtract': 'Não foi possível extrair dados do texto',
+      'noDataReturned': 'Nenhum dado retornado',
+      'ocrExpenseCreated': 'Despesa criada pelo OCR',
+      'ocrRequestFailed': 'Falha na solicitação de OCR',
+      'enterReceiptTextBarcode': 'Inserir texto de código de barras/recibo',
+      'enterReceiptText': 'Inserir texto do recibo',
+      'pasteReceiptText': 'Cole o texto do recibo aqui',
+      'textEmpty': 'O texto não pode estar vazio',
+      'post': 'Publicar',
       'enterAmountError': 'Por favor, insira o valor',
-      'selectExpenseCategoryError': 'Por favor, selecione a categoria de despesa',
-      'selectIncomeCategoryError': 'Por favor, selecione a categoria de receita',
+      'selectExpenseCategoryError':
+          'Por favor, selecione a categoria de despesa',
+      'selectIncomeCategoryError':
+          'Por favor, selecione a categoria de receita',
       'selectPaymentMethodError': 'Por favor, selecione o método de pagamento',
 
       // Income categories
@@ -2106,6 +2418,7 @@ class AppTranslations extends Translations {
       'feb1520241430': '15 fev 2024 - 14:30',
       'setDateTime': 'Definir Data e Hora',
       'feb152024': '15 fev 2024',
+      'tapToSet': 'Toque para definir',
       'add': 'Adicionar',
       // Category translations
       'food': 'Comida',
@@ -2121,12 +2434,15 @@ class AppTranslations extends Translations {
       //addforprouser
       'watchAdTitle': 'Assistir ao Anúncio para Desbloquear Pro',
       'watchAdSubtitle': 'Assistir ao Anúncio para Desbloquear Recursos Pro',
-      'watchAdDescription': 'Assistir ao Vídeo para Desbloquear Recursos Pro (30s)',
-      'proFeaturesUnlockMessage': 'Após assistir ao anúncio, os recursos Pro de Despesas e Receitas serão desbloqueados',
+      'watchAdDescription':
+          'Assistir ao Vídeo para Desbloquear Recursos Pro (30s)',
+      'proFeaturesUnlockMessage':
+          'Após assistir ao anúncio, os recursos Pro de Despesas e Receitas serão desbloqueados',
       'secondsRemaining': 'Faltam %seconds% segundos',
       'cancel': 'Cancelar',
       'proUnlockedTitle': 'Recursos Pro Desbloqueados!',
-      'proUnlockedMessage': 'Os recursos Pro de Despesas e Receitas agora estão desbloqueados.',
+      'proUnlockedMessage':
+          'Os recursos Pro de Despesas e Receitas agora estão desbloqueados.',
       //addexpincome
       'addExpense': 'Adicionar Despesa',
       'addIncome': 'Adicionar Receita',
@@ -2155,8 +2471,10 @@ class AppTranslations extends Translations {
       'feb1520241430': '15 fev 2024 - 14:30',
       'setDateTime': 'Definir Data e Hora',
       'feb152024': '15 fev 2024',
-      'watchVideoForFree': 'Assista a um vídeo curto para adicionar gratuitamente',
+      'watchVideoForFree':
+          'Assista a um vídeo curto para adicionar gratuitamente',
       'upgradeToPro': 'Atualize para Pro para remover anúncios',
+      'ocrSupportsExpensesOnly': 'OCR suporta apenas despesas',
       //login
       'welcomeBack': 'Bem-vindo de volta',
       'loginToAccount': 'Faça login na sua conta',
@@ -2172,7 +2490,8 @@ class AppTranslations extends Translations {
       'register': 'Registrar',
       //currency
       'currency_exchange': 'Câmbio de Moeda',
-      'choose_currency_desc': 'Escolha a sua moeda para a interface da aplicação',
+      'choose_currency_desc':
+          'Escolha a sua moeda para a interface da aplicação',
       'usd_name': 'Dólar Americano (\$)',
       'gbp_name': 'Libra Esterlina (£)',
       'eur_name': 'Euro (€)',
@@ -2184,7 +2503,8 @@ class AppTranslations extends Translations {
       'light_theme': 'Claro',
       'dark_theme': 'Escuro',
       'use_system_settings': 'Usar definições do sistema',
-      'system_settings_desc': 'O seu tema corresponderá automaticamente às\npreferências do sistema',
+      'system_settings_desc':
+          'O seu tema corresponderá automaticamente às\npreferências do sistema',
       //confirmfaceid
       'initializing_camera': 'A inicializar câmara...',
       'no_camera_found': 'Nenhuma câmara encontrada',
@@ -2193,7 +2513,8 @@ class AppTranslations extends Translations {
       'camera_not_ready': 'Câmara não pronta. Por favor aguarde.',
       'keep_face_in_circle': 'Mantenha o rosto no círculo',
       'faceid_saved': 'Face ID Guardado!',
-      'faceid_saved_desc': 'O seu Face ID foi guardado com sucesso.\nAgora pode usá-lo para desbloquear a aplicação.',
+      'faceid_saved_desc':
+          'O seu Face ID foi guardado com sucesso.\nAgora pode usá-lo para desbloquear a aplicação.',
       'scanning': 'A escanear...',
       'seconds_remaining': 'segundos restantes',
       'tap_to_begin': 'Toque em "Autenticar com Face ID" para começar',
@@ -2201,7 +2522,8 @@ class AppTranslations extends Translations {
 
       //setupfaceid
       'setup_faceid': 'Configurar FaceID',
-      'setup_faceid_desc': 'Desbloqueie XYZ com o seu\nFaceID, rápido e seguro.',
+      'setup_faceid_desc':
+          'Desbloqueie XYZ com o seu\nFaceID, rápido e seguro.',
       'use_pin_instead': 'Usar PIN em vez disso',
       'cancel': 'Cancelar',
 
@@ -2215,7 +2537,8 @@ class AppTranslations extends Translations {
       'confirm': 'Confirmar',
       //pinlock
       'set_pin': 'Definir um PIN',
-      'pin_description': 'O PIN deve ter pelo menos 4 dígitos, mas recomenda-se um PIN de 6 dígitos para maior segurança.',
+      'pin_description':
+          'O PIN deve ter pelo menos 4 dígitos, mas recomenda-se um PIN de 6 dígitos para maior segurança.',
       'invalid_pin': 'PIN inválido',
       'pin_min_length': 'O PIN deve ter pelo menos 4 dígitos',
       'clear': 'Limpar',
@@ -2230,42 +2553,54 @@ class AppTranslations extends Translations {
       'none_option_desc': 'Continuar como convidado',
       'security_settings': 'Definições de Segurança',
       'enable_faceid': 'Ativar FaceID',
-      'enable_faceid_desc': 'Use o seu FaceID para iniciar sessão mais rápido e seguro',
+      'enable_faceid_desc':
+          'Use o seu FaceID para iniciar sessão mais rápido e seguro',
       'faceid_app_launch': 'FaceID para Início de App',
       'faceid_app_launch_desc': 'Exigir FaceID ao abrir a aplicação',
-      'security_info': 'O seu FaceID é armazenado com segurança no seu dispositivo. Nunca o carregamos nem acedemos a ele.',
+      'security_info':
+          'O seu FaceID é armazenado com segurança no seu dispositivo. Nunca o carregamos nem acedemos a ele.',
 
       //language
       'language_settings': 'Definições de Idioma',
-      'language_settings_desc': 'Escolha o seu idioma preferido para a interface da aplicação',
-      'language_warning': 'Algumas alterações podem exigir reiniciar a aplicação para serem aplicadas completamente',
+      'language_settings_desc':
+          'Escolha o seu idioma preferido para a interface da aplicação',
+      'language_warning':
+          'Algumas alterações podem exigir reiniciar a aplicação para serem aplicadas completamente',
       'apply_changes': 'Aplicar Alterações',
       //notification
       'notification_settings': 'Configurações de Notificação',
       'enable_all_notifications': 'Ativar Todas as Notificações',
-      'enable_all_notifications_desc': 'Controlar todas as preferências de notificação',
+      'enable_all_notifications_desc':
+          'Controlar todas as preferências de notificação',
       'general_notifications': 'Notificações Gerais',
       'push_notification': 'Notificação push',
-      'push_notification_desc': 'Receba alertas importantes quando não estiver a usar a aplicação.',
+      'push_notification_desc':
+          'Receba alertas importantes quando não estiver a usar a aplicação.',
       'automatic_renewal': 'Renovação Automática',
-      'automatic_renewal_desc': 'Mantenha a sua subscrição ativa sem interrupções. Desative se preferir renovar manualmente.',
+      'automatic_renewal_desc':
+          'Mantenha a sua subscrição ativa sem interrupções. Desative se preferir renovar manualmente.',
       'financial_alerts': 'Alertas Financeiros',
       'monthly_alerts': 'Alertas Mensais de Despesas e Receitas',
-      'monthly_alerts_desc': 'Seja notificado após o final do mês sobre despesas e receitas.',
+      'monthly_alerts_desc':
+          'Seja notificado após o final do mês sobre despesas e receitas.',
       'budget_limit_warning': 'Aviso de Limite de Orçamento',
-      'budget_limit_warning_desc': 'Receba um aviso quando estiver a aproximar-se do seu orçamento mensal.',
+      'budget_limit_warning_desc':
+          'Receba um aviso quando estiver a aproximar-se do seu orçamento mensal.',
       'other_notifications': 'Outras Notificações',
       'promotional_notifications': 'Notificações Promocionais',
-      'promotional_notifications_desc': 'Receba atualizações sobre novas funcionalidades ou ofertas',
+      'promotional_notifications_desc':
+          'Receba atualizações sobre novas funcionalidades ou ofertas',
       'auto_save_message': 'As alterações serão guardadas automaticamente',
 
       //paymentsuccess
       'payment_success_title': "Tudo pronto! Bem-vindo ao Premium",
-      'payment_success_subtitle': "Desfrute de acesso ilimitado, recursos avançados e\numa jornada financeira mais suave.",
+      'payment_success_subtitle':
+          "Desfrute de acesso ilimitado, recursos avançados e\numa jornada financeira mais suave.",
       'continue_button': 'Continuar',
       //completepayment
       'complete_payment': 'Completar Pagamento',
-      'payment_header': "Você está a apenas um passo de desbloquear recursos premium",
+      'payment_header':
+          "Você está a apenas um passo de desbloquear recursos premium",
       'choose_payment_method': 'Escolher Método de Pagamento',
       'card_payment': 'Pagamento com Cartão',
       'card_payment_desc': 'Visa, Mastercard, Amex',
@@ -2285,7 +2620,8 @@ class AppTranslations extends Translations {
       //premiumplans
       'premium_plans': 'Planos Premium',
       'premium_header': 'Desbloqueie Recursos Premium',
-      'premium_subheader': 'Obtenha mais controle sobre suas finanças com\nferramentas avançadas',
+      'premium_subheader':
+          'Obtenha mais controle sobre suas finanças com\nferramentas avançadas',
       'monthly_plan': 'Plano Mensal',
       'monthly_price': '3,99€/mês',
       'yearly_plan': 'Plano Anual',
@@ -2310,8 +2646,8 @@ class AppTranslations extends Translations {
       'codeResent': 'Código reenviado',
       'newCodeSent': 'Um novo código de verificação foi enviado',
       'incompleteCode': 'Código incompleto',
-      'enterCompleteCode': 'Por favor, digite o código de verificação completo de 6 dígitos',
-
+      'enterCompleteCode':
+          'Por favor, digite o código de verificação completo de 6 dígitos',
 
       //passwordcahgescreen
       'password_change': 'Alteração de senha',
@@ -2324,7 +2660,8 @@ class AppTranslations extends Translations {
       'confirm_new_password': 'Confirmar nova senha',
       'confirm_new_password_field': 'Confirme sua nova senha',
       'continue': 'Continuar',
-      'password_requirements': 'Sua senha deve ter pelo menos 10 caracteres. Inclua várias palavras para torná-la mais segura.',
+      'password_requirements':
+          'Sua senha deve ter pelo menos 10 caracteres. Inclua várias palavras para torná-la mais segura.',
       'error': 'Erro',
       'enter_current_password_error': 'Por favor, digite sua senha atual',
       'passwords_not_match': 'As senhas não coincidem',
@@ -2341,10 +2678,12 @@ class AppTranslations extends Translations {
       'codeResent': 'Código reenviado',
       'newCodeSent': 'Um novo código de verificação foi enviado',
       'incompleteCode': 'Código incompleto',
-      'enterCompleteCode': 'Por favor, digite o código de verificação completo de 6 dígitos',
+      'enterCompleteCode':
+          'Por favor, digite o código de verificação completo de 6 dígitos',
       //changeemail
       'change_email': 'Alterar Email',
-      'email_change_description': 'Atualize seu email para manter sua conta segura.',
+      'email_change_description':
+          'Atualize seu email para manter sua conta segura.',
       'current_email': 'Email atual',
       'new_email': 'Novo email',
       'confirm_email': 'Confirmar email',
@@ -2355,7 +2694,8 @@ class AppTranslations extends Translations {
       'email_mismatch': 'Os emails não coincidem!',
       // Edit Name Screen Translations
       'edit_name': 'Editar Nome',
-      'name_appearance_info': 'Seu nome aparecerá no seu perfil e nas transações',
+      'name_appearance_info':
+          'Seu nome aparecerá no seu perfil e nas transações',
       'first_name': 'Primeiro Nome',
       'enter_first_name': 'Digite o primeiro nome',
       'first_name_required': 'Por favor digite seu primeiro nome',
@@ -2387,7 +2727,8 @@ class AppTranslations extends Translations {
       'loading_terms': 'Carregando termos e condições...',
       'error_loading_terms': 'Erro ao carregar os termos',
       'retry': 'Tentar novamente',
-      'terms_intro': 'Leia atentamente estes Termos e Condições antes de usar nosso aplicativo móvel. Ao acessar ou usar nosso app, você concorda em ficar vinculado a estes termos.',
+      'terms_intro':
+          'Leia atentamente estes Termos e Condições antes de usar nosso aplicativo móvel. Ao acessar ou usar nosso app, você concorda em ficar vinculado a estes termos.',
       'no_terms_available': 'Nenhum termo e condição disponível.',
       'version_label': 'Versão:',
       'effective_date_label': 'Data de vigência:',
@@ -2405,7 +2746,8 @@ class AppTranslations extends Translations {
       'change_password': 'Mudar senha',
       'delete_account': 'Excluir conta',
       'delete_account_title': 'Excluir conta',
-      'delete_account_message': 'Tem certeza de que deseja excluir sua conta? Esta ação não pode ser desfeita.',
+      'delete_account_message':
+          'Tem certeza de que deseja excluir sua conta? Esta ação não pode ser desfeita.',
       'cancel': 'Cancelar',
       'delete': 'Excluir',
       'account_deleted': 'Conta excluída',
@@ -2429,7 +2771,8 @@ class AppTranslations extends Translations {
       //totalsavingadd
       'comparisonPage': 'Página de Comparação',
       'watchVideoToUnlock': 'Assistir Vídeo para Desbloquear',
-      'watchVideoDescription': 'Assista a um vídeo curto para encontrar produtos\ncom o melhor preço gratuitamente',
+      'watchVideoDescription':
+          'Assista a um vídeo curto para encontrar produtos\ncom o melhor preço gratuitamente',
       'upgradeToPro': 'Atualizar para Pro',
       'proFeatures': 'Sem anúncios • Comparações ilimitadas • Recursos premium',
       'unlocked': 'Desbloqueado!',
@@ -2485,7 +2828,8 @@ class AppTranslations extends Translations {
       //comparison
       'compare_save': 'Comparar e economizar',
       'find_better_deals': 'Encontre melhores ofertas',
-      'find_better_deals_desc': 'Digite o que você comprou. Vamos ajudá-lo a encontrar mais barato.',
+      'find_better_deals_desc':
+          'Digite o que você comprou. Vamos ajudá-lo a encontrar mais barato.',
       'product_name': 'Nome do produto',
       'price_paid': 'Preço pago',
       'enter_amount': '\$ Digite o valor',
@@ -2501,8 +2845,10 @@ class AppTranslations extends Translations {
       'bar_chart': 'Gráfico de Barras',
       'line_chart': 'Gráfico de Linhas',
       'loading_analytics': 'Carregando dados de análise...',
-      'no_data_selected_month': 'Não há dados de {dataType} para o mês selecionado',
-      'select_different_month_or_add_transactions': 'Selecione um mês diferente ou adicione transações',
+      'no_data_selected_month':
+          'Não há dados de {dataType} para o mês selecionado',
+      'select_different_month_or_add_transactions':
+          'Selecione um mês diferente ou adicione transações',
       'no_data_available': 'Não há dados de {dataType} disponíveis',
       'data_breakdown': 'Detalhamento de {dataType}',
       'expenses': 'Despesas',
@@ -2527,7 +2873,8 @@ class AppTranslations extends Translations {
       'current_monthly_budget': 'Orçamento Mensal Atual',
       'edit_your_budget': 'Editar Seu Orçamento',
       'enter_amount': '\$ Inserir valor',
-      'budget_change_info': 'Alterar seu orçamento atualizará seu saldo disponível na página inicial.',
+      'budget_change_info':
+          'Alterar seu orçamento atualizará seu saldo disponível na página inicial.',
       'confirm': 'Confirmar',
       'select_category': 'Selecionar Categoria',
       'food': 'Alimentação',
@@ -2543,14 +2890,16 @@ class AppTranslations extends Translations {
       'monthly_budget_pro': 'Orçamento Mensal Pro',
       'watch_video_unlock': 'Assista ao vídeo para desbloquear',
       'video_message':
-      'Assista a um vídeo curto para desbloquear os recursos de planejamento do orçamento mensal',
+          'Assista a um vídeo curto para desbloquear os recursos de planejamento do orçamento mensal',
       'upgrade_to_pro': 'Atualizar para Pro',
       'no_ads_info': 'Sem anúncios • Orçamentos ilimitados • Recursos premium',
       'unlocked': 'Desbloqueado!',
-      'unlocked_message': 'Agora você pode acessar o recurso de orçamento mensal',
+      'unlocked_message':
+          'Agora você pode acessar o recurso de orçamento mensal',
       //monthlybudgetnonpro
       'upgrade_title': 'Atualize para Pro para editar',
-      'upgrade_subtitle': 'Tenha acesso total aos recursos de edição de orçamento',
+      'upgrade_subtitle':
+          'Tenha acesso total aos recursos de edição de orçamento',
       'upgrade_now': 'Atualizar agora',
       'maybe_later': 'Talvez mais tarde',
       //some translation
@@ -2577,6 +2926,7 @@ class AppTranslations extends Translations {
       'hi_user': 'Olá Daniel',
       'location': 'Romanha, Modena, Itália',
       'available_balance': 'Saldo disponível',
+      'see_available_balance': 'Ver saldo disponível',
       'income': 'Rendimento',
       'expense': 'Despesas',
       'savings': 'Poupanças',
@@ -2612,8 +2962,10 @@ class AppTranslations extends Translations {
       'already_account': 'Já tem uma conta?',
       'login': 'Entrar',
       'terms_required': 'Termos Obrigatórios',
-      'accept_terms_message': 'Você precisa aceitar os termos e condições para criar uma conta.',
-      'terms_agreement': 'Ao criar uma conta ou entrar, você concorda com nossos ',
+      'accept_terms_message':
+          'Você precisa aceitar os termos e condições para criar uma conta.',
+      'terms_agreement':
+          'Ao criar uma conta ou entrar, você concorda com nossos ',
       'terms_conditions': 'Termos e Condições',
       'verification': 'Verificação',
       'face_id': 'Face ID',
@@ -2629,7 +2981,8 @@ class AppTranslations extends Translations {
       'resend_in': 'Reenviar em @seconds s',
       //setup your face id
       'set_your_face_id': 'Defina o seu Face ID',
-      'face_id_description': 'Proteja a sua conta com a autenticação Face ID. Faça login rapidamente sem digitar a senha todas as vezes.',
+      'face_id_description':
+          'Proteja a sua conta com a autenticação Face ID. Faça login rapidamente sem digitar a senha todas as vezes.',
       'setup_face_id': 'Configurar Face ID',
       'skip_for_now': 'Pular por enquanto',
       'registration': 'Registro',
@@ -2639,14 +2992,16 @@ class AppTranslations extends Translations {
       'face_id_success_msg': 'O Face ID foi configurado com sucesso!',
       //
       'face_verification': 'Verificação Facial',
-      'position_face_instruction': 'Posicione seu rosto dentro do círculo e toque no botão abaixo para iniciar a verificação',
+      'position_face_instruction':
+          'Posicione seu rosto dentro do círculo e toque no botão abaixo para iniciar a verificação',
       'verifying_message': 'Verificando... Mantenha o rosto no círculo',
       'authenticate_face_id': 'Autenticar com Face ID',
       'back_to_signup': 'Voltar para Cadastro',
       'verification_done': 'Verificação Concluída!',
       'face_auth_successful': 'Autenticação facial bem-sucedida',
       'camera_error': 'Erro de Câmera',
-      'camera_error_msg': 'Não foi possível acessar a câmera. Verifique as permissões.',
+      'camera_error_msg':
+          'Não foi possível acessar a câmera. Verifique as permissões.',
       //
       'faceid_added': 'FaceID adicionado com sucesso!',
       'faceid_protected': 'Sua conta está protegida com a autenticação FaceID.',
@@ -2654,7 +3009,8 @@ class AppTranslations extends Translations {
       //forgetpassemail
       'forget_password': 'Esqueceu a senha',
       'enter_email_phone': 'Digite seu e-mail ou número de telefone',
-      'notification_info': 'Você pode receber notificações por SMS ou e-mail de nossa parte para fins de segurança e login.',
+      'notification_info':
+          'Você pode receber notificações por SMS ou e-mail de nossa parte para fins de segurança e login.',
       'continue': 'Continuar',
       //
       'verification_code': 'Código de verificação',
@@ -2692,16 +3048,16 @@ class AppTranslations extends Translations {
       "auto_upload_monthly": "Enviar relatórios automaticamente mensalmente",
       "download": "Baixar",
       "upload_successful": "Envio bem-sucedido",
-      "upload_success_message": "Seus dados selecionados foram\nEnviados para o Google Drive",
-      "ok": "OK"
-
-
+      "upload_success_message":
+          "Seus dados selecionados foram\nEnviados para o Google Drive",
+      "ok": "OK",
     },
     'pl_PL': {
       //rate and help
       'rateAndImproveTitle': 'Oceń i Pomóż Nam Ulepszyć',
       'saveAndGrowTogether': 'Oszczędzajmy i rośnijmy razem!',
-      'shareYourThoughts': 'Podziel się swoimi przemyśleniami, jak możemy ulepszyć\naplikację: wykorzystamy Twoją opinię, aby uczynić\ndoświadczenie bardziej efektywnym.',
+      'shareYourThoughts':
+          'Podziel się swoimi przemyśleniami, jak możemy ulepszyć\naplikację: wykorzystamy Twoją opinię, aby uczynić\ndoświadczenie bardziej efektywnym.',
       'rateExperience': 'Jak oceniasz swoje doświadczenie?',
       'feedbackHint': 'Napisz swoją opinię tutaj...',
       'sendFeedback': 'Wyślij Opinię',
@@ -2723,6 +3079,21 @@ class AppTranslations extends Translations {
       'galleryFeature': 'Funkcja selektora galerii zostanie zaimplementowana',
       'transactionSuccess': 'Transakcja dodana pomyślnie',
       'transactionError': 'Błąd podczas dodawania transakcji',
+      'warning': 'Ostrzeżenie',
+      'apiError': 'Wystąpił błąd API',
+      'ocrError': 'Błąd OCR',
+      'noTextFound': 'Nie znaleziono tekstu',
+      'cameraOcrFailed': 'Nieudane OCR z kamery',
+      'galleryOcrFailed': 'Nieudane OCR z galerii',
+      'ocrUnableExtract': 'Nie można wyodrębnić danych z tekstu',
+      'noDataReturned': 'Brak zwróconych danych',
+      'ocrExpenseCreated': 'Wydatek utworzony z OCR',
+      'ocrRequestFailed': 'Żądanie OCR nie powiodło się',
+      'enterReceiptTextBarcode': 'Wprowadź tekst kodu kreskowego/paragonu',
+      'enterReceiptText': 'Wprowadź tekst paragonu',
+      'pasteReceiptText': 'Wklej tutaj tekst paragonu',
+      'textEmpty': 'Tekst nie może być pusty',
+      'post': 'Wyślij',
       'enterAmountError': 'Proszę wprowadzić kwotę',
       'selectExpenseCategoryError': 'Proszę wybrać kategorię wydatku',
       'selectIncomeCategoryError': 'Proszę wybrać kategorię przychodu',
@@ -2759,6 +3130,7 @@ class AppTranslations extends Translations {
       'feb1520241430': '15 lut 2024 - 14:30',
       'setDateTime': 'Ustaw Datę i Czas',
       'feb152024': '15 lut 2024',
+      'tapToSet': 'Dotknij, aby ustawić',
       'add': 'Dodaj',
       // Category translations
       'food': 'Jedzenie',
@@ -2775,11 +3147,13 @@ class AppTranslations extends Translations {
       'watchAdTitle': 'Obejrzyj Reklamę, aby Odblokować Pro',
       'watchAdSubtitle': 'Obejrzyj Reklamę, aby Odblokować Funkcje Pro',
       'watchAdDescription': 'Obejrzyj Film, aby Odblokować Funkcje Pro (30s)',
-      'proFeaturesUnlockMessage': 'Po obejrzeniu reklamy zostaną odblokowane funkcje Pro Wydatków i Dochodów',
+      'proFeaturesUnlockMessage':
+          'Po obejrzeniu reklamy zostaną odblokowane funkcje Pro Wydatków i Dochodów',
       'secondsRemaining': 'Pozostało %seconds% sekund',
       'cancel': 'Anuluj',
       'proUnlockedTitle': 'Funkcje Pro Odblokowane!',
-      'proUnlockedMessage': 'Funkcje Pro Wydatków i Dochodów są teraz odblokowane.',
+      'proUnlockedMessage':
+          'Funkcje Pro Wydatków i Dochodów są teraz odblokowane.',
       //addexpincome
       'addExpense': 'Dodaj Wydatek',
       'addIncome': 'Dodaj Przychód',
@@ -2810,6 +3184,7 @@ class AppTranslations extends Translations {
       'feb152024': '15 lut 2024',
       'watchVideoForFree': 'Obejrzyj krótki film, aby dodać za darmo',
       'upgradeToPro': 'Przejdź na Pro, aby usunąć reklamy',
+      'ocrSupportsExpensesOnly': 'OCR obsługuje tylko wydatki',
       //login
       'welcomeBack': 'Witaj ponownie',
       'loginToAccount': 'Zaloguj się na swoje konto',
@@ -2837,7 +3212,8 @@ class AppTranslations extends Translations {
       'light_theme': 'Jasny',
       'dark_theme': 'Ciemny',
       'use_system_settings': 'Użyj ustawień systemowych',
-      'system_settings_desc': 'Twój motyw będzie automatycznie dopasowany do\npreferencji systemu',
+      'system_settings_desc':
+          'Twój motyw będzie automatycznie dopasowany do\npreferencji systemu',
 
       //confirmfaceid
       'initializing_camera': 'Inicjalizacja kamery...',
@@ -2847,15 +3223,18 @@ class AppTranslations extends Translations {
       'camera_not_ready': 'Kamera nie jest gotowa. Proszę czekać.',
       'keep_face_in_circle': 'Trzymaj twarz w kole',
       'faceid_saved': 'Face ID Zapisany!',
-      'faceid_saved_desc': 'Twój Face ID został pomyślnie zapisany.\nTeraz możesz go używać do odblokowywania aplikacji.',
+      'faceid_saved_desc':
+          'Twój Face ID został pomyślnie zapisany.\nTeraz możesz go używać do odblokowywania aplikacji.',
       'scanning': 'Skanowanie...',
       'seconds_remaining': 'sekund pozostało',
-      'tap_to_begin': 'Dotknij "Uwierzytelnij za pomocą Face ID", aby rozpocząć',
+      'tap_to_begin':
+          'Dotknij "Uwierzytelnij za pomocą Face ID", aby rozpocząć',
       'authenticate_faceid': 'Uwierzytelnij za pomocą Face ID',
 
       //setupfaceid
       'setup_faceid': 'Skonfiguruj FaceID',
-      'setup_faceid_desc': 'Odblokuj XYZ za pomocą\nFaceID, szybko i bezpiecznie.',
+      'setup_faceid_desc':
+          'Odblokuj XYZ za pomocą\nFaceID, szybko i bezpiecznie.',
       'use_pin_instead': 'Użyj PIN zamiast',
       'cancel': 'Anuluj',
 
@@ -2869,7 +3248,8 @@ class AppTranslations extends Translations {
       'confirm': 'Potwierdź',
       //pinlock
       'set_pin': 'Ustaw PIN',
-      'pin_description': 'PIN musi mieć co najmniej 4 cyfry, ale zaleca się 6-cyfrowy PIN dla zwiększonego bezpieczeństwa.',
+      'pin_description':
+          'PIN musi mieć co najmniej 4 cyfry, ale zaleca się 6-cyfrowy PIN dla zwiększonego bezpieczeństwa.',
       'invalid_pin': 'Nieprawidłowy PIN',
       'pin_min_length': 'PIN musi mieć co najmniej 4 cyfry',
       'clear': 'Wyczyść',
@@ -2885,37 +3265,48 @@ class AppTranslations extends Translations {
       'none_option_desc': 'Kontynuuj jako gość',
       'security_settings': 'Ustawienia Bezpieczeństwa',
       'enable_faceid': 'Włącz FaceID',
-      'enable_faceid_desc': 'Użyj FaceID, aby logować się szybciej i bezpieczniej',
+      'enable_faceid_desc':
+          'Użyj FaceID, aby logować się szybciej i bezpieczniej',
       'faceid_app_launch': 'FaceID przy Uruchamianiu Aplikacji',
       'faceid_app_launch_desc': 'Wymagaj FaceID przy otwieraniu aplikacji',
-      'security_info': 'Twój FaceID jest bezpiecznie przechowywany na Twoim urządzeniu. Nigdy go nie przesyłamy ani nie uzyskujemy do niego dostępu.',
+      'security_info':
+          'Twój FaceID jest bezpiecznie przechowywany na Twoim urządzeniu. Nigdy go nie przesyłamy ani nie uzyskujemy do niego dostępu.',
       //language
       'language_settings': 'Ustawienia Języka',
-      'language_settings_desc': 'Wybierz preferowany język interfejsu aplikacji',
-      'language_warning': 'Niektóre zmiany mogą wymagać ponownego uruchomienia aplikacji, aby w pełni zastosować',
+      'language_settings_desc':
+          'Wybierz preferowany język interfejsu aplikacji',
+      'language_warning':
+          'Niektóre zmiany mogą wymagać ponownego uruchomienia aplikacji, aby w pełni zastosować',
       'apply_changes': 'Zastosuj Zmiany',
       //notification
       'notification_settings': 'Ustawienia Powiadomień',
       'enable_all_notifications': 'Włącz Wszystkie Powiadomienia',
-      'enable_all_notifications_desc': 'Kontroluj wszystkie preferencje powiadomień',
+      'enable_all_notifications_desc':
+          'Kontroluj wszystkie preferencje powiadomień',
       'general_notifications': 'Powiadomienia Ogólne',
       'push_notification': 'Powiadomienia push',
-      'push_notification_desc': 'Otrzymuj ważne alerty, gdy nie korzystasz z aplikacji.',
+      'push_notification_desc':
+          'Otrzymuj ważne alerty, gdy nie korzystasz z aplikacji.',
       'automatic_renewal': 'Automatyczne Odnawianie',
-      'automatic_renewal_desc': 'Utrzymuj swoją subskrypcję aktywną bez przerw. Wyłącz to, jeśli wolisz odnawiać ręcznie.',
+      'automatic_renewal_desc':
+          'Utrzymuj swoją subskrypcję aktywną bez przerw. Wyłącz to, jeśli wolisz odnawiać ręcznie.',
       'financial_alerts': 'Alerty Finansowe',
       'monthly_alerts': 'Miesięczne Alerty Wydatków i Dochodów',
-      'monthly_alerts_desc': 'Otrzymuj powiadomienia po zakończeniu miesiąca o wydatkach i dochodach.',
+      'monthly_alerts_desc':
+          'Otrzymuj powiadomienia po zakończeniu miesiąca o wydatkach i dochodach.',
       'budget_limit_warning': 'Ostrzeżenie o Limicie Budżetu',
-      'budget_limit_warning_desc': 'Otrzymuj ostrzeżenie, gdy zbliżasz się do miesięcznego budżetu.',
+      'budget_limit_warning_desc':
+          'Otrzymuj ostrzeżenie, gdy zbliżasz się do miesięcznego budżetu.',
       'other_notifications': 'Inne Powiadomienia',
       'promotional_notifications': 'Powiadomienia Promocyjne',
-      'promotional_notifications_desc': 'Otrzymuj aktualizacje o nowych funkcjach lub ofertach',
+      'promotional_notifications_desc':
+          'Otrzymuj aktualizacje o nowych funkcjach lub ofertach',
       'auto_save_message': 'Zmiany zostaną zapisane automatycznie',
 
       //paymentsuccess
       'payment_success_title': "Wszystko gotowe! Witaj w Premium",
-      'payment_success_subtitle': "Ciesz się nieograniczonym dostępem, zaawansowanymi funkcjami i\npłynniejszą podróżą finansową.",
+      'payment_success_subtitle':
+          "Ciesz się nieograniczonym dostępem, zaawansowanymi funkcjami i\npłynniejszą podróżą finansową.",
       'continue_button': 'Kontynuuj',
       //completepayment
       'complete_payment': 'Dokończ Płatność',
@@ -2939,7 +3330,8 @@ class AppTranslations extends Translations {
       //premiumplans
       'premium_plans': 'Plany Premium',
       'premium_header': 'Odblokuj Funkcje Premium',
-      'premium_subheader': 'Zyskaj większą kontrolę nad finansami dzięki\nzaawansowanym narzędziom',
+      'premium_subheader':
+          'Zyskaj większą kontrolę nad finansami dzięki\nzaawansowanym narzędziom',
       'monthly_plan': 'Plan Miesięczny',
       'monthly_price': '3,99€/miesiąc',
       'yearly_plan': 'Plan Roczny',
@@ -2964,7 +3356,8 @@ class AppTranslations extends Translations {
       'codeResent': 'Kod wysłany ponownie',
       'newCodeSent': 'Nowy kod weryfikacyjny został wysłany',
       'incompleteCode': 'Niekompletny kod',
-      'enterCompleteCode': 'Proszę wprowadzić pełny 6-cyfrowy kod weryfikacyjny',
+      'enterCompleteCode':
+          'Proszę wprowadzić pełny 6-cyfrowy kod weryfikacyjny',
       //passwordcahgescreen
       'password_change': 'Zmiana hasła',
       'set_new_password': 'Ustaw nowe hasło',
@@ -2976,7 +3369,8 @@ class AppTranslations extends Translations {
       'confirm_new_password': 'Potwierdź nowe hasło',
       'confirm_new_password_field': 'Potwierdź swoje nowe hasło',
       'continue': 'Kontynuuj',
-      'password_requirements': 'Twoje hasło musi mieć co najmniej 10 znaków. Uwzględnij wiele słów, aby zwiększyć bezpieczeństwo.',
+      'password_requirements':
+          'Twoje hasło musi mieć co najmniej 10 znaków. Uwzględnij wiele słów, aby zwiększyć bezpieczeństwo.',
       'error': 'Błąd',
       'enter_current_password_error': 'Proszę wprowadzić aktualne hasło',
       'passwords_not_match': 'Hasła nie pasują do siebie',
@@ -2993,11 +3387,13 @@ class AppTranslations extends Translations {
       'codeResent': 'Kod wysłany ponownie',
       'newCodeSent': 'Nowy kod weryfikacyjny został wysłany',
       'incompleteCode': 'Niekompletny kod',
-      'enterCompleteCode': 'Proszę wprowadzić pełny 6-cyfrowy kod weryfikacyjny',
+      'enterCompleteCode':
+          'Proszę wprowadzić pełny 6-cyfrowy kod weryfikacyjny',
 
       //editemail
       'change_email': 'Zmień email',
-      'email_change_description': 'Zaktualizuj swój email, aby utrzymać konto bezpieczne.',
+      'email_change_description':
+          'Zaktualizuj swój email, aby utrzymać konto bezpieczne.',
       'current_email': 'Obecny email',
       'new_email': 'Nowy email',
       'confirm_email': 'Potwierdź email',
@@ -3008,7 +3404,8 @@ class AppTranslations extends Translations {
       'email_mismatch': 'Adresy email nie pasują!',
       // Edit Name Screen Translations
       'edit_name': 'Edytuj Nazwę',
-      'name_appearance_info': 'Twoje imię pojawi się na Twoim profilu i transakcjach',
+      'name_appearance_info':
+          'Twoje imię pojawi się na Twoim profilu i transakcjach',
       'first_name': 'Imię',
       'enter_first_name': 'Wprowadź imię',
       'first_name_required': 'Proszę wprowadzić swoje imię',
@@ -3026,7 +3423,8 @@ class AppTranslations extends Translations {
       'premium_plans': 'Plany Premium',
       'premium_plans_subtitle': 'Ulepsz, aby odblokować funkcje premium',
       'notification_setting': 'Ustawienia Powiadomień',
-      'notification_setting_subtitle': 'Zarządzaj powiadomieniami push i alertami',
+      'notification_setting_subtitle':
+          'Zarządzaj powiadomieniami push i alertami',
       'language': 'Język',
       'language_subtitle': 'Zmień preferowany język',
       'app_unlock': 'Odblokowanie Aplikacji',
@@ -3041,7 +3439,8 @@ class AppTranslations extends Translations {
       'loading_terms': 'Ładowanie regulaminu...',
       'error_loading_terms': 'Błąd podczas ładowania regulaminu',
       'retry': 'Ponów próbę',
-      'terms_intro': 'Przeczytaj uważnie niniejszy Regulamin przed użyciem naszej aplikacji mobilnej. Uzyskując dostęp lub korzystając z aplikacji, akceptujesz postanowienia niniejszego regulaminu.',
+      'terms_intro':
+          'Przeczytaj uważnie niniejszy Regulamin przed użyciem naszej aplikacji mobilnej. Uzyskując dostęp lub korzystając z aplikacji, akceptujesz postanowienia niniejszego regulaminu.',
       'no_terms_available': 'Brak dostępnego regulaminu.',
       'version_label': 'Wersja:',
       'effective_date_label': 'Data wejścia w życie:',
@@ -3059,7 +3458,8 @@ class AppTranslations extends Translations {
       'change_password': 'Zmień hasło',
       'delete_account': 'Usuń konto',
       'delete_account_title': 'Usuń konto',
-      'delete_account_message': 'Czy na pewno chcesz usunąć swoje konto? Tej operacji nie można cofnąć.',
+      'delete_account_message':
+          'Czy na pewno chcesz usunąć swoje konto? Tej operacji nie można cofnąć.',
       'cancel': 'Anuluj',
       'delete': 'Usuń',
       'account_deleted': 'Konto usunięte',
@@ -3083,9 +3483,11 @@ class AppTranslations extends Translations {
       //totalsavingadd
       'comparisonPage': 'Strona Porównania',
       'watchVideoToUnlock': 'Obejrzyj Film, aby Odblokować',
-      'watchVideoDescription': 'Obejrzyj krótki film, aby znaleźć produkty\nw najlepszej cenie za darmo',
+      'watchVideoDescription':
+          'Obejrzyj krótki film, aby znaleźć produkty\nw najlepszej cenie za darmo',
       'upgradeToPro': 'Ulepsz do Pro',
-      'proFeatures': 'Brak reklam • Nieograniczone porównania • Funkcje premium',
+      'proFeatures':
+          'Brak reklam • Nieograniczone porównania • Funkcje premium',
       'unlocked': 'Odblokowano!',
       'unlockMessage': 'Teraz możesz porównywać produkty w najlepszej cenie',
       //nonprototalsaving
@@ -3138,7 +3540,8 @@ class AppTranslations extends Translations {
       //comarison
       'compare_save': 'Porównaj i oszczędzaj',
       'find_better_deals': 'Znajdź lepsze oferty',
-      'find_better_deals_desc': 'Wpisz, co kupiłeś. Pomożemy ci znaleźć taniej.',
+      'find_better_deals_desc':
+          'Wpisz, co kupiłeś. Pomożemy ci znaleźć taniej.',
       'product_name': 'Nazwa produktu',
       'price_paid': 'Cena zapłacona',
       'enter_amount': '\$ Wpisz kwotę',
@@ -3148,6 +3551,34 @@ class AppTranslations extends Translations {
       'copy_link': 'Skopiuj link',
       'compare': 'Porównaj',
       'confirm_purchase': 'Potwierdź zakup',
+      'enter_product_name': 'Wprowadź nazwę produktu',
+      'max_price': 'Cena maksymalna',
+      'please_enter_product_name': 'Proszę wprowadzić nazwę produktu',
+      'please_enter_valid_price': 'Proszę wprowadzić prawidłową cenę',
+      'searching': 'Wyszukiwanie...',
+      'search': 'Szukaj',
+      'no_deals_found': 'Nie znaleziono ofert',
+      'try_different_product_or_increase_price': 'Spróbuj innej nazwy lub zwiększ cenę maksymalną.',
+      'better_deals_found_count': 'Znaleziono lepsze oferty ({count})',
+      'unknown_site': 'Nieznana strona',
+      'save_percent': 'Oszczędź {percent}%',
+      'best_deal': 'Najlepsza oferta',
+      'no_link_available_to_copy': 'Brak linku do skopiowania',
+      'product_link_copied': 'Link do produktu z {siteName} skopiowany do schowka',
+      'failed_to_copy_link': 'Nie udało się skopiować linku: {error}',
+      'compare_with_site': 'Porównaj {site}',
+      'original_price_max': 'Cena oryginalna (maks.)',
+      'price_with_tool': 'Cena z narzędziem',
+      'product_category': 'Kategoria produktu',
+      'enter_product_category': 'Wprowadź kategorię produktu',
+      'savings_preview': 'Podgląd oszczędności',
+      'you_save_label': 'Oszczędzasz:',
+      'please_enter_valid_original_price': 'Proszę wprowadzić prawidłową cenę oryginalną',
+      'please_enter_valid_price_with_tool': 'Proszę wprowadzić prawidłową cenę z narzędziem',
+      'please_enter_product_category': 'Proszę wprowadzić kategorię produktu',
+      'savings_record_created_successfully': 'Rekord oszczędności utworzony pomyślnie!',
+      'failed_to_create_savings_record': 'Nie udało się utworzyć rekordu oszczędności',
+      'purchase_confirm_show_graph': 'Potwierdź zakup i pokaż wykres',
       //analysis
       'analytics': 'Analiza',
       'pie_chart': 'Wykres Kołowy',
@@ -3155,7 +3586,8 @@ class AppTranslations extends Translations {
       'line_chart': 'Wykres Liniowy',
       'loading_analytics': 'Ładowanie danych analitycznych...',
       'no_data_selected_month': 'Brak danych {dataType} dla wybranego miesiąca',
-      'select_different_month_or_add_transactions': 'Wybierz inny miesiąc lub dodaj transakcje',
+      'select_different_month_or_add_transactions':
+          'Wybierz inny miesiąc lub dodaj transakcje',
       'no_data_available': 'Brak danych {dataType}',
       'data_breakdown': 'Podział {dataType}',
       'expenses': 'Wydatki',
@@ -3180,7 +3612,8 @@ class AppTranslations extends Translations {
       'current_monthly_budget': 'Aktualny Budżet Miesięczny',
       'edit_your_budget': 'Edytuj Swój Budżet',
       'enter_amount': '\$ Wprowadź kwotę',
-      'budget_change_info': 'Zmiana budżetu zaktualizuje dostępne saldo na stronie głównej.',
+      'budget_change_info':
+          'Zmiana budżetu zaktualizuje dostępne saldo na stronie głównej.',
       'confirm': 'Potwierdź',
       'select_category': 'Wybierz Kategorię',
       'food': 'Jedzenie',
@@ -3196,12 +3629,12 @@ class AppTranslations extends Translations {
       'monthly_budget_pro': 'Budżet Miesięczny Pro',
       'watch_video_unlock': 'Oglądaj wideo, aby odblokować',
       'video_message':
-      'Obejrzyj krótki film, aby odblokować funkcje planowania budżetu miesięcznego',
+          'Obejrzyj krótki film, aby odblokować funkcje planowania budżetu miesięcznego',
       'upgrade_to_pro': 'Ulepsz do Pro',
       'no_ads_info': 'Brak reklam • Nieograniczone budżety • Funkcje premium',
       'unlocked': 'Odblokowano!',
       'unlocked_message':
-      'Teraz możesz uzyskać dostęp do funkcji budżetu miesięcznego',
+          'Teraz możesz uzyskać dostęp do funkcji budżetu miesięcznego',
       //monthlybudgetnonpro
       'upgrade_title': 'Ulepsz do Pro, aby edytować',
       'upgrade_subtitle': 'Uzyskaj pełny dostęp do funkcji edycji budżetu',
@@ -3227,18 +3660,20 @@ class AppTranslations extends Translations {
       'october': 'Październik',
       'november': 'Listopad',
       'december': 'Grudzień',
+
       //homescreen
       //sometranslation
-
       'hi_user': 'Cześć Daniel',
       'location': 'Romagna, Modena, Włochy',
       'available_balance': 'Dostępne saldo',
+      'see_available_balance': 'Zobacz dostępne saldo',
       'income': 'Dochód',
       'expense': 'Wydatki',
       'savings': 'Oszczędności',
       'monthly_budget': 'Miesięczny budżet',
       'edit': 'Edytuj',
-      'keep_it_up': 'Dobrze ci idzie! Możesz zaoszczędzić 500 zł w tym miesiącu',
+      'keep_it_up':
+          'Dobrze ci idzie! Możesz zaoszczędzić 500 zł w tym miesiącu',
       'spent': 'Wydano',
       'left': 'Pozostało',
       'rate_app': 'Oceń aplikację',
@@ -3266,8 +3701,10 @@ class AppTranslations extends Translations {
       'already_account': 'Masz już konto?',
       'login': 'Zaloguj się',
       'terms_required': 'Wymagane Warunki',
-      'accept_terms_message': 'Musisz zaakceptować warunki i zasady, aby utworzyć konto.',
-      'terms_agreement': 'Tworząc konto lub logując się, zgadzasz się na nasze ',
+      'accept_terms_message':
+          'Musisz zaakceptować warunki i zasady, aby utworzyć konto.',
+      'terms_agreement':
+          'Tworząc konto lub logując się, zgadzasz się na nasze ',
       'terms_conditions': 'Warunki i Zasady',
       'verification': 'Weryfikacja',
       'face_id': 'Face ID',
@@ -3283,7 +3720,8 @@ class AppTranslations extends Translations {
       'resend_in': 'Wyślij ponownie za @seconds s',
       //setup your faceid
       'set_your_face_id': 'Ustaw swój Face ID',
-      'face_id_description': 'Zabezpiecz swoje konto za pomocą Face ID. Loguj się szybko bez wpisywania hasła za każdym razem.',
+      'face_id_description':
+          'Zabezpiecz swoje konto za pomocą Face ID. Loguj się szybko bez wpisywania hasła za każdym razem.',
       'setup_face_id': 'Skonfiguruj Face ID',
       'skip_for_now': 'Pomiń na razie',
       'registration': 'Rejestracja',
@@ -3292,12 +3730,14 @@ class AppTranslations extends Translations {
       'success': 'Sukces',
       'face_id_success_msg': 'Face ID został pomyślnie skonfigurowany!',
       'faceid_added': 'FaceID dodano pomyślnie!',
-      'faceid_protected': 'Twoje konto jest chronione uwierzytelnianiem FaceID.',
+      'faceid_protected':
+          'Twoje konto jest chronione uwierzytelnianiem FaceID.',
       'continue': 'Kontynuuj',
       //forgetpassemail
       'forget_password': 'Zapomniałeś hasła',
       'enter_email_phone': 'Wprowadź swój adres e-mail lub numer telefonu',
-      'notification_info': 'Możesz otrzymywać powiadomienia SMS lub e-mail od nas w celach bezpieczeństwa i logowania.',
+      'notification_info':
+          'Możesz otrzymywać powiadomienia SMS lub e-mail od nas w celach bezpieczeństwa i logowania.',
       'continue': 'Kontynuuj',
       //forgetpassotp
       'verification_code': 'Kod weryfikacyjny',
@@ -3335,16 +3775,16 @@ class AppTranslations extends Translations {
       "auto_upload_monthly": "Automatycznie przesyłaj raporty co miesiąc",
       "download": "Pobierz",
       "upload_successful": "Przesyłanie udane",
-      "upload_success_message": "Twoje wybrane dane zostały\nPrzesłane do Google Drive",
-      "ok": "OK"
-
-
+      "upload_success_message":
+          "Twoje wybrane dane zostały\nPrzesłane do Google Drive",
+      "ok": "OK",
     },
     'fr_FR': {
       //rate and help
       'rateAndImproveTitle': 'Évaluez et Aidez-nous à Nous Améliorer',
       'saveAndGrowTogether': 'Économisons et grandissons ensemble !',
-      'shareYourThoughts': 'Partagez vos idées sur la façon dont nous pouvons améliorer\nl\'application : nous utiliserons vos commentaires pour rendre\nl\'expérience plus efficace.',
+      'shareYourThoughts':
+          'Partagez vos idées sur la façon dont nous pouvons améliorer\nl\'application : nous utiliserons vos commentaires pour rendre\nl\'expérience plus efficace.',
       'rateExperience': 'Comment évaluez-vous votre expérience ?',
       'feedbackHint': 'Écrivez vos commentaires ici...',
       'sendFeedback': 'Envoyer des Commentaires',
@@ -3367,9 +3807,26 @@ class AppTranslations extends Translations {
       'galleryFeature': 'La fonction sélecteur de galerie sera implémentée',
       'transactionSuccess': 'Transaction ajoutée avec succès',
       'transactionError': 'Erreur lors de l\'ajout de la transaction',
+      'warning': 'Avertissement',
+      'apiError': "Une erreur d'API s'est produite",
+      'ocrError': 'Erreur OCR',
+      'noTextFound': 'Aucun texte trouvé',
+      'cameraOcrFailed': 'Échec de l\'OCR de la caméra',
+      'galleryOcrFailed': 'Échec de l\'OCR de la galerie',
+      'ocrUnableExtract': 'Impossible d\’extraire des données du texte',
+      'noDataReturned': 'Aucune donnée retournée',
+      'ocrExpenseCreated': 'Dépense créée via OCR',
+      'ocrRequestFailed': 'Échec de la requête OCR',
+      'enterReceiptTextBarcode': 'Saisir le texte du code-barres/reçu',
+      'enterReceiptText': 'Saisir le texte du reçu',
+      'pasteReceiptText': 'Collez ici le texte du reçu',
+      'textEmpty': 'Le texte ne peut pas être vide',
+      'post': 'Publier',
       'enterAmountError': 'Veuillez saisir le montant',
-      'selectExpenseCategoryError': 'Veuillez sélectionner la catégorie de dépense',
-      'selectIncomeCategoryError': 'Veuillez sélectionner la catégorie de revenu',
+      'selectExpenseCategoryError':
+          'Veuillez sélectionner la catégorie de dépense',
+      'selectIncomeCategoryError':
+          'Veuillez sélectionner la catégorie de revenu',
       'selectPaymentMethodError': 'Veuillez sélectionner le mode de paiement',
 
       // Income categories
@@ -3417,13 +3874,17 @@ class AppTranslations extends Translations {
       'card': 'Carte',
       //addforprouser
       'watchAdTitle': 'Regarder une Pub pour Débloquer Pro',
-      'watchAdSubtitle': 'Regarder une Pub pour Débloquer les Fonctionnalités Pro',
-      'watchAdDescription': 'Regarder la Vidéo pour Débloquer les Fonctionnalités Pro (30s)',
-      'proFeaturesUnlockMessage': 'Après avoir regardé la publicité, les fonctionnalités Pro de Dépenses et Revenus seront débloquées',
+      'watchAdSubtitle':
+          'Regarder une Pub pour Débloquer les Fonctionnalités Pro',
+      'watchAdDescription':
+          'Regarder la Vidéo pour Débloquer les Fonctionnalités Pro (30s)',
+      'proFeaturesUnlockMessage':
+          'Après avoir regardé la publicité, les fonctionnalités Pro de Dépenses et Revenus seront débloquées',
       'secondsRemaining': '%seconds% secondes restantes',
       'cancel': 'Annuler',
       'proUnlockedTitle': 'Fonctionnalités Pro Débloquées!',
-      'proUnlockedMessage': 'Les fonctionnalités Pro de Dépenses et Revenus sont maintenant débloquées.',
+      'proUnlockedMessage':
+          'Les fonctionnalités Pro de Dépenses et Revenus sont maintenant débloquées.',
       //addexpincome
       'addExpense': 'Ajouter une Dépense',
       'addIncome': 'Ajouter un Revenu',
@@ -3440,7 +3901,8 @@ class AppTranslations extends Translations {
       'eatingOut': 'Manger au restaurant',
       'home': 'Maison',
       'addCustomCategory': 'Ajouter une Catégorie Personnalisée',
-      'proFeatureOnly': 'Cette fonctionnalité est uniquement disponible pour les utilisateurs pro',
+      'proFeatureOnly':
+          'Cette fonctionnalité est uniquement disponible pour les utilisateurs pro',
       'amount': 'Montant',
       'enterAmount': '\$ Saisir le montant',
       'paymentMethod': 'Méthode de Paiement',
@@ -3452,7 +3914,8 @@ class AppTranslations extends Translations {
       'feb1520241430': '15 fév 2024 - 14:30',
       'setDateTime': 'Définir la Date et l\'Heure',
       'feb152024': '15 fév 2024',
-      'watchVideoForFree': 'Regardez une courte vidéo pour ajouter gratuitement',
+      'watchVideoForFree':
+          'Regardez une courte vidéo pour ajouter gratuitement',
       'upgradeToPro': 'Passez à Pro pour supprimer les publicités',
       //login
       'welcomeBack': 'Bon retour',
@@ -3469,7 +3932,8 @@ class AppTranslations extends Translations {
       'register': 'S\'inscrire',
       //currency
       'currency_exchange': 'Change de Devise',
-      'choose_currency_desc': 'Choisissez votre devise pour l\'interface de l\'application',
+      'choose_currency_desc':
+          'Choisissez votre devise pour l\'interface de l\'application',
       'usd_name': 'Dollar Américain (\$)',
       'gbp_name': 'Livre Sterling (£)',
       'eur_name': 'Euro (€)',
@@ -3481,7 +3945,8 @@ class AppTranslations extends Translations {
       'light_theme': 'Clair',
       'dark_theme': 'Sombre',
       'use_system_settings': 'Utiliser les paramètres système',
-      'system_settings_desc': 'Votre thème correspondra automatiquement aux\npréférences de votre système',
+      'system_settings_desc':
+          'Votre thème correspondra automatiquement aux\npréférences de votre système',
       //confirmfaceid
       'initializing_camera': 'Initialisation de la caméra...',
       'no_camera_found': 'Aucune caméra trouvée',
@@ -3490,7 +3955,8 @@ class AppTranslations extends Translations {
       'camera_not_ready': 'Caméra non prête. Veuillez patienter.',
       'keep_face_in_circle': 'Gardez votre visage dans le cercle',
       'faceid_saved': 'Face ID Enregistré !',
-      'faceid_saved_desc': 'Votre Face ID a été enregistré avec succès.\nVous pouvez maintenant l\'utiliser pour déverrouiller l\'application.',
+      'faceid_saved_desc':
+          'Votre Face ID a été enregistré avec succès.\nVous pouvez maintenant l\'utiliser pour déverrouiller l\'application.',
       'scanning': 'Numérisation...',
       'seconds_remaining': 'secondes restantes',
       'tap_to_begin': 'Appuyez sur "Authentifier avec Face ID" pour commencer',
@@ -3498,13 +3964,15 @@ class AppTranslations extends Translations {
 
       //setupfaceid
       'setup_faceid': 'Configurer FaceID',
-      'setup_faceid_desc': 'Déverrouillez XYZ avec votre\nFaceID, rapide et sécurisé.',
+      'setup_faceid_desc':
+          'Déverrouillez XYZ avec votre\nFaceID, rapide et sécurisé.',
       'use_pin_instead': 'Utiliser PIN à la place',
       'cancel': 'Annuler',
 
       //confirmpin
       'confirm_pin': 'Confirmer le code PIN',
-      'confirm_pin_desc': 'Veuillez saisir à nouveau votre code PIN pour confirmer',
+      'confirm_pin_desc':
+          'Veuillez saisir à nouveau votre code PIN pour confirmer',
       'success': 'Succès',
       'pin_set_success': 'Le code PIN a été défini avec succès !',
       'error': 'Erreur',
@@ -3512,7 +3980,8 @@ class AppTranslations extends Translations {
       'confirm': 'Confirmer',
       //pinlock
       'set_pin': 'Définir un code PIN',
-      'pin_description': 'Le code PIN doit comporter au moins 4 chiffres, mais un code PIN à 6 chiffres est recommandé pour plus de sécurité.',
+      'pin_description':
+          'Le code PIN doit comporter au moins 4 chiffres, mais un code PIN à 6 chiffres est recommandé pour plus de sécurité.',
       'invalid_pin': 'Code PIN invalide',
       'pin_min_length': 'Le code PIN doit comporter au moins 4 chiffres',
       'clear': 'Effacer',
@@ -3527,40 +3996,54 @@ class AppTranslations extends Translations {
       'none_option_desc': 'Continuer en tant qu\'invité',
       'security_settings': 'Paramètres de Sécurité',
       'enable_faceid': 'Activer FaceID',
-      'enable_faceid_desc': 'Utilisez votre FaceID pour vous connecter plus rapidement et en toute sécurité',
+      'enable_faceid_desc':
+          'Utilisez votre FaceID pour vous connecter plus rapidement et en toute sécurité',
       'faceid_app_launch': 'FaceID pour Lancement App',
-      'faceid_app_launch_desc': 'Exiger FaceID lors de l\'ouverture de l\'application',
-      'security_info': 'Votre FaceID est stocké en toute sécurité sur votre appareil. Nous ne le téléchargeons jamais ni n\'y accédons.',
+      'faceid_app_launch_desc':
+          'Exiger FaceID lors de l\'ouverture de l\'application',
+      'security_info':
+          'Votre FaceID est stocké en toute sécurité sur votre appareil. Nous ne le téléchargeons jamais ni n\'y accédons.',
       //language
       'language_settings': 'Paramètres de Langue',
-      'language_settings_desc': 'Choisissez votre langue préférée pour l\'interface de l\'application',
-      'language_warning': 'Certains changements peuvent nécessiter de redémarrer l\'application pour être pleinement appliqués',
+      'language_settings_desc':
+          'Choisissez votre langue préférée pour l\'interface de l\'application',
+      'language_warning':
+          'Certains changements peuvent nécessiter de redémarrer l\'application pour être pleinement appliqués',
       'apply_changes': 'Appliquer les Modifications',
       //notification
       'notification_settings': 'Paramètres de Notification',
       'enable_all_notifications': 'Activer Toutes les Notifications',
-      'enable_all_notifications_desc': 'Contrôler toutes les préférences de notification',
+      'enable_all_notifications_desc':
+          'Contrôler toutes les préférences de notification',
       'general_notifications': 'Notifications Générales',
       'push_notification': 'Notification push',
-      'push_notification_desc': 'Recevez des alertes importantes lorsque vous n\'utilisez pas l\'application.',
+      'push_notification_desc':
+          'Recevez des alertes importantes lorsque vous n\'utilisez pas l\'application.',
       'automatic_renewal': 'Renouvellement Automatique',
-      'automatic_renewal_desc': 'Gardez votre abonnement actif sans interruption. Désactivez-le si vous préférez renouveler manuellement.',
+      'automatic_renewal_desc':
+          'Gardez votre abonnement actif sans interruption. Désactivez-le si vous préférez renouveler manuellement.',
       'financial_alerts': 'Alertes Financières',
       'monthly_alerts': 'Alertes Mensuelles de Dépenses et Revenus',
-      'monthly_alerts_desc': 'Soyez notifié après la fin du mois des dépenses et revenus.',
+      'monthly_alerts_desc':
+          'Soyez notifié après la fin du mois des dépenses et revenus.',
       'budget_limit_warning': 'Avertissement de Limite de Budget',
-      'budget_limit_warning_desc': 'Recevez un avertissement lorsque vous approchez de votre budget mensuel.',
+      'budget_limit_warning_desc':
+          'Recevez un avertissement lorsque vous approchez de votre budget mensuel.',
       'other_notifications': 'Autres Notifications',
       'promotional_notifications': 'Notifications Promotionnelles',
-      'promotional_notifications_desc': 'Recevez des mises à jour sur les nouvelles fonctionnalités ou offres',
-      'auto_save_message': 'Les modifications seront enregistrées automatiquement',
+      'promotional_notifications_desc':
+          'Recevez des mises à jour sur les nouvelles fonctionnalités ou offres',
+      'auto_save_message':
+          'Les modifications seront enregistrées automatiquement',
       //paymentsuccess
       'payment_success_title': "Tout est prêt ! Bienvenue en Premium",
-      'payment_success_subtitle': "Profitez d'un accès illimité, de fonctionnalités avancées et\nd'un parcours financier plus fluide.",
+      'payment_success_subtitle':
+          "Profitez d'un accès illimité, de fonctionnalités avancées et\nd'un parcours financier plus fluide.",
       'continue_button': 'Continuer',
       //completepayment
       'complete_payment': 'Finaliser le Paiement',
-      'payment_header': "Vous êtes à un pas de débloquer les fonctionnalités premium",
+      'payment_header':
+          "Vous êtes à un pas de débloquer les fonctionnalités premium",
       'choose_payment_method': 'Choisir le Mode de Paiement',
       'card_payment': 'Paiement par Carte',
       'card_payment_desc': 'Visa, Mastercard, Amex',
@@ -3580,7 +4063,8 @@ class AppTranslations extends Translations {
       //premiumplans
       'premium_plans': 'Forfaits Premium',
       'premium_header': 'Débloquez les Fonctionnalités Premium',
-      'premium_subheader': 'Obtenez plus de contrôle sur vos finances avec\ndes outils avancés',
+      'premium_subheader':
+          'Obtenez plus de contrôle sur vos finances avec\ndes outils avancés',
       'monthly_plan': 'Forfait Mensuel',
       'monthly_price': '3,99€/mois',
       'yearly_plan': 'Forfait Annuel',
@@ -3606,7 +4090,8 @@ class AppTranslations extends Translations {
       'codeResent': 'Code renvoyé',
       'newCodeSent': 'Un nouveau code de vérification a été envoyé',
       'incompleteCode': 'Code incomplet',
-      'enterCompleteCode': 'Veuillez saisir le code de vérification complet à 6 chiffres',
+      'enterCompleteCode':
+          'Veuillez saisir le code de vérification complet à 6 chiffres',
 
       //passwordcahgescreen
       'password_change': 'Changement de mot de passe',
@@ -3619,11 +4104,14 @@ class AppTranslations extends Translations {
       'confirm_new_password': 'Confirmer le nouveau mot de passe',
       'confirm_new_password_field': 'Confirmez votre nouveau mot de passe',
       'continue': 'Continuer',
-      'password_requirements': 'Votre mot de passe doit comporter au moins 10 caractères. Incluez plusieurs mots pour le rendre plus sécurisé.',
+      'password_requirements':
+          'Votre mot de passe doit comporter au moins 10 caractères. Incluez plusieurs mots pour le rendre plus sécurisé.',
       'error': 'Erreur',
-      'enter_current_password_error': 'Veuillez saisir votre mot de passe actuel',
+      'enter_current_password_error':
+          'Veuillez saisir votre mot de passe actuel',
       'passwords_not_match': 'Les mots de passe ne correspondent pas',
-      'password_length_error': 'Le mot de passe doit comporter au moins 10 caractères',
+      'password_length_error':
+          'Le mot de passe doit comporter au moins 10 caractères',
       //changeemailverification
       'verification': 'Vérification',
       'verificationCode': 'Code de vérification',
@@ -3636,10 +4124,12 @@ class AppTranslations extends Translations {
       'codeResent': 'Code renvoyé',
       'newCodeSent': 'Un nouveau code de vérification a été envoyé',
       'incompleteCode': 'Code incomplet',
-      'enterCompleteCode': 'Veuillez saisir le code de vérification complet à 6 chiffres',
+      'enterCompleteCode':
+          'Veuillez saisir le code de vérification complet à 6 chiffres',
       //editemail
       'change_email': 'Changer l’email',
-      'email_change_description': 'Mettez à jour votre email pour sécuriser votre compte.',
+      'email_change_description':
+          'Mettez à jour votre email pour sécuriser votre compte.',
       'current_email': 'Email actuel',
       'new_email': 'Nouvel email',
       'confirm_email': 'Confirmer l’email',
@@ -3650,7 +4140,8 @@ class AppTranslations extends Translations {
       'email_mismatch': 'Les emails ne correspondent pas !',
       // Edit Name Screen Translations
       'edit_name': 'Modifier le Nom',
-      'name_appearance_info': 'Votre nom apparaîtra sur votre profil et vos transactions',
+      'name_appearance_info':
+          'Votre nom apparaîtra sur votre profil et vos transactions',
       'first_name': 'Prénom',
       'enter_first_name': 'Entrez votre prénom',
       'first_name_required': 'Veuillez entrer votre prénom',
@@ -3663,11 +4154,14 @@ class AppTranslations extends Translations {
       // Settings Screen Translations
       'settings': 'Paramètres',
       'user_profile': 'Profil Utilisateur',
-      'user_profile_subtitle': 'Changer l\'image de profil, le nom ou le mot de passe',
+      'user_profile_subtitle':
+          'Changer l\'image de profil, le nom ou le mot de passe',
       'premium_plans': 'Plans Premium',
-      'premium_plans_subtitle': 'Mettez à niveau pour débloquer des fonctionnalités premium',
+      'premium_plans_subtitle':
+          'Mettez à niveau pour débloquer des fonctionnalités premium',
       'notification_setting': 'Paramètres de Notification',
-      'notification_setting_subtitle': 'Gérer les notifications push et alertes',
+      'notification_setting_subtitle':
+          'Gérer les notifications push et alertes',
       'language': 'Langue',
       'language_subtitle': 'Changez votre langue préférée',
       'app_unlock': 'Déverrouillage App',
@@ -3677,12 +4171,14 @@ class AppTranslations extends Translations {
       'currency_change': 'Changement de Devise',
       'currency_change_subtitle': 'Changez votre devise',
       'terms_conditions': 'Conditions Générales',
-      'terms_conditions_subtitle': 'Lisez les conditions générales avant utilisation',
+      'terms_conditions_subtitle':
+          'Lisez les conditions générales avant utilisation',
       'terms_title': 'Conditions Générales',
       'loading_terms': 'Chargement des conditions générales...',
       'error_loading_terms': 'Erreur lors du chargement des conditions',
       'retry': 'Réessayer',
-      'terms_intro': 'Veuillez lire attentivement ces Conditions Générales avant d’utiliser notre application mobile. En accédant ou en utilisant l’application, vous acceptez d’être lié par ces conditions.',
+      'terms_intro':
+          'Veuillez lire attentivement ces Conditions Générales avant d’utiliser notre application mobile. En accédant ou en utilisant l’application, vous acceptez d’être lié par ces conditions.',
       'no_terms_available': 'Aucune condition générale disponible.',
       'version_label': 'Version :',
       'effective_date_label': 'Date d’effet :',
@@ -3693,14 +4189,17 @@ class AppTranslations extends Translations {
       'personal_information': 'Informations personnelles',
       'change_photo': 'Changer la photo',
       'photo_snackbar_title': 'Photo',
-      'photo_snackbar_message': 'La fonctionnalité de changement de photo sera implémentée',
+      'photo_snackbar_message':
+          'La fonctionnalité de changement de photo sera implémentée',
       'full_name': 'Nom complet',
-      'full_name_subtitle': 'Modifier l’image de profil, le nom ou le mot de passe',
+      'full_name_subtitle':
+          'Modifier l’image de profil, le nom ou le mot de passe',
       'email_address': 'Adresse e-mail',
       'change_password': 'Changer le mot de passe',
       'delete_account': 'Supprimer le compte',
       'delete_account_title': 'Supprimer le compte',
-      'delete_account_message': 'Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.',
+      'delete_account_message':
+          'Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.',
       'cancel': 'Annuler',
       'delete': 'Supprimer',
       'account_deleted': 'Compte supprimé',
@@ -3725,11 +4224,14 @@ class AppTranslations extends Translations {
       //totalsavingadd
       'comparisonPage': 'Page de Comparaison',
       'watchVideoToUnlock': 'Regarder la Vidéo pour Débloquer',
-      'watchVideoDescription': 'Regardez une courte vidéo pour trouver des produits\nau meilleur prix gratuitement',
+      'watchVideoDescription':
+          'Regardez une courte vidéo pour trouver des produits\nau meilleur prix gratuitement',
       'upgradeToPro': 'Passer à Pro',
-      'proFeatures': 'Pas de publicités • Comparaisons illimitées • Fonctionnalités premium',
+      'proFeatures':
+          'Pas de publicités • Comparaisons illimitées • Fonctionnalités premium',
       'unlocked': 'Débloqué!',
-      'unlockMessage': 'Vous pouvez maintenant comparer les produits au meilleur prix',
+      'unlockMessage':
+          'Vous pouvez maintenant comparer les produits au meilleur prix',
       //nonprototalsaving
       'totalSavings': 'Économies Totales',
       'totalSaving': 'Économie totale',
@@ -3781,7 +4283,8 @@ class AppTranslations extends Translations {
       //comarison
       'compare_save': 'Comparer et économiser',
       'find_better_deals': 'Trouvez de meilleures offres',
-      'find_better_deals_desc': "Entrez ce que vous avez acheté. Nous vous aiderons à le trouver moins cher.",
+      'find_better_deals_desc':
+          "Entrez ce que vous avez acheté. Nous vous aiderons à le trouver moins cher.",
       'product_name': 'Nom du produit',
       'price_paid': 'Prix payé',
       'enter_amount': '\$ Entrez le montant',
@@ -3791,14 +4294,44 @@ class AppTranslations extends Translations {
       'copy_link': 'Copier le lien',
       'compare': 'Comparer',
       'confirm_purchase': 'Confirmer l’achat',
+      'enter_product_name': 'Saisir le nom du produit',
+      'max_price': 'Prix maximum',
+      'please_enter_product_name': 'Veuillez saisir le nom du produit',
+      'please_enter_valid_price': 'Veuillez saisir un prix valide',
+      'searching': 'Recherche...',
+      'search': 'Rechercher',
+      'no_deals_found': 'Aucune offre trouvée',
+      'try_different_product_or_increase_price': 'Essayez un autre nom ou augmentez le prix maximum.',
+      'better_deals_found_count': 'Meilleures offres trouvées ({count})',
+      'unknown_site': 'Site inconnu',
+      'save_percent': 'Économisez {percent}%',
+      'best_deal': 'Meilleure offre',
+      'no_link_available_to_copy': 'Aucun lien disponible à copier',
+      'product_link_copied': 'Lien du produit de {siteName} copié dans le presse-papiers',
+      'failed_to_copy_link': 'Échec de la copie du lien : {error}',
+      'compare_with_site': 'Comparer {site}',
+      'original_price_max': 'Prix original (max)',
+      'price_with_tool': "Prix avec l'outil",
+      'product_category': 'Catégorie de produit',
+      'enter_product_category': 'Saisir la catégorie du produit',
+      'savings_preview': 'Aperçu des économies',
+      'you_save_label': 'Vous économisez :',
+      'please_enter_valid_original_price': 'Veuillez saisir un prix original valide',
+      'please_enter_valid_price_with_tool': "Veuillez saisir un prix valide avec l'outil",
+      'please_enter_product_category': 'Veuillez saisir une catégorie de produit',
+      'savings_record_created_successfully': 'Enregistrement des économies créé avec succès !',
+      'failed_to_create_savings_record': "Échec de la création de l'enregistrement des économies",
+      'purchase_confirm_show_graph': "Confirmer l'achat et afficher le graphique",
       //analysis
       'analytics': 'Analytique',
       'pie_chart': 'Graphique Circulaire',
       'bar_chart': 'Graphique à Barres',
       'line_chart': 'Graphique en Ligne',
       'loading_analytics': 'Chargement des données d’analytique...',
-      'no_data_selected_month': 'Aucune donnée {dataType} pour le mois sélectionné',
-      'select_different_month_or_add_transactions': 'Sélectionnez un autre mois ou ajoutez des transactions',
+      'no_data_selected_month':
+          'Aucune donnée {dataType} pour le mois sélectionné',
+      'select_different_month_or_add_transactions':
+          'Sélectionnez un autre mois ou ajoutez des transactions',
       'no_data_available': 'Aucune donnée {dataType} disponible',
       'data_breakdown': 'Répartition de {dataType}',
       'expenses': 'Dépenses',
@@ -3823,7 +4356,8 @@ class AppTranslations extends Translations {
       'current_monthly_budget': 'Budget Mensuel Actuel',
       'edit_your_budget': 'Modifier Votre Budget',
       'enter_amount': '\$ Saisir le montant',
-      'budget_change_info': 'Modifier votre budget mettra à jour votre solde disponible sur la page d\'accueil.',
+      'budget_change_info':
+          'Modifier votre budget mettra à jour votre solde disponible sur la page d\'accueil.',
       'confirm': 'Confirmer',
       'select_category': 'Sélectionner une Catégorie',
       'food': 'Nourriture',
@@ -3839,15 +4373,17 @@ class AppTranslations extends Translations {
       'monthly_budget_pro': 'Budget Mensuel Pro',
       'watch_video_unlock': 'Regarder la vidéo pour débloquer',
       'video_message':
-      'Regardez une courte vidéo pour débloquer les fonctionnalités de planification du budget mensuel',
+          'Regardez une courte vidéo pour débloquer les fonctionnalités de planification du budget mensuel',
       'upgrade_to_pro': 'Passer à Pro',
-      'no_ads_info': 'Pas de pubs • Budgets illimités • Fonctionnalités premium',
+      'no_ads_info':
+          'Pas de pubs • Budgets illimités • Fonctionnalités premium',
       'unlocked': 'Déverrouillé !',
       'unlocked_message':
-      'Vous pouvez maintenant accéder à la fonctionnalité de budget mensuel',
+          'Vous pouvez maintenant accéder à la fonctionnalité de budget mensuel',
       //monthlybudgetnonpro
       'upgrade_title': 'Passez à Pro pour modifier',
-      'upgrade_subtitle': 'Accédez à toutes les fonctionnalités d’édition de budget',
+      'upgrade_subtitle':
+          'Accédez à toutes les fonctionnalités d’édition de budget',
       'upgrade_now': 'Mettre à niveau maintenant',
       'maybe_later': 'Peut-être plus tard',
       //someextrathing
@@ -3874,6 +4410,7 @@ class AppTranslations extends Translations {
       'hi_user': 'Salut Daniel',
       'location': 'Romagne, Modène, Italie',
       'available_balance': 'Solde disponible',
+      'see_available_balance': 'Voir le solde disponible',
       'income': 'Revenu',
       'expense': 'Dépenses',
       'savings': 'Économies',
@@ -3907,8 +4444,10 @@ class AppTranslations extends Translations {
       'already_account': 'Vous avez déjà un compte ?',
       'login': 'Connexion',
       'terms_required': 'Conditions Requises',
-      'accept_terms_message': 'Vous devez accepter les conditions générales pour créer un compte.',
-      'terms_agreement': 'En créant un compte ou en vous connectant, vous acceptez nos ',
+      'accept_terms_message':
+          'Vous devez accepter les conditions générales pour créer un compte.',
+      'terms_agreement':
+          'En créant un compte ou en vous connectant, vous acceptez nos ',
       'terms_conditions': 'Conditions Générales',
       'verification': 'Vérification',
       'face_id': 'Face ID',
@@ -3924,7 +4463,8 @@ class AppTranslations extends Translations {
       'resend_in': 'Renvoyer dans @seconds s',
       //setup your face id
       'set_your_face_id': 'Configurez votre Face ID',
-      'face_id_description': 'Protégez votre compte avec l’authentification Face ID. Connectez-vous rapidement sans taper votre mot de passe à chaque fois.',
+      'face_id_description':
+          'Protégez votre compte avec l’authentification Face ID. Connectez-vous rapidement sans taper votre mot de passe à chaque fois.',
       'setup_face_id': 'Configurer Face ID',
       'skip_for_now': 'Passer pour l’instant',
       'registration': 'Inscription',
@@ -3933,22 +4473,26 @@ class AppTranslations extends Translations {
       'success': 'Succès',
       'face_id_success_msg': 'Le Face ID a été configuré avec succès !',
       'face_verification': 'Vérification Faciale',
-      'position_face_instruction': 'Placez votre visage dans le cercle et appuyez sur le bouton ci-dessous pour commencer la vérification',
+      'position_face_instruction':
+          'Placez votre visage dans le cercle et appuyez sur le bouton ci-dessous pour commencer la vérification',
       'verifying_message': 'Vérification... Gardez votre visage dans le cercle',
       'authenticate_face_id': 'S’authentifier avec Face ID',
       'back_to_signup': 'Retour à l’Inscription',
       'verification_done': 'Vérification Terminée !',
       'face_auth_successful': 'Authentification faciale réussie',
       'camera_error': 'Erreur de Caméra',
-      'camera_error_msg': 'Impossible d’accéder à la caméra. Vérifiez les permissions.',
+      'camera_error_msg':
+          'Impossible d’accéder à la caméra. Vérifiez les permissions.',
       //
       'faceid_added': 'FaceID ajouté avec succès !',
-      'faceid_protected': 'Votre compte est protégé par l’authentification FaceID.',
+      'faceid_protected':
+          'Votre compte est protégé par l’authentification FaceID.',
       'continue': 'Continuer',
       //forgetpasswordemail
       'forget_password': 'Mot de passe oublié',
       'enter_email_phone': 'Entrez votre email ou numéro de téléphone',
-      'notification_info': 'Vous pouvez recevoir des notifications par SMS ou e-mail de notre part pour des raisons de sécurité et de connexion.',
+      'notification_info':
+          'Vous pouvez recevoir des notifications par SMS ou e-mail de notre part pour des raisons de sécurité et de connexion.',
       'continue': 'Continuer',
       //forgetpasswordotp
       'verification_code': 'Code de vérification',
@@ -3983,20 +4527,58 @@ class AppTranslations extends Translations {
       "excel_xlsx": "Excel.xlsx",
       "csv": "CSV",
       "last_uploaded": "Dernier téléversement : 20 juillet 2025, à 23:30",
-      "auto_upload_monthly": "Téléverser automatiquement les rapports mensuellement",
+      "auto_upload_monthly":
+          "Téléverser automatiquement les rapports mensuellement",
       "download": "Télécharger",
       "upload_successful": "Téléversement réussi",
-      "upload_success_message": "Vos données sélectionnées ont été\nTéléversées sur Google Drive",
-      "ok": "OK"
-
-
-
+      "upload_success_message":
+          "Vos données sélectionnées ont été\nTéléversées sur Google Drive",
+      "ok": "OK",
+    },
+    'bn_BD': {
+      'error': 'ত্রুটি',
+      'success': 'সফলতা',
+      'compare': 'তুলনা',
+      'copy_link': 'লিঙ্ক কপি করুন',
+      'compare_save': 'তুলনা করুন ও সাশ্রয় করুন',
+      'find_better_deals': 'আরও ভালো ডিল খুঁজুন',
+      'find_better_deals_desc': 'আপনি যা কিনেছেন লিখুন। আমরা কম দামে খুঁজে দেব।',
+      'product_name': 'পণ্যের নাম',
+      'enter_product_name': 'পণ্যের নাম লিখুন',
+      'max_price': 'সর্বোচ্চ দাম',
+      'please_enter_product_name': 'পণ্যের নাম লিখুন',
+      'please_enter_valid_price': 'সঠিক দাম লিখুন',
+      'searching': 'খোঁজা হচ্ছে...',
+      'search': 'অনুসন্ধান',
+      'no_deals_found': 'কোনো ডিল পাওয়া যায়নি',
+      'try_different_product_or_increase_price': 'ভিন্ন নাম দিন বা সর্বোচ্চ দাম বাড়ান।',
+      'better_deals_found_count': 'ভালো ডিল পাওয়া গেছে ({count})',
+      'unknown_site': 'অজানা সাইট',
+      'save_percent': '{percent}% সাশ্রয়',
+      'best_deal': 'সেরা ডিল',
+      'no_link_available_to_copy': 'কপি করার মতো কোনো লিঙ্ক নেই',
+      'product_link_copied': '{siteName} এর প্রোডাক্ট লিঙ্ক কপি করা হয়েছে',
+      'failed_to_copy_link': 'লিঙ্ক কপি করতে ব্যর্থ: {error}',
+      'compare_with_site': '{site} তুলনা করুন',
+      'original_price_max': 'মূল দাম (সর্বোচ্চ)',
+      'price_with_tool': 'টুল দিয়ে দাম',
+      'product_category': 'পণ্যের বিভাগ',
+      'enter_product_category': 'পণ্যের বিভাগ লিখুন',
+      'savings_preview': 'সাশ্রয়ের প্রিভিউ',
+      'you_save_label': 'আপনি সাশ্রয় করেছেন:',
+      'please_enter_valid_original_price': 'সঠিক মূল দাম লিখুন',
+      'please_enter_valid_price_with_tool': 'টুল দিয়ে সঠিক দাম লিখুন',
+      'please_enter_product_category': 'পণ্যের বিভাগ লিখুন',
+      'savings_record_created_successfully': 'সাশ্রয়ের রেকর্ড তৈরি হয়েছে!',
+      'failed_to_create_savings_record': 'সাশ্রয়ের রেকর্ড তৈরি করতে ব্যর্থ',
+      'purchase_confirm_show_graph': 'ক্রয় নিশ্চিত করুন এবং গ্রাফ দেখান',
     },
     'tr_TR': {
       //rate and help
       'rateAndImproveTitle': 'Değerlendir ve Geliştirmemize Yardım Et',
       'saveAndGrowTogether': 'Birlikte tasarruf edelim ve büyüyelim!',
-      'shareYourThoughts': 'Uygulamayı nasıl geliştirebileceğimiz konusundaki\ndüşüncelerinizi paylaşın: deneyimi daha etkili hale \ngetirmek için geri bildirimlerinizi kullanacağız.',
+      'shareYourThoughts':
+          'Uygulamayı nasıl geliştirebileceğimiz konusundaki\ndüşüncelerinizi paylaşın: deneyimi daha etkili hale \ngetirmek için geri bildirimlerinizi kullanacağız.',
       'rateExperience': 'Deneyiminizi nasıl değerlendirirsiniz?',
       'feedbackHint': 'Geri bildiriminizi buraya yazın...',
       'sendFeedback': 'Geri Bildirim Gönder',
@@ -4018,6 +4600,21 @@ class AppTranslations extends Translations {
       'galleryFeature': 'Galeri seçici özelliği uygulanacak',
       'transactionSuccess': 'İşlem başarıyla eklendi',
       'transactionError': 'İşlem eklenirken hata',
+      'warning': 'Uyarı',
+      'apiError': 'Bir API hatası oluştu',
+      'ocrError': 'OCR hatası',
+      'noTextFound': 'Metin bulunamadı',
+      'cameraOcrFailed': 'Kamera OCR başarısız',
+      'galleryOcrFailed': 'Galeri OCR başarısız',
+      'ocrUnableExtract': 'Metinden veri çıkarılamadı',
+      'noDataReturned': 'Veri döndürülmedi',
+      'ocrExpenseCreated': 'OCR ile gider oluşturuldu',
+      'ocrRequestFailed': 'OCR isteği başarısız',
+      'enterReceiptTextBarcode': 'Barkod/fiş metni girin',
+      'enterReceiptText': 'Fiş metnini girin',
+      'pasteReceiptText': 'Fiş metnini buraya yapıştırın',
+      'textEmpty': 'Metin boş olamaz',
+      'post': 'Gönder',
       'enterAmountError': 'Lütfen tutarı girin',
       'selectExpenseCategoryError': 'Lütfen gider kategorisi seçin',
       'selectIncomeCategoryError': 'Lütfen gelir kategorisi seçin',
@@ -4054,6 +4651,7 @@ class AppTranslations extends Translations {
       'feb1520241430': '15 Şub 2024 - 14:30',
       'setDateTime': 'Tarih ve Saat Ayarla',
       'feb152024': '15 Şub 2024',
+      'tapToSet': 'Ayarlamak için dokunun',
       'add': 'Ekle',
       // Category translations
       'food': 'Yemek',
@@ -4070,7 +4668,8 @@ class AppTranslations extends Translations {
       'watchAdTitle': 'Pro\'yu Açmak için Reklam İzle',
       'watchAdSubtitle': 'Pro Özelliklerini Açmak için Reklam İzle',
       'watchAdDescription': 'Pro Özelliklerini Açmak için Video İzle (30s)',
-      'proFeaturesUnlockMessage': 'Reklamı izledikten sonra, hem Gider hem de Gelir Pro özellikleri açılacak',
+      'proFeaturesUnlockMessage':
+          'Reklamı izledikten sonra, hem Gider hem de Gelir Pro özellikleri açılacak',
       'secondsRemaining': '%seconds% saniye kaldı',
       'cancel': 'İptal',
       'proUnlockedTitle': 'Pro Özellikleri Açıldı!',
@@ -4132,7 +4731,8 @@ class AppTranslations extends Translations {
       'light_theme': 'Açık',
       'dark_theme': 'Koyu',
       'use_system_settings': 'Sistem ayarlarını kullan',
-      'system_settings_desc': 'Temanız otomatik olarak sistem\ntercihlerinizle eşleşecek',
+      'system_settings_desc':
+          'Temanız otomatik olarak sistem\ntercihlerinizle eşleşecek',
       //confirmfaceid
       'initializing_camera': 'Kamera başlatılıyor...',
       'no_camera_found': 'Kamera bulunamadı',
@@ -4141,7 +4741,8 @@ class AppTranslations extends Translations {
       'camera_not_ready': 'Kamera hazır değil. Lütfen bekleyin.',
       'keep_face_in_circle': 'Yüzünüzü daire içinde tutun',
       'faceid_saved': 'Face ID Kaydedildi!',
-      'faceid_saved_desc': 'Face ID\'niz başarıyla kaydedildi.\nArtık uygulamanın kilidini açmak için kullanabilirsiniz.',
+      'faceid_saved_desc':
+          'Face ID\'niz başarıyla kaydedildi.\nArtık uygulamanın kilidini açmak için kullanabilirsiniz.',
       'scanning': 'Taranıyor...',
       'seconds_remaining': 'saniye kaldı',
       'tap_to_begin': 'Başlamak için "Face ID ile Doğrula"ya dokunun',
@@ -4149,7 +4750,8 @@ class AppTranslations extends Translations {
 
       //setupfaceid
       'setup_faceid': 'FaceID\'yi Ayarla',
-      'setup_faceid_desc': 'XYZ\'yi FaceID\'nizle kilidini açın,\nhızlı ve güvenli.',
+      'setup_faceid_desc':
+          'XYZ\'yi FaceID\'nizle kilidini açın,\nhızlı ve güvenli.',
       'use_pin_instead': 'Bunun yerine PIN kullan',
       'cancel': 'İptal',
       //confirmpin
@@ -4162,12 +4764,12 @@ class AppTranslations extends Translations {
       'confirm': 'Onayla',
       //pinlock
       'set_pin': 'PIN Belirle',
-      'pin_description': 'PIN en az 4 haneli olmalıdır, ancak ek güvenlik için 6 haneli bir PIN önerilir.',
+      'pin_description':
+          'PIN en az 4 haneli olmalıdır, ancak ek güvenlik için 6 haneli bir PIN önerilir.',
       'invalid_pin': 'Geçersiz PIN',
       'pin_min_length': 'PIN en az 4 haneli olmalıdır',
       'clear': 'Temizle',
       'next': 'İleri',
-
 
       //appunlock
       'app_unlock': 'Uygulama Kilidi',
@@ -4179,14 +4781,18 @@ class AppTranslations extends Translations {
       'none_option_desc': 'Misafir olarak devam et',
       'security_settings': 'Güvenlik Ayarları',
       'enable_faceid': 'FaceID\'i Etkinleştir',
-      'enable_faceid_desc': 'Daha hızlı ve güvenli giriş yapmak için FaceID\'inizi kullanın',
+      'enable_faceid_desc':
+          'Daha hızlı ve güvenli giriş yapmak için FaceID\'inizi kullanın',
       'faceid_app_launch': 'Uygulama Başlatma için FaceID',
       'faceid_app_launch_desc': 'Uygulamayı açarken FaceID iste',
-      'security_info': 'FaceID\'iniz cihazınızda güvenli bir şekilde saklanır. Bunları asla yüklemeyiz veya erişmeyiz.',
+      'security_info':
+          'FaceID\'iniz cihazınızda güvenli bir şekilde saklanır. Bunları asla yüklemeyiz veya erişmeyiz.',
       //language
       'language_settings': 'Dil Ayarları',
-      'language_settings_desc': 'Uygulama arayüzü için tercih ettiğiniz dili seçin',
-      'language_warning': 'Bazı değişikliklerin tam olarak uygulanması için uygulamanın yeniden başlatılması gerekebilir',
+      'language_settings_desc':
+          'Uygulama arayüzü için tercih ettiğiniz dili seçin',
+      'language_warning':
+          'Bazı değişikliklerin tam olarak uygulanması için uygulamanın yeniden başlatılması gerekebilir',
       'apply_changes': 'Değişiklikleri Uygula',
 
       //notification
@@ -4195,25 +4801,32 @@ class AppTranslations extends Translations {
       'enable_all_notifications_desc': 'Tüm bildirim tercihlerini kontrol edin',
       'general_notifications': 'Genel Bildirimler',
       'push_notification': 'Push bildirim',
-      'push_notification_desc': 'Uygulamayı kullanmadığınız zamanlarda önemli uyarılar alın.',
+      'push_notification_desc':
+          'Uygulamayı kullanmadığınız zamanlarda önemli uyarılar alın.',
       'automatic_renewal': 'Otomatik Yenileme',
-      'automatic_renewal_desc': 'Aboneliğinizi kesintisiz olarak aktif tutun. Manuel yenilemeyi tercih ediyorsanız bunu kapatın.',
+      'automatic_renewal_desc':
+          'Aboneliğinizi kesintisiz olarak aktif tutun. Manuel yenilemeyi tercih ediyorsanız bunu kapatın.',
       'financial_alerts': 'Finansal Uyarılar',
       'monthly_alerts': 'Aylık Gider ve Gelir Uyarıları',
-      'monthly_alerts_desc': 'Ay sonunda gider ve gelir hakkında bilgilendirilir.',
+      'monthly_alerts_desc':
+          'Ay sonunda gider ve gelir hakkında bilgilendirilir.',
       'budget_limit_warning': 'Bütçe Limiti Uyarısı',
-      'budget_limit_warning_desc': 'Aylık bütçenize yaklaştığınızda bir uyarı alın.',
+      'budget_limit_warning_desc':
+          'Aylık bütçenize yaklaştığınızda bir uyarı alın.',
       'other_notifications': 'Diğer Bildirimler',
       'promotional_notifications': 'Promosyon Bildirimleri',
-      'promotional_notifications_desc': 'Yeni özellikler veya teklifler hakkında güncellemeler alın',
+      'promotional_notifications_desc':
+          'Yeni özellikler veya teklifler hakkında güncellemeler alın',
       'auto_save_message': 'Değişiklikler otomatik olarak kaydedilecek',
       //paymentsuccess
       'payment_success_title': "Her şey hazır! Premium'a Hoş Geldiniz",
-      'payment_success_subtitle': "Sınırsız erişim, gelişmiş özellikler ve\ndaha sorunsuz bir finansal yolculuğun tadını çıkarın.",
+      'payment_success_subtitle':
+          "Sınırsız erişim, gelişmiş özellikler ve\ndaha sorunsuz bir finansal yolculuğun tadını çıkarın.",
       'continue_button': 'Devam Et',
       //completepayment
       'complete_payment': 'Ödemeyi Tamamla',
-      'payment_header': "Premium özelliklerin kilidini açmaya bir adım uzaktasınız",
+      'payment_header':
+          "Premium özelliklerin kilidini açmaya bir adım uzaktasınız",
       'choose_payment_method': 'Ödeme Yöntemini Seçin',
       'card_payment': 'Kart ile Ödeme',
       'card_payment_desc': 'Visa, Mastercard, Amex',
@@ -4233,7 +4846,8 @@ class AppTranslations extends Translations {
       //premiumplans
       'premium_plans': 'Premium Planlar',
       'premium_header': 'Premium Özelliklerin Kilidini Aç',
-      'premium_subheader': 'Gelişmiş araçlarla finanslarınız üzerinde\ndaha fazla kontrol elde edin',
+      'premium_subheader':
+          'Gelişmiş araçlarla finanslarınız üzerinde\ndaha fazla kontrol elde edin',
       'monthly_plan': 'Aylık Plan',
       'monthly_price': '3,99€/ay',
       'yearly_plan': 'Yıllık Plan',
@@ -4272,7 +4886,8 @@ class AppTranslations extends Translations {
       'confirm_new_password': 'Yeni şifreyi onayla',
       'confirm_new_password_field': 'Yeni şifrenizi onaylayın',
       'continue': 'Devam Et',
-      'password_requirements': 'Şifreniz en az 10 karakter olmalıdır. Daha güvenli olması için birden fazla kelime ekleyin.',
+      'password_requirements':
+          'Şifreniz en az 10 karakter olmalıdır. Daha güvenli olması için birden fazla kelime ekleyin.',
       'error': 'Hata',
       'enter_current_password_error': 'Lütfen mevcut şifrenizi girin',
       'passwords_not_match': 'Şifreler eşleşmiyor',
@@ -4292,7 +4907,8 @@ class AppTranslations extends Translations {
       'enterCompleteCode': 'Lütfen tam 6 haneli doğrulama kodunu girin',
       //editemail
       'change_email': 'E-postayı Değiştir',
-      'email_change_description': 'Hesabınızı güvende tutmak için e-postanızı güncelleyin.',
+      'email_change_description':
+          'Hesabınızı güvende tutmak için e-postanızı güncelleyin.',
       'current_email': 'Mevcut e-posta',
       'new_email': 'Yeni e-posta',
       'confirm_email': 'E-postayı onayla',
@@ -4303,7 +4919,8 @@ class AppTranslations extends Translations {
       'email_mismatch': 'E-postalar eşleşmiyor!',
       // Edit Name Screen Translations
       'edit_name': 'İsmi Düzenle',
-      'name_appearance_info': 'İsminiz profilinizde ve işlemlerinizde görünecek',
+      'name_appearance_info':
+          'İsminiz profilinizde ve işlemlerinizde görünecek',
       'first_name': 'Ad',
       'enter_first_name': 'Adınızı girin',
       'first_name_required': 'Lütfen adınızı girin',
@@ -4318,7 +4935,8 @@ class AppTranslations extends Translations {
       'user_profile': 'Kullanıcı Profili',
       'user_profile_subtitle': 'Profil resmini, adı veya şifreyi değiştir',
       'premium_plans': 'Premium Planlar',
-      'premium_plans_subtitle': 'Premium özelliklerin kilidini açmak için yükselt',
+      'premium_plans_subtitle':
+          'Premium özelliklerin kilidini açmak için yükselt',
       'notification_setting': 'Bildirim Ayarları',
       'notification_setting_subtitle': 'Push bildirimleri ve uyarıları yönet',
       'language': 'Dil',
@@ -4330,12 +4948,14 @@ class AppTranslations extends Translations {
       'currency_change': 'Para Birimi Değişimi',
       'currency_change_subtitle': 'Para biriminizi değiştirin',
       'terms_conditions': 'Kullanım Şartları',
-      'terms_conditions_subtitle': 'Kullanmadan önce kullanım şartlarını okuyun',
+      'terms_conditions_subtitle':
+          'Kullanmadan önce kullanım şartlarını okuyun',
       'terms_title': 'Şartlar ve Koşullar',
       'loading_terms': 'Şartlar ve koşullar yükleniyor...',
       'error_loading_terms': 'Şartlar yüklenirken hata oluştu',
       'retry': 'Tekrar dene',
-      'terms_intro': 'Mobil uygulamamızı kullanmadan önce lütfen bu Şartlar ve Koşulları dikkatlice okuyun. Uygulamaya erişerek veya kullanarak bu şartlara bağlı kalmayı kabul edersiniz.',
+      'terms_intro':
+          'Mobil uygulamamızı kullanmadan önce lütfen bu Şartlar ve Koşulları dikkatlice okuyun. Uygulamaya erişerek veya kullanarak bu şartlara bağlı kalmayı kabul edersiniz.',
       'no_terms_available': 'Kullanılabilir şartlar ve koşullar yok.',
       'version_label': 'Sürüm:',
       'effective_date_label': 'Yürürlük tarihi:',
@@ -4354,7 +4974,8 @@ class AppTranslations extends Translations {
       'change_password': 'Şifreyi değiştir',
       'delete_account': 'Hesabı Sil',
       'delete_account_title': 'Hesabı Sil',
-      'delete_account_message': 'Hesabınızı silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.',
+      'delete_account_message':
+          'Hesabınızı silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.',
       'cancel': 'İptal',
       'delete': 'Sil',
       'account_deleted': 'Hesap Silindi',
@@ -4378,8 +4999,10 @@ class AppTranslations extends Translations {
       //totalsavingadd
       'comparisonPage': 'Karşılaştırma Sayfası',
       'watchVideoToUnlock': 'Kilidi Açmak için Videoyu İzle',
-      'watchVideoDescription': 'Ürünleri en iyi fiyata bulmak için\nkısa bir video izleyin',
+      'watchVideoDescription':
+          'Ürünleri en iyi fiyata bulmak için\nkısa bir video izleyin',
       'upgradeToPro': 'Pro\'ya Yükselt',
+      'ocrSupportsExpensesOnly': 'OCR yalnızca giderleri destekler',
       'proFeatures': 'Reklamsız • Sınırsız karşılaştırma • Premium özellikler',
       'unlocked': 'Kilidi Açıldı!',
       'unlockMessage': 'Artık ürünleri en iyi fiyata karşılaştırabilirsiniz',
@@ -4433,7 +5056,8 @@ class AppTranslations extends Translations {
       //comarison
       'compare_save': 'Karşılaştır ve tasarruf et',
       'find_better_deals': 'Daha iyi fırsatlar bulun',
-      'find_better_deals_desc': 'Ne satın aldığınızı girin. Daha ucuzunu bulmanıza yardımcı olacağız.',
+      'find_better_deals_desc':
+          'Ne satın aldığınızı girin. Daha ucuzunu bulmanıza yardımcı olacağız.',
       'product_name': 'Ürün adı',
       'price_paid': 'Ödenen fiyat',
       'enter_amount': '\$ Tutar girin',
@@ -4443,6 +5067,34 @@ class AppTranslations extends Translations {
       'copy_link': 'Bağlantıyı kopyala',
       'compare': 'Karşılaştır',
       'confirm_purchase': 'Satın almayı onayla',
+      'enter_product_name': 'Ürün adını girin',
+      'max_price': 'Maksimum fiyat',
+      'please_enter_product_name': 'Lütfen ürün adını girin',
+      'please_enter_valid_price': 'Lütfen geçerli bir fiyat girin',
+      'searching': 'Aranıyor...',
+      'search': 'Ara',
+      'no_deals_found': 'Hiç teklif bulunamadı',
+      'try_different_product_or_increase_price': 'Farklı bir ad deneyin veya maksimum fiyatı artırın.',
+      'better_deals_found_count': 'Daha iyi teklifler bulundu ({count})',
+      'unknown_site': 'Bilinmeyen site',
+      'save_percent': '{percent}% tasarruf',
+      'best_deal': 'En iyi teklif',
+      'no_link_available_to_copy': 'Kopyalanacak bağlantı yok',
+      'product_link_copied': '{siteName} ürün bağlantısı panoya kopyalandı',
+      'failed_to_copy_link': 'Bağlantı kopyalanamadı: {error}',
+      'compare_with_site': '{site} karşılaştır',
+      'original_price_max': 'Orijinal Fiyat (maks)',
+      'price_with_tool': 'Araç ile Fiyat',
+      'product_category': 'Ürün kategorisi',
+      'enter_product_category': 'Ürün kategorisi girin',
+      'savings_preview': 'Tasarruf önizlemesi',
+      'you_save_label': 'Tasarrufunuz:',
+      'please_enter_valid_original_price': 'Lütfen geçerli bir orijinal fiyat girin',
+      'please_enter_valid_price_with_tool': 'Lütfen araç ile geçerli bir fiyat girin',
+      'please_enter_product_category': 'Lütfen bir ürün kategorisi girin',
+      'savings_record_created_successfully': 'Tasarruf kaydı başarıyla oluşturuldu!',
+      'failed_to_create_savings_record': 'Tasarruf kaydı oluşturulamadı',
+      'purchase_confirm_show_graph': 'Satın almayı onayla ve grafiği göster',
       //
       'analytics': 'Analitik',
       'pie_chart': 'Pasta Grafiği',
@@ -4450,7 +5102,8 @@ class AppTranslations extends Translations {
       'line_chart': 'Çizgi Grafik',
       'loading_analytics': 'Analitik veriler yükleniyor...',
       'no_data_selected_month': 'Seçilen ay için {dataType} verisi yok',
-      'select_different_month_or_add_transactions': 'Farklı bir ay seçin veya işlem ekleyin',
+      'select_different_month_or_add_transactions':
+          'Farklı bir ay seçin veya işlem ekleyin',
       'no_data_available': '{dataType} verisi yok',
       'data_breakdown': '{dataType} Dağılımı',
       'expenses': 'Giderler',
@@ -4475,7 +5128,8 @@ class AppTranslations extends Translations {
       'current_monthly_budget': 'Mevcut Aylık Bütçe',
       'edit_your_budget': 'Bütçenizi Düzenleyin',
       'enter_amount': '\$ Tutar girin',
-      'budget_change_info': 'Bütçenizi değiştirmek, ana sayfadaki kullanılabilir bakiyenizi güncelleyecektir.',
+      'budget_change_info':
+          'Bütçenizi değiştirmek, ana sayfadaki kullanılabilir bakiyenizi güncelleyecektir.',
       'confirm': 'Onayla',
       'select_category': 'Kategori Seçin',
       'food': 'Yemek',
@@ -4491,12 +5145,11 @@ class AppTranslations extends Translations {
       'monthly_budget_pro': 'Aylık Bütçe Pro',
       'watch_video_unlock': 'Kilitleri açmak için video izle',
       'video_message':
-      'Aylık bütçe planlama özelliklerini ücretsiz açmak için kısa bir video izleyin',
+          'Aylık bütçe planlama özelliklerini ücretsiz açmak için kısa bir video izleyin',
       'upgrade_to_pro': 'Pro\'ya Yükselt',
       'no_ads_info': 'Reklamsız • Sınırsız bütçeler • Premium özellikler',
       'unlocked': 'Kilit Açıldı!',
-      'unlocked_message':
-      'Artık aylık bütçe özelliğine erişebilirsiniz',
+      'unlocked_message': 'Artık aylık bütçe özelliğine erişebilirsiniz',
       //monthlybudgetnonpro
       'upgrade_title': 'Düzenlemek için Pro’ya yükselt',
       'upgrade_subtitle': 'Bütçe düzenleme özelliklerine tam erişim kazanın',
@@ -4526,6 +5179,7 @@ class AppTranslations extends Translations {
       'hi_user': 'Merhaba Daniel',
       'location': 'Romagna, Modena, İtalya',
       'available_balance': 'Mevcut Bakiye',
+      'see_available_balance': 'Mevcut bakiyeyi gör',
       'income': 'Gelir',
       'expense': 'Gider',
       'savings': 'Tasarruf',
@@ -4559,7 +5213,8 @@ class AppTranslations extends Translations {
       'already_account': 'Zaten hesabınız var mı?',
       'login': 'Giriş Yap',
       'terms_required': 'Şartlar Gerekli',
-      'accept_terms_message': 'Hesap oluşturmak için şartlar ve koşulları kabul etmelisiniz.',
+      'accept_terms_message':
+          'Hesap oluşturmak için şartlar ve koşulları kabul etmelisiniz.',
       'terms_agreement': 'Bir hesap oluşturarak veya giriş yaparak, bizim ',
       'terms_conditions': 'Şartlar ve Koşullar',
       'verification': 'Doğrulama',
@@ -4577,7 +5232,8 @@ class AppTranslations extends Translations {
 
       //setup your face id
       'set_your_face_id': 'Face ID’nizi Ayarlayın',
-      'face_id_description': 'Hesabınızı Face ID kimlik doğrulaması ile güvence altına alın. Her seferinde şifre girmeden hızlıca giriş yapın.',
+      'face_id_description':
+          'Hesabınızı Face ID kimlik doğrulaması ile güvence altına alın. Her seferinde şifre girmeden hızlıca giriş yapın.',
       'setup_face_id': 'Face ID’yi Ayarla',
       'skip_for_now': 'Şimdilik atla',
       'registration': 'Kayıt',
@@ -4586,14 +5242,16 @@ class AppTranslations extends Translations {
       'success': 'Başarılı',
       'face_id_success_msg': 'Face ID başarıyla ayarlandı!',
       'face_verification': 'Yüz Doğrulama',
-      'position_face_instruction': 'Yüzünüzü dairenin içine yerleştirin ve doğrulamayı başlatmak için aşağıdaki butona dokunun',
+      'position_face_instruction':
+          'Yüzünüzü dairenin içine yerleştirin ve doğrulamayı başlatmak için aşağıdaki butona dokunun',
       'verifying_message': 'Doğrulanıyor... Yüzünüzü daire içinde tutun',
       'authenticate_face_id': 'Face ID ile Doğrula',
       'back_to_signup': 'Kayıt Sayfasına Geri Dön',
       'verification_done': 'Doğrulama Tamamlandı!',
       'face_auth_successful': 'Yüz doğrulama başarılı',
       'camera_error': 'Kamera Hatası',
-      'camera_error_msg': 'Kameraya erişilemiyor. Lütfen izinleri kontrol edin.',
+      'camera_error_msg':
+          'Kameraya erişilemiyor. Lütfen izinleri kontrol edin.',
       //
       'faceid_added': 'FaceID başarıyla eklendi!',
       'faceid_protected': 'Hesabınız FaceID doğrulamasıyla korunmaktadır.',
@@ -4601,7 +5259,8 @@ class AppTranslations extends Translations {
       //forgetpassemail
       'forget_password': 'Şifremi unuttum',
       'enter_email_phone': 'E-posta adresinizi veya telefon numaranızı girin',
-      'notification_info': 'Güvenlik ve giriş amacıyla bizden SMS veya e-posta yoluyla bildirim alabilirsiniz.',
+      'notification_info':
+          'Güvenlik ve giriş amacıyla bizden SMS veya e-posta yoluyla bildirim alabilirsiniz.',
       'continue': 'Devam et',
       //forgetpasswordotp
       'verification_code': 'Doğrulama kodu',
@@ -4640,9 +5299,7 @@ class AppTranslations extends Translations {
       "download": "İndir",
       "upload_successful": "Yükleme Başarılı",
       "upload_success_message": "Seçtiğiniz veriler\nGoogle Drive'a yüklendi",
-      "ok": "Tamam"
+      "ok": "Tamam",
     },
-
   };
-
 }

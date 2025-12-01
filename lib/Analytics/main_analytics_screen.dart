@@ -40,7 +40,29 @@ class AnalyticsScreen extends StatelessWidget {
         ? Color(0xFF2A2A2A)
         : Colors.grey.shade200;
 
-    return Scaffold(
+    return WillPopScope(
+      onWillPop: () async {
+        try {
+          final prev = Get.previousRoute;
+          int idx = 0;
+          switch (prev) {
+            case AppRoutes.mainHome:
+              idx = 0;
+              break;
+            case AppRoutes.comparison:
+              idx = 2;
+              break;
+            case AppRoutes.settings:
+              idx = 3;
+              break;
+            default:
+              idx = 0;
+          }
+          homeCtrl.setNavIndex(idx);
+        } catch (_) {}
+        return true;
+      },
+      child: Scaffold(
       backgroundColor: backgroundColor,
       appBar: _buildAppBar(screenWidth, textColor, backgroundColor),
       body: Obx(
@@ -109,6 +131,7 @@ class AnalyticsScreen extends StatelessWidget {
               ),
       ),
       bottomNavigationBar: CustomBottomNavBar(isDarkMode: isDarkMode),
+      ),
     );
   }
 

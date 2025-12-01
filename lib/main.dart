@@ -17,6 +17,7 @@ import 'package:your_expense/services/config_service.dart';
 import 'package:your_expense/services/face_id_service.dart';
 import 'package:your_expense/services/push_notification_service.dart';
 import 'package:your_expense/services/token_service.dart';
+import 'package:your_expense/Analytics/income_service.dart';
 
 // ... your existing imports
 
@@ -27,12 +28,16 @@ Future<void> main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
 
+  // Initialize core services first
   await Future.wait([
     Get.putAsync(() => ConfigService().init()),
     Get.putAsync(() => TokenService().init()),
     Get.putAsync(() => ApiBaseService().init()),
     Get.putAsync(() => FaceIdService().init()),
   ]);
+
+  // Initialize services that depend on the core services
+  await Get.putAsync(() => IncomeService().init());
 
   // IMPORTANT: Do NOT initialize MobileAds here. We gate it behind ATT after first frame.
 
@@ -59,7 +64,8 @@ Future<void> _requestATTThenInitAds() async {
 
     if (Platform.isIOS) {
       // Read current status
-      TrackingStatus status = await AppTrackingTransparency.trackingAuthorizationStatus;
+      TrackingStatus status =
+          await AppTrackingTransparency.trackingAuthorizationStatus;
       debugPrint('[ATT] Initial status: $status');
 
       // Only request if notDetermined

@@ -27,10 +27,14 @@ class MainHomeScreen extends StatelessWidget {
     // Ensure data is loaded after login when the screen appears
     WidgetsBinding.instance.addPostFrameCallback((_) {
       controller.ensureHomeDataLoaded();
-      // Also ensure profile data is fetched so app bar shows user info
       try {
         profile.fetchUserProfile();
       } catch (_) {}
+    });
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (controller.selectedNavIndex.value != 0) {
+        controller.selectedNavIndex.value = 0;
+      }
     });
 
     // Define colors based on theme
@@ -236,7 +240,7 @@ class MainHomeScreen extends StatelessWidget {
                                     borderRadius: BorderRadius.circular(screenWidth * 0.03),
                                   ),
                                 ),
-                                child: Text('See available balance'),
+                                child: Text('see_available_balance'.tr),
                               ),
                             ),
                           );
@@ -572,19 +576,19 @@ class MainHomeScreen extends StatelessWidget {
             ),
           ),
           SizedBox(height: screenWidth * 0.01),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                icon,
-                size: screenWidth * 0.05,
-                color: color,
-              ),
-              SizedBox(width: screenWidth * 0.01),
-              // Fixed percentage text with FittedBox
-              FittedBox(
-                fit: BoxFit.scaleDown,
-                child: Text(
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  icon,
+                  size: screenWidth * 0.05,
+                  color: color,
+                ),
+                SizedBox(width: screenWidth * 0.01),
+                Text(
                   percentLabel,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -594,8 +598,8 @@ class MainHomeScreen extends StatelessWidget {
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),

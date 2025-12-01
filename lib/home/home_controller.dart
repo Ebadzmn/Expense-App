@@ -15,7 +15,6 @@ import '../routes/app_routes.dart';
 import '../services/token_service.dart';
 import 'package:your_expense/Analytics/analytics_controller.dart';
 
-
 class HomeController extends GetxController {
   // Core services are registered early in main(); resolve via getters
   ApiBaseService get _apiService => Get.find<ApiBaseService>();
@@ -23,7 +22,9 @@ class HomeController extends GetxController {
 
   // Feature services may register after UI starts; resolve lazily
   TransactionService? get _transactionService =>
-      Get.isRegistered<TransactionService>() ? Get.find<TransactionService>() : null;
+      Get.isRegistered<TransactionService>()
+      ? Get.find<TransactionService>()
+      : null;
   BudgetService? get _budgetService =>
       Get.isRegistered<BudgetService>() ? Get.find<BudgetService>() : null;
   ExpenseService? _expenseService;
@@ -160,11 +161,14 @@ class HomeController extends GetxController {
       isLoading.value = true;
       final txService = _transactionService;
       if (txService == null) {
-        print('HomeController: TransactionService not ready. Scheduling retry.');
+        print(
+          'HomeController: TransactionService not ready. Scheduling retry.',
+        );
         // Retry shortly after services finish registering
         Future.delayed(const Duration(milliseconds: 500), () async {
           try {
-            if (_transactionService != null || Get.isRegistered<TransactionService>()) {
+            if (_transactionService != null ||
+                Get.isRegistered<TransactionService>()) {
               await fetchRecentTransactions();
             }
           } catch (e) {
@@ -195,7 +199,9 @@ class HomeController extends GetxController {
       // Fetch simple monthly budget amount using `simple-monthly-budget?Month=`
       try {
         final simpleBudgetAmount = await (_budgetService != null
-            ? _budgetService!.fetchSimpleMonthlyBudgetAmount(month: currentMonth)
+            ? _budgetService!.fetchSimpleMonthlyBudgetAmount(
+                month: currentMonth,
+              )
             : _fetchSimpleMonthlyBudgetAmountFallback(currentMonth));
         monthlyBudget.value = simpleBudgetAmount;
       } catch (e) {
@@ -379,36 +385,22 @@ class HomeController extends GetxController {
     if (sub.isActivePro) {
       Get.toNamed(
         AppRoutes.proExpensesIncome,
-        arguments: {
-          'defaultTab': isExpense ? 0 : 1,
-        },
+        arguments: {'defaultTab': isExpense ? 0 : 1},
       );
     } else {
       Get.toNamed(
         AppRoutes.addTransaction,
-        arguments: {
-          'initialIndex': isExpense ? 0 : 1,
-        },
+        arguments: {'initialIndex': isExpense ? 0 : 1},
       );
     }
   }
 
   void navigateToAddProExpense() {
-    Get.toNamed(
-      AppRoutes.proExpensesIncome,
-      arguments: {
-        'defaultTab': 0,
-      },
-    );
+    Get.toNamed(AppRoutes.proExpensesIncome, arguments: {'defaultTab': 0});
   }
 
   void navigateToAddProIncome() {
-    Get.toNamed(
-      AppRoutes.proExpensesIncome,
-      arguments: {
-        'defaultTab': 1,
-      },
-    );
+    Get.toNamed(AppRoutes.proExpensesIncome, arguments: {'defaultTab': 1});
   }
 
   void shareExperience() {
@@ -503,11 +495,11 @@ class HomeController extends GetxController {
               '${e.createdAt.year}-${e.createdAt.month.toString().padLeft(2, '0')}';
           if (ym == month) total += e.amount;
         }
-      expense.value = total;
-      availableBalance.value = income.value - expense.value;
-      // Re-evaluate notifications after expense recompute
-      _maybeTriggerBudgetNotifications(month);
-      return;
+        expense.value = total;
+        availableBalance.value = income.value - expense.value;
+        // Re-evaluate notifications after expense recompute
+        _maybeTriggerBudgetNotifications(month);
+        return;
       }
 
       // Fallback: direct API call if ExpenseService not registered
