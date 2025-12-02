@@ -16,14 +16,24 @@ import 'login_controller/login_request_model.dart';
 
 
 class LoginService extends GetxService {
-  final ApiBaseService _apiService = Get.find();
-  final ConfigService _config = Get.find();
+  late final ApiBaseService _apiService;
+  late final ConfigService _config;
   TokenService? _tokenService;
 
   final RxBool isLoggedIn = false.obs;
   final Rx<UserModel?> currentUser = Rx<UserModel?>(null);
 
   Future<LoginService> init() async {
+    if (Get.isRegistered<ApiBaseService>()) {
+      _apiService = Get.find<ApiBaseService>();
+    } else {
+      _apiService = await Get.putAsync(() => ApiBaseService().init());
+    }
+    if (Get.isRegistered<ConfigService>()) {
+      _config = Get.find<ConfigService>();
+    } else {
+      _config = await Get.putAsync(() => ConfigService().init());
+    }
     await _ensureTokenServiceReady();
     await loadUserData();
     return this;

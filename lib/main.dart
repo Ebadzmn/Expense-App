@@ -18,6 +18,7 @@ import 'package:your_expense/services/face_id_service.dart';
 import 'package:your_expense/services/push_notification_service.dart';
 import 'package:your_expense/services/token_service.dart';
 import 'package:your_expense/Analytics/income_service.dart';
+import 'package:your_expense/login/login_service.dart';
 
 // ... your existing imports
 
@@ -34,6 +35,7 @@ Future<void> main() async {
     Get.putAsync(() => TokenService().init()),
     Get.putAsync(() => ApiBaseService().init()),
     Get.putAsync(() => FaceIdService().init()),
+    Get.putAsync(() => LoginService().init()),
   ]);
 
   // Initialize services that depend on the core services

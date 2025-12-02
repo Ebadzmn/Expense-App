@@ -400,16 +400,33 @@ class MainHomeScreen extends StatelessWidget {
                       )),
                       SizedBox(height: screenHeight * 0.015),
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Obx(() => Text(
-                            '${'spent'.tr} \$${controller.spentAmount.value.toStringAsFixed(2)}/${controller.spentPercentage.value.clamp(0, 100).toStringAsFixed(0)}%',
-                            style: TextStyle(color: secondaryTextColor, fontWeight: FontWeight.w500, fontSize: screenWidth * 0.035),
-                          )),
-                          Obx(() => Text(
-                            '${'left'.tr} \$${controller.leftAmount.value.clamp(0, double.infinity).toStringAsFixed(2)}/${controller.leftPercentage.value.clamp(0, 100).toStringAsFixed(0)}%',
-                            style: TextStyle(color: secondaryTextColor, fontWeight: FontWeight.w500, fontSize: screenWidth * 0.035),
-                          )),
+                          Expanded(
+                            child: Obx(() => FittedBox(
+                              fit: BoxFit.scaleDown,
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                '${'spent'.tr} \$${controller.spentAmount.value.toStringAsFixed(2)}/${controller.spentPercentage.value.clamp(0, 100).toStringAsFixed(0)}%',
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(color: secondaryTextColor, fontWeight: FontWeight.w500, fontSize: screenWidth * 0.035),
+                              ),
+                            )),
+                          ),
+                          SizedBox(width: screenWidth * 0.02),
+                          Expanded(
+                            child: Obx(() => FittedBox(
+                              fit: BoxFit.scaleDown,
+                              alignment: Alignment.centerRight,
+                              child: Text(
+                                '${'left'.tr} \$${controller.leftAmount.value.clamp(0, double.infinity).toStringAsFixed(2)}/${controller.leftPercentage.value.clamp(0, 100).toStringAsFixed(0)}%',
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                textAlign: TextAlign.right,
+                                style: TextStyle(color: secondaryTextColor, fontWeight: FontWeight.w500, fontSize: screenWidth * 0.035),
+                              ),
+                            )),
+                          ),
                         ],
                       ),
                       SizedBox(height: screenHeight * 0.01),

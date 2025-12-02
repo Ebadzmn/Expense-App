@@ -4,6 +4,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../routes/app_routes.dart';
 import '../services/token_service.dart';
 import '../services/face_id_service.dart';
+import '../services/subscription_service.dart';
+import '../Settings/userprofile/profile_services.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -37,6 +39,17 @@ class _SplashScreenState extends State<SplashScreen> {
     final isAuthed = tokenService?.isAuthenticated == true;
 
     if (isAuthed) {
+      final sub = Get.isRegistered<SubscriptionService>()
+          ? Get.find<SubscriptionService>()
+          : Get.put(SubscriptionService(), permanent: true);
+      await sub.init();
+      try {
+        final profile = Get.isRegistered<ProfileService>()
+            ? Get.find<ProfileService>()
+            : Get.put(ProfileService(), permanent: true);
+        await profile.fetchUserProfile();
+      } catch (_) {}
+      await sub.reconcileWithServer();
       bool gateToFaceLogin = false;
       if (Get.isRegistered<FaceIdService>()) {
         final faceService = Get.find<FaceIdService>();
