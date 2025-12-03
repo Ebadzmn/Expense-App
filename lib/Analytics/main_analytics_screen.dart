@@ -43,24 +43,10 @@ class AnalyticsScreen extends StatelessWidget {
     return WillPopScope(
       onWillPop: () async {
         try {
-          final prev = Get.previousRoute;
-          int idx = 0;
-          switch (prev) {
-            case AppRoutes.mainHome:
-              idx = 0;
-              break;
-            case AppRoutes.comparison:
-              idx = 2;
-              break;
-            case AppRoutes.settings:
-              idx = 3;
-              break;
-            default:
-              idx = 0;
-          }
-          homeCtrl.setNavIndex(idx);
+          homeCtrl.setNavIndex(0);
         } catch (_) {}
-        return true;
+        Get.offAllNamed(AppRoutes.mainHome);
+        return false;
       },
       child: Scaffold(
       backgroundColor: backgroundColor,

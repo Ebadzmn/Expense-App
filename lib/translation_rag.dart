@@ -400,6 +400,7 @@ class AppTranslations extends Translations {
       'email_mismatch': 'Emails do not match!',
       // Edit Name Screen Translations
       'edit_name': 'Edit Name',
+      'edit_profile': 'Edit Profile',
       'name_appearance_info':
           'Your name will appear on your profile and transactions',
       'first_name': 'First Name',
@@ -451,6 +452,7 @@ class AppTranslations extends Translations {
       'full_name_subtitle': 'Change profile image, name or password',
       'email_address': 'Email Address',
       'change_password': 'Change Password',
+      'password_change_description': 'Update your password to keep your account secure. Enter your current password, choose a new one, and confirm.',
       'delete_account': 'Delete Account',
       'delete_account_title': 'Delete Account',
       'delete_account_message':
@@ -552,8 +554,9 @@ class AppTranslations extends Translations {
       'searching': 'Searching...',
       'search': 'Search',
       'no_deals_found': 'No deals found',
-      'try_different_product_or_increase_price': 'Try a different product name or increase max price.',
-      'better_deals_found_count': 'Better Deals Found ({count})',
+      'try_different_product_or_increase_price':
+          'Try a different product name or increase max price.',
+      'better_deals_found_count': 'Better Deals Found (@count)',
       'unknown_site': 'Unknown Site',
       'save_percent': 'Save {percent}%',
       'best_deal': 'Best Deal',
@@ -567,10 +570,13 @@ class AppTranslations extends Translations {
       'enter_product_category': 'Enter product category',
       'savings_preview': 'Savings Preview',
       'you_save_label': 'You Save:',
-      'please_enter_valid_original_price': 'Please enter a valid original price',
-      'please_enter_valid_price_with_tool': 'Please enter a valid price with tool',
+      'please_enter_valid_original_price':
+          'Please enter a valid original price',
+      'please_enter_valid_price_with_tool':
+          'Please enter a valid price with tool',
       'please_enter_product_category': 'Please enter a product category',
-      'savings_record_created_successfully': 'Savings record created successfully!',
+      'savings_record_created_successfully':
+          'Savings record created successfully!',
       'failed_to_create_savings_record': 'Failed to create savings record',
       'purchase_confirm_show_graph': 'Purchase Confirm and show graph',
 
@@ -603,11 +609,13 @@ class AppTranslations extends Translations {
       'source': 'Source',
       'edit_expense': 'Edit Expense',
       'delete_expense': 'Delete Expense',
-      'delete_expense_confirmation': 'Are you sure you want to delete this expense?',
+      'delete_expense_confirmation':
+          'Are you sure you want to delete this expense?',
       'expense_updated_successfully': 'Expense updated successfully',
       'expense_deleted_successfully': 'Expense deleted successfully',
       'delete_income': 'Delete Income',
-      'delete_income_confirmation': 'Are you sure you want to delete this income?',
+      'delete_income_confirmation':
+          'Are you sure you want to delete this income?',
       'income_updated_successfully': 'Income updated successfully',
       'income_deleted_successfully': 'Income deleted successfully',
       'updated': 'Updated',
@@ -1303,13 +1311,15 @@ class AppTranslations extends Translations {
       'searching': 'A procurar...',
       'search': 'Pesquisar',
       'no_deals_found': 'Nenhuma oferta encontrada',
-      'try_different_product_or_increase_price': 'Tente um nome diferente ou aumente o preço máximo.',
-      'better_deals_found_count': 'Melhores ofertas encontradas ({count})',
+      'try_different_product_or_increase_price':
+          'Tente um nome diferente ou aumente o preço máximo.',
+      'better_deals_found_count': 'Melhores ofertas encontradas (@count)',
       'unknown_site': 'Site desconhecido',
       'save_percent': 'Poupe {percent}%',
       'best_deal': 'Melhor oferta',
       'no_link_available_to_copy': 'Não há link disponível para copiar',
-      'product_link_copied': 'Link do produto de {siteName} copiado para a área de transferência',
+      'product_link_copied':
+          'Link do produto de {siteName} copiado para a área de transferência',
       'failed_to_copy_link': 'Falha ao copiar o link: {error}',
       'compare_with_site': 'Comparar {site}',
       'original_price_max': 'Preço original (máx.)',
@@ -1318,10 +1328,14 @@ class AppTranslations extends Translations {
       'enter_product_category': 'Insira a categoria do produto',
       'savings_preview': 'Pré-visualização de poupança',
       'you_save_label': 'Você poupa:',
-      'please_enter_valid_original_price': 'Por favor insira um preço original válido',
-      'please_enter_valid_price_with_tool': 'Por favor insira um preço válido com ferramenta',
-      'please_enter_product_category': 'Por favor insira uma categoria de produto',
-      'savings_record_created_successfully': 'Registo de poupança criado com sucesso!',
+      'please_enter_valid_original_price':
+          'Por favor insira um preço original válido',
+      'please_enter_valid_price_with_tool':
+          'Por favor insira um preço válido com ferramenta',
+      'please_enter_product_category':
+          'Por favor insira uma categoria de produto',
+      'savings_record_created_successfully':
+          'Registo de poupança criado com sucesso!',
       'failed_to_create_savings_record': 'Falha ao criar registo de poupança',
       'purchase_confirm_show_graph': 'Confirmar compra e mostrar gráfico',
       'enter_product_name': 'Ingrese el nombre del producto',
@@ -1331,13 +1345,15 @@ class AppTranslations extends Translations {
       'searching': 'Buscando...',
       'search': 'Buscar',
       'no_deals_found': 'No se encontraron ofertas',
-      'try_different_product_or_increase_price': 'Pruebe un nombre diferente o aumente el precio máximo.',
-      'better_deals_found_count': 'Mejores ofertas encontradas ({count})',
+      'try_different_product_or_increase_price':
+          'Pruebe un nombre diferente o aumente el precio máximo.',
+      'better_deals_found_count': 'Mejores ofertas encontradas (@count)',
       'unknown_site': 'Sitio desconocido',
       'save_percent': 'Ahorra {percent}%',
       'best_deal': 'Mejor oferta',
       'no_link_available_to_copy': 'No hay enlace disponible para copiar',
-      'product_link_copied': 'Enlace del producto de {siteName} copiado al portapapeles',
+      'product_link_copied':
+          'Enlace del producto de {siteName} copiado al portapapeles',
       'failed_to_copy_link': 'Error al copiar enlace: {error}',
       'compare_with_site': 'Comparar {site}',
       'original_price_max': 'Precio original (máx.)',
@@ -1346,10 +1362,14 @@ class AppTranslations extends Translations {
       'enter_product_category': 'Ingrese la categoría del producto',
       'savings_preview': 'Vista previa del ahorro',
       'you_save_label': 'Ahorras:',
-      'please_enter_valid_original_price': 'Por favor ingrese un precio original válido',
-      'please_enter_valid_price_with_tool': 'Por favor ingrese un precio válido con herramienta',
-      'please_enter_product_category': 'Por favor ingrese una categoría de producto',
-      'savings_record_created_successfully': '¡Registro de ahorro creado con éxito!',
+      'please_enter_valid_original_price':
+          'Por favor ingrese un precio original válido',
+      'please_enter_valid_price_with_tool':
+          'Por favor ingrese un precio válido con herramienta',
+      'please_enter_product_category':
+          'Por favor ingrese una categoría de producto',
+      'savings_record_created_successfully':
+          '¡Registro de ahorro creado con éxito!',
       'failed_to_create_savings_record': 'Error al crear el registro de ahorro',
       'purchase_confirm_show_graph': 'Confirmar compra y mostrar gráfico',
       //analysis
@@ -1903,7 +1923,7 @@ class AppTranslations extends Translations {
       'monthly_plan': 'Piano Mensile',
       'monthly_price': '3,99€/mese',
       'yearly_plan': 'Piano Annuale',
-      'yearly_price': '34,99€/anno',
+      'yearly_price': '€/anno',
       'free_trial': '7 Giorni di Prova Gratuita',
       'save_percentage': 'Risparmia 27%',
       'recommended': 'Consigliato',
@@ -2128,13 +2148,15 @@ class AppTranslations extends Translations {
       'searching': 'Ricerca in corso...',
       'search': 'Cerca',
       'no_deals_found': 'Nessuna offerta trovata',
-      'try_different_product_or_increase_price': 'Prova un nome diverso o aumenta il prezzo massimo.',
-      'better_deals_found_count': 'Migliori offerte trovate ({count})',
+      'try_different_product_or_increase_price':
+          'Prova un nome diverso o aumenta il prezzo massimo.',
+      'better_deals_found_count': 'Migliori offerte trovate (@count)',
       'unknown_site': 'Sito sconosciuto',
       'save_percent': 'Risparmia {percent}%',
       'best_deal': 'Migliore offerta',
       'no_link_available_to_copy': 'Nessun link disponibile da copiare',
-      'product_link_copied': 'Link del prodotto da {siteName} copiato negli appunti',
+      'product_link_copied':
+          'Link del prodotto da {siteName} copiato negli appunti',
       'failed_to_copy_link': 'Impossibile copiare il link: {error}',
       'compare_with_site': 'Confronta {site}',
       'original_price_max': 'Prezzo originale (max)',
@@ -2143,11 +2165,16 @@ class AppTranslations extends Translations {
       'enter_product_category': 'Inserisci la categoria del prodotto',
       'savings_preview': 'Anteprima risparmio',
       'you_save_label': 'Risparmi:',
-      'please_enter_valid_original_price': 'Per favore inserisci un prezzo originale valido',
-      'please_enter_valid_price_with_tool': 'Per favore inserisci un prezzo valido con strumento',
-      'please_enter_product_category': 'Per favore inserisci una categoria prodotto',
-      'savings_record_created_successfully': 'Record di risparmio creato con successo!',
-      'failed_to_create_savings_record': 'Impossibile creare il record di risparmio',
+      'please_enter_valid_original_price':
+          'Per favore inserisci un prezzo originale valido',
+      'please_enter_valid_price_with_tool':
+          'Per favore inserisci un prezzo valido con strumento',
+      'please_enter_product_category':
+          'Per favore inserisci una categoria prodotto',
+      'savings_record_created_successfully':
+          'Record di risparmio creato con successo!',
+      'failed_to_create_savings_record':
+          'Impossibile creare il record di risparmio',
       'purchase_confirm_show_graph': 'Conferma acquisto e mostra grafico',
       //analysis
       'analytics': 'Analisi',
@@ -3592,13 +3619,15 @@ class AppTranslations extends Translations {
       'searching': 'Wyszukiwanie...',
       'search': 'Szukaj',
       'no_deals_found': 'Nie znaleziono ofert',
-      'try_different_product_or_increase_price': 'Spróbuj innej nazwy lub zwiększ cenę maksymalną.',
-      'better_deals_found_count': 'Znaleziono lepsze oferty ({count})',
+      'try_different_product_or_increase_price':
+          'Spróbuj innej nazwy lub zwiększ cenę maksymalną.',
+      'better_deals_found_count': 'Znaleziono lepsze oferty (@count)',
       'unknown_site': 'Nieznana strona',
       'save_percent': 'Oszczędź {percent}%',
       'best_deal': 'Najlepsza oferta',
       'no_link_available_to_copy': 'Brak linku do skopiowania',
-      'product_link_copied': 'Link do produktu z {siteName} skopiowany do schowka',
+      'product_link_copied':
+          'Link do produktu z {siteName} skopiowany do schowka',
       'failed_to_copy_link': 'Nie udało się skopiować linku: {error}',
       'compare_with_site': 'Porównaj {site}',
       'original_price_max': 'Cena oryginalna (maks.)',
@@ -3607,11 +3636,15 @@ class AppTranslations extends Translations {
       'enter_product_category': 'Wprowadź kategorię produktu',
       'savings_preview': 'Podgląd oszczędności',
       'you_save_label': 'Oszczędzasz:',
-      'please_enter_valid_original_price': 'Proszę wprowadzić prawidłową cenę oryginalną',
-      'please_enter_valid_price_with_tool': 'Proszę wprowadzić prawidłową cenę z narzędziem',
+      'please_enter_valid_original_price':
+          'Proszę wprowadzić prawidłową cenę oryginalną',
+      'please_enter_valid_price_with_tool':
+          'Proszę wprowadzić prawidłową cenę z narzędziem',
       'please_enter_product_category': 'Proszę wprowadzić kategorię produktu',
-      'savings_record_created_successfully': 'Rekord oszczędności utworzony pomyślnie!',
-      'failed_to_create_savings_record': 'Nie udało się utworzyć rekordu oszczędności',
+      'savings_record_created_successfully':
+          'Rekord oszczędności utworzony pomyślnie!',
+      'failed_to_create_savings_record':
+          'Nie udało się utworzyć rekordu oszczędności',
       'purchase_confirm_show_graph': 'Potwierdź zakup i pokaż wykres',
       //analysis
       'analytics': 'Analiza',
@@ -4335,13 +4368,15 @@ class AppTranslations extends Translations {
       'searching': 'Recherche...',
       'search': 'Rechercher',
       'no_deals_found': 'Aucune offre trouvée',
-      'try_different_product_or_increase_price': 'Essayez un autre nom ou augmentez le prix maximum.',
-      'better_deals_found_count': 'Meilleures offres trouvées ({count})',
+      'try_different_product_or_increase_price':
+          'Essayez un autre nom ou augmentez le prix maximum.',
+      'better_deals_found_count': 'Meilleures offres trouvées (@count)',
       'unknown_site': 'Site inconnu',
       'save_percent': 'Économisez {percent}%',
       'best_deal': 'Meilleure offre',
       'no_link_available_to_copy': 'Aucun lien disponible à copier',
-      'product_link_copied': 'Lien du produit de {siteName} copié dans le presse-papiers',
+      'product_link_copied':
+          'Lien du produit de {siteName} copié dans le presse-papiers',
       'failed_to_copy_link': 'Échec de la copie du lien : {error}',
       'compare_with_site': 'Comparer {site}',
       'original_price_max': 'Prix original (max)',
@@ -4350,12 +4385,18 @@ class AppTranslations extends Translations {
       'enter_product_category': 'Saisir la catégorie du produit',
       'savings_preview': 'Aperçu des économies',
       'you_save_label': 'Vous économisez :',
-      'please_enter_valid_original_price': 'Veuillez saisir un prix original valide',
-      'please_enter_valid_price_with_tool': "Veuillez saisir un prix valide avec l'outil",
-      'please_enter_product_category': 'Veuillez saisir une catégorie de produit',
-      'savings_record_created_successfully': 'Enregistrement des économies créé avec succès !',
-      'failed_to_create_savings_record': "Échec de la création de l'enregistrement des économies",
-      'purchase_confirm_show_graph': "Confirmer l'achat et afficher le graphique",
+      'please_enter_valid_original_price':
+          'Veuillez saisir un prix original valide',
+      'please_enter_valid_price_with_tool':
+          "Veuillez saisir un prix valide avec l'outil",
+      'please_enter_product_category':
+          'Veuillez saisir une catégorie de produit',
+      'savings_record_created_successfully':
+          'Enregistrement des économies créé avec succès !',
+      'failed_to_create_savings_record':
+          "Échec de la création de l'enregistrement des économies",
+      'purchase_confirm_show_graph':
+          "Confirmer l'achat et afficher le graphique",
       //analysis
       'analytics': 'Analytique',
       'pie_chart': 'Graphique Circulaire',
@@ -4576,7 +4617,8 @@ class AppTranslations extends Translations {
       'copy_link': 'লিঙ্ক কপি করুন',
       'compare_save': 'তুলনা করুন ও সাশ্রয় করুন',
       'find_better_deals': 'আরও ভালো ডিল খুঁজুন',
-      'find_better_deals_desc': 'আপনি যা কিনেছেন লিখুন। আমরা কম দামে খুঁজে দেব।',
+      'find_better_deals_desc':
+          'আপনি যা কিনেছেন লিখুন। আমরা কম দামে খুঁজে দেব।',
       'product_name': 'পণ্যের নাম',
       'enter_product_name': 'পণ্যের নাম লিখুন',
       'max_price': 'সর্বোচ্চ দাম',
@@ -4585,7 +4627,8 @@ class AppTranslations extends Translations {
       'searching': 'খোঁজা হচ্ছে...',
       'search': 'অনুসন্ধান',
       'no_deals_found': 'কোনো ডিল পাওয়া যায়নি',
-      'try_different_product_or_increase_price': 'ভিন্ন নাম দিন বা সর্বোচ্চ দাম বাড়ান।',
+      'try_different_product_or_increase_price':
+          'ভিন্ন নাম দিন বা সর্বোচ্চ দাম বাড়ান।',
       'better_deals_found_count': 'ভালো ডিল পাওয়া গেছে ({count})',
       'unknown_site': 'অজানা সাইট',
       'save_percent': '{percent}% সাশ্রয়',
@@ -4625,6 +4668,8 @@ class AppTranslations extends Translations {
       'invalid_category': 'অবৈধ বিভাগ',
       'please_select_category': 'একটি বিভাগ নির্বাচন করুন',
       'save_action': 'সংরক্ষণ করুন',
+      'edit_profile': 'প্রোফাইল সম্পাদনা',
+      'password_change_description': 'আপনার অ্যাকাউন্ট সুরক্ষিত রাখতে পাসওয়ার্ড পরিবর্তন করুন। বর্তমান পাসওয়ার্ড দিন, নতুনটি লিখে নিশ্চিত করুন।',
     },
     'tr_TR': {
       //rate and help
@@ -5127,8 +5172,9 @@ class AppTranslations extends Translations {
       'searching': 'Aranıyor...',
       'search': 'Ara',
       'no_deals_found': 'Hiç teklif bulunamadı',
-      'try_different_product_or_increase_price': 'Farklı bir ad deneyin veya maksimum fiyatı artırın.',
-      'better_deals_found_count': 'Daha iyi teklifler bulundu ({count})',
+      'try_different_product_or_increase_price':
+          'Farklı bir ad deneyin veya maksimum fiyatı artırın.',
+      'better_deals_found_count': 'Daha iyi teklifler bulundu (@count)',
       'unknown_site': 'Bilinmeyen site',
       'save_percent': '{percent}% tasarruf',
       'best_deal': 'En iyi teklif',
@@ -5142,10 +5188,13 @@ class AppTranslations extends Translations {
       'enter_product_category': 'Ürün kategorisi girin',
       'savings_preview': 'Tasarruf önizlemesi',
       'you_save_label': 'Tasarrufunuz:',
-      'please_enter_valid_original_price': 'Lütfen geçerli bir orijinal fiyat girin',
-      'please_enter_valid_price_with_tool': 'Lütfen araç ile geçerli bir fiyat girin',
+      'please_enter_valid_original_price':
+          'Lütfen geçerli bir orijinal fiyat girin',
+      'please_enter_valid_price_with_tool':
+          'Lütfen araç ile geçerli bir fiyat girin',
       'please_enter_product_category': 'Lütfen bir ürün kategorisi girin',
-      'savings_record_created_successfully': 'Tasarruf kaydı başarıyla oluşturuldu!',
+      'savings_record_created_successfully':
+          'Tasarruf kaydı başarıyla oluşturuldu!',
       'failed_to_create_savings_record': 'Tasarruf kaydı oluşturulamadı',
       'purchase_confirm_show_graph': 'Satın almayı onayla ve grafiği göster',
       //

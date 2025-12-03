@@ -79,13 +79,6 @@ class ExpenseListScreen extends StatelessWidget {
           ),
         );
       }),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Navigate to add expense screen
-          // Get.to(() => AddExpenseScreen());
-        },
-        child: Icon(Icons.add),
-      ),
     );
   }
 

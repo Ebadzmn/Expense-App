@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter/services.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../Settings/appearance/ThemeController.dart';
 
@@ -201,7 +202,7 @@ class _ComparisonPageScreenState extends State<ComparisonPageScreen> {
                           horizontal: 16,
                           vertical: 14,
                         ),
-                  hintText: 'enter_product_name'.tr,
+                        hintText: 'enter_product_name'.tr,
                         hintStyle: TextStyle(
                           color: isDarkMode ? Colors.grey[500] : Colors.grey,
                         ),
@@ -211,8 +212,8 @@ class _ComparisonPageScreenState extends State<ComparisonPageScreen> {
                   SizedBox(height: screenHeight * 0.02),
 
                   // Max Price Field
-            Text(
-              'max_price'.tr,
+                  Text(
+                    'max_price'.tr,
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
@@ -275,9 +276,9 @@ class _ComparisonPageScreenState extends State<ComparisonPageScreen> {
                                   return;
                                 }
                                 if (productNameController.text.isEmpty) {
-                    Get.snackbar(
-                      'error'.tr,
-                      'please_enter_product_name'.tr,
+                                  Get.snackbar(
+                                    'error'.tr,
+                                    'please_enter_product_name'.tr,
                                     backgroundColor: Colors.red,
                                     colorText: Colors.white,
                                   );
@@ -287,10 +288,10 @@ class _ComparisonPageScreenState extends State<ComparisonPageScreen> {
                                 final price =
                                     double.tryParse(maxPriceController.text) ??
                                     0.0;
-                  if (price <= 0) {
-                    Get.snackbar(
-                      'error'.tr,
-                      'please_enter_valid_price'.tr,
+                                if (price <= 0) {
+                                  Get.snackbar(
+                                    'error'.tr,
+                                    'please_enter_valid_price'.tr,
                                     backgroundColor: Colors.red,
                                     colorText: Colors.white,
                                   );
@@ -324,16 +325,16 @@ class _ComparisonPageScreenState extends State<ComparisonPageScreen> {
                               )
                             : Icon(Icons.search, color: Colors.white, size: 20),
                         label: comparisonCtrl.isLoading.value
-                    ? Text(
-                  'searching'.tr,
+                            ? Text(
+                                'searching'.tr,
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
                                 ),
                               )
-                    : Text(
-                  'search'.tr,
+                            : Text(
+                                'search'.tr,
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 16,
@@ -348,7 +349,7 @@ class _ComparisonPageScreenState extends State<ComparisonPageScreen> {
                   // Error Message
                   Obx(() {
                     if (comparisonCtrl.errorMessage.isNotEmpty) {
-                return Container(
+                      return Container(
                         width: double.infinity,
                         padding: EdgeInsets.all(16),
                         decoration: BoxDecoration(
@@ -399,8 +400,8 @@ class _ComparisonPageScreenState extends State<ComparisonPageScreen> {
                                   size: 20,
                                 ),
                                 SizedBox(width: 8),
-                          Text(
-                            'no_deals_found'.tr,
+                                Text(
+                                  'no_deals_found'.tr,
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w600,
@@ -412,8 +413,8 @@ class _ComparisonPageScreenState extends State<ComparisonPageScreen> {
                               ],
                             ),
                             SizedBox(height: 8),
-                      Text(
-                        'try_different_product_or_increase_price'.tr,
+                            Text(
+                              'try_different_product_or_increase_price'.tr,
                               style: TextStyle(
                                 fontSize: 14,
                                 color: isDarkMode
@@ -432,8 +433,10 @@ class _ComparisonPageScreenState extends State<ComparisonPageScreen> {
                         SizedBox(height: screenHeight * 0.03),
 
                         // Better Deals Found Section with Count
-                  Text(
-                    'better_deals_found_count'.trParams({'count': comparisonCtrl.deals.length.toString()}),
+                        Text(
+                          'better_deals_found_count'.trParams({
+                            'count': comparisonCtrl.deals.length.toString(),
+                          }),
                           style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
@@ -600,15 +603,18 @@ Widget _buildDealCard(
   final url = deal['url'] ?? '';
   final dealType = deal['type'] ?? 'generic';
 
-  // Use the actual searched product name
-  String displayTitle = searchTerm;
+  String displayTitle = (title is String && title.trim().isNotEmpty)
+      ? title.toString().trim()
+      : searchTerm;
 
-  // Calculate percentage savings
+  // Calculate percentage savings and amount saved
   double savingsPercentage = 0.0;
+  double savingsAmount = 0.0;
   bool hasSavings = false;
 
   if (maxPrice > 0 && price > 0 && price < maxPrice) {
-    savingsPercentage = ((maxPrice - price) / maxPrice) * 100;
+    savingsAmount = maxPrice - price;
+    savingsPercentage = (savingsAmount / maxPrice) * 100;
     hasSavings = true;
   }
 
@@ -753,9 +759,7 @@ Widget _buildDealCard(
                     ),
                   ),
 
-                  // Savings Badge - Different logic for generic vs specific
-                  if (dealType == 'specific' && hasSavings)
-                    // For specific deals with savings, show percentage
+                  if (hasSavings)
                     Container(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 12,
@@ -766,7 +770,7 @@ Widget _buildDealCard(
                         borderRadius: BorderRadius.circular(16),
                       ),
                       child: Text(
-                        'save_percent'.trParams({'percent': savingsPercentage.toStringAsFixed(0)}),
+                        'Save \$${savingsAmount.toStringAsFixed(2)} (${savingsPercentage.toStringAsFixed(0)}%)',
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 12,
@@ -774,8 +778,7 @@ Widget _buildDealCard(
                         ),
                       ),
                     )
-                  else if (dealType == 'specific')
-                    // For specific deals without savings, show price badge
+                  else if (price > 0)
                     Container(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 12,
@@ -795,7 +798,6 @@ Widget _buildDealCard(
                       ),
                     )
                   else
-                    // For generic deals, always show "Best Deal"
                     Container(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 12,
@@ -899,7 +901,7 @@ Widget _buildDealCard(
 }
 
 // Copy to clipboard function
-void _copyToClipboard(String text, String siteName) {
+Future<void> _copyToClipboard(String text, String siteName) async {
   if (text.isEmpty) {
     Get.snackbar(
       'error'.tr,
@@ -911,7 +913,7 @@ void _copyToClipboard(String text, String siteName) {
   }
 
   try {
-    Clipboard.setData(ClipboardData(text: text));
+    await Clipboard.setData(ClipboardData(text: text));
     Get.snackbar(
       'success'.tr,
       'product_link_copied'.trParams({'siteName': siteName}),
@@ -920,6 +922,11 @@ void _copyToClipboard(String text, String siteName) {
       duration: Duration(seconds: 2),
     );
     print('📋 Copied to clipboard: $text');
+
+    final uri = Uri.tryParse(text.trim());
+    if (uri != null) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    }
   } catch (e) {
     print('❌ Error copying to clipboard: $e');
     Get.snackbar(
@@ -1044,7 +1051,9 @@ void _showCompareDialog(
                     children: [
                       // Header
                       Text(
-                        'compare_with_site'.trParams({'site': deal['siteName']}),
+                        'compare_with_site'.trParams({
+                          'site': deal['siteName'],
+                        }),
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -1315,7 +1324,8 @@ void _showCompareDialog(
                                       Navigator.of(context).pop();
                                       Get.snackbar(
                                         'success'.tr,
-                                        'savings_record_created_successfully'.tr,
+                                        'savings_record_created_successfully'
+                                            .tr,
                                         backgroundColor: Colors.green,
                                         colorText: Colors.white,
                                       );

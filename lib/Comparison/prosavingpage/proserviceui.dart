@@ -228,6 +228,20 @@ class ProSavingsPage extends StatelessWidget {
                           const SizedBox(height: 8),
                           _buildSummaryRow('totalSavingAmount'.tr, '\$${controller.totalSavings.value.toStringAsFixed(2)}',
                               const Color(0xFF88C999), isDarkMode),
+                          const SizedBox(height: 8),
+                          Builder(builder: (_) {
+                            final init = controller.totalInitial.value;
+                            final sav = controller.totalSavings.value;
+                            final pct = init > 0 ? (sav / init * 100) : 0.0;
+                            return Text(
+                              'save_percent'.trParams({'percent': pct.toStringAsFixed(0)}),
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: const Color(0xFF88C999),
+                              ),
+                            );
+                          }),
                         ],
                       )),
                 ),

@@ -70,10 +70,11 @@ class SubscriptionService extends GetxService {
 
   // Computed helpers for gating
   bool get isExpiredNow {
+    // If not marked pro, treat as expired
+    if (!isPro.value) return true;
+    // Lifetime pro: no expiry means not expired
     final exp = expiryDate.value;
-    // Safety: if expiry is unknown (null), do NOT assume lifetime.
-    // This prevents accidental premium grant when server doesn't provide daysLeft.
-    if (exp == null) return true;
+    if (exp == null) return false;
     return exp.isBefore(DateTime.now());
   }
 
@@ -147,18 +148,21 @@ class SubscriptionService extends GetxService {
           if (daysLeft != null) {
             // If daysLeft <= 0, treat as expired immediately
             serverExpiry = DateTime.now().add(Duration(days: daysLeft));
+          } else {
+            // Missing daysLeft but premium true => treat as lifetime
+            // Keep expiry null to indicate lifetime pro
+            serverExpiry = null;
           }
         }
       }
 
-      // Safety: only mark pro if server explicitly reports daysLeft > 0
-      // to avoid lifetime (null expiry) being granted by mistake.
-      final bool confirmedPro = serverPro && (daysLeft != null) && (daysLeft! > 0);
+      // Consider premium true; if daysLeft is missing, treat as lifetime pro
+      final bool confirmedPro = serverPro && ((daysLeft == null) || (daysLeft! > 0));
       // Persist server truth (confirmed entitlement only) and enforce expiry locally
       await setSubscriptionStatus(pro: confirmedPro, expiry: serverExpiry);
       // Update raw server fields for UI display
       serverIsPremium.value = serverPro;
-      serverDaysLeft.value = (daysLeft != null && daysLeft >= 0) ? daysLeft : 0;
+      serverDaysLeft.value = (daysLeft != null && daysLeft >= 0) ? daysLeft : null;
       await _enforceExpiryPolicyOnLaunch();
 
       // Debug snapshot

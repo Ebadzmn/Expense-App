@@ -3,6 +3,8 @@ import 'package:get/get.dart';
  // Import your ThemeController
 import '../appearance/ThemeController.dart';
 import 'language_controller.dart';
+import '../../routes/app_routes.dart';
+import '../../home/home_controller.dart';
 
 class LanguageSettingsScreen extends StatelessWidget {
   const LanguageSettingsScreen({super.key});
@@ -128,7 +130,11 @@ class LanguageSettingsScreen extends StatelessWidget {
             height: 50,
             child: ElevatedButton(
               onPressed: () {
-                Get.back();
+                try {
+                  final homeCtrl = Get.find<HomeController>();
+                  homeCtrl.setNavIndex(0);
+                } catch (_) {}
+                Get.offAllNamed(AppRoutes.mainHome);
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF007AFF),

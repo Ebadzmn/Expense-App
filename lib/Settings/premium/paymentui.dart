@@ -197,10 +197,12 @@ class _PremiumPlansScreenState extends State<PremiumPlansScreen> {
 
                           final displayTitle =
                               (monthly?.title?.isNotEmpty == true)
-                              ? monthly!.title
-                              : 'monthly_plan'.tr;
+                                  ? monthly!.title
+                                  : 'monthly_plan'.tr;
                           final displayPrice =
-                              monthly?.price ?? 'monthly_price'.tr;
+                              (monthly != null && (monthly.price).isNotEmpty)
+                                  ? monthly.price
+                                  : '';
 
                           return GestureDetector(
                             onTap: () {
@@ -244,10 +246,12 @@ class _PremiumPlansScreenState extends State<PremiumPlansScreen> {
 
                           final displayTitle =
                               (yearly?.title?.isNotEmpty == true)
-                              ? yearly!.title
-                              : 'yearly_plan'.tr;
+                                  ? yearly!.title
+                                  : 'yearly_plan'.tr;
                           final displayPrice =
-                              yearly?.price ?? 'yearly_price'.tr;
+                              (yearly != null && (yearly.price).isNotEmpty)
+                                  ? yearly.price
+                                  : '';
 
                           return GestureDetector(
                             onTap: () {
@@ -712,16 +716,17 @@ class _PremiumPlansScreenState extends State<PremiumPlansScreen> {
                         ),
                       ),
                       SizedBox(height: screenHeight * 0.005),
-                      Text(
-                        price,
-                        style: TextStyle(
-                          fontSize: screenWidth * 0.035,
-                          color: isDarkMode
-                              ? Colors.grey[400]
-                              : const Color(0xFF6B7280),
-                          fontWeight: FontWeight.w400,
+                      if (price.isNotEmpty)
+                        Text(
+                          price,
+                          style: TextStyle(
+                            fontSize: screenWidth * 0.035,
+                            color: isDarkMode
+                                ? Colors.grey[400]
+                                : const Color(0xFF6B7280),
+                            fontWeight: FontWeight.w400,
+                          ),
                         ),
-                      ),
                     ],
                   ),
                 ),
