@@ -1,3 +1,6 @@
+import 'package:get/get.dart';
+import '../services/currency_service.dart';
+
 class ExpenseItem {
   final String id;
   final String userId;
@@ -41,7 +44,9 @@ class ExpenseItem {
       userId: json['userId']?.toString() ?? '',
       amount: parsedAmount,
       // Prefer backend 'source' first, then 'categoryName', then 'category'
-      category: (json['source'] ?? json['categoryName'] ?? json['category'] ?? '').toString(),
+      category:
+          (json['source'] ?? json['categoryName'] ?? json['category'] ?? '')
+              .toString(),
       note: json['note']?.toString() ?? '',
       createdAt: parsedDate,
     );
@@ -63,7 +68,13 @@ class ExpenseItem {
   }
 
   String get formattedAmount {
-    return '\$${amount.toStringAsFixed(2)}';
+    try {
+      final currencyService = Get.find<CurrencyService>();
+      return currencyService.formatAmount(amount);
+    } catch (e) {
+      // Fallback if service not available
+      return '\$${amount.toStringAsFixed(2)}';
+    }
   }
 
   @override

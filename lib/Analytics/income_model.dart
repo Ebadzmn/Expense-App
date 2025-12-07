@@ -20,7 +20,11 @@ class Income {
       id: json['_id'] ?? '',
       userId: json['userId'] ?? '',
       source: json['source'] ?? '',
-      amount: (json['amount'] is int ? json['amount'].toDouble() : json['amount']) ?? 0.0,
+      amount:
+          (json['amount'] is int
+              ? json['amount'].toDouble()
+              : json['amount']) ??
+          0.0,
       date: DateTime.parse(json['date'] ?? DateTime.now().toIso8601String()),
       month: json['month'] ?? '',
     );
@@ -66,9 +70,11 @@ class IncomeResponse {
   factory IncomeResponse.fromJson(Map<String, dynamic> json) {
     return IncomeResponse(
       success: json['success'] ?? false,
-      data: (json['data'] as List<dynamic>?)
-          ?.map((item) => Income.fromJson(item))
-          .toList() ?? [],
+      data:
+          (json['data'] as List<dynamic>?)
+              ?.map((item) => Income.fromJson(item))
+              .toList() ??
+          [],
       pagination: Pagination.fromJson(json['pagination'] ?? {}),
     );
   }

@@ -14,6 +14,7 @@ import 'package:your_expense/config/app_config.dart';
 import 'package:your_expense/firebase_options.dart';
 import 'package:your_expense/services/api_base_service.dart';
 import 'package:your_expense/services/config_service.dart';
+import 'package:your_expense/services/currency_service.dart';
 import 'package:your_expense/services/face_id_service.dart';
 import 'package:your_expense/services/push_notification_service.dart';
 import 'package:your_expense/services/token_service.dart';
@@ -36,6 +37,7 @@ Future<void> main() async {
     Get.putAsync(() => ApiBaseService().init()),
     Get.putAsync(() => FaceIdService().init()),
     Get.putAsync(() => LoginService().init()),
+    Get.putAsync(() => CurrencyService().init()),
   ]);
 
   // Initialize services that depend on the core services

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 import 'appearance/ThemeController.dart';
- // Import your ThemeController
+import '../services/currency_service.dart';
 
 class CurrencyExchangeScreen extends StatelessWidget {
   const CurrencyExchangeScreen({super.key});
@@ -10,171 +9,261 @@ class CurrencyExchangeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final themeController = Get.find<ThemeController>();
-    final double screenWidth = MediaQuery.of(context).size.width;
-    final double screenHeight = MediaQuery.of(context).size.height;
-
-    // Controller to manage selected currency
     final controller = Get.put(CurrencyController());
 
-    return Obx(() => Scaffold(
-      backgroundColor: themeController.isDarkModeActive
-          ? const Color(0xFF121212)
-          : Colors.white,
-      appBar: AppBar(
+    return Obx(
+      () => Scaffold(
         backgroundColor: themeController.isDarkModeActive
-            ? const Color(0xFF1E1E1E)
-            : Colors.white,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back_ios,
-            color: themeController.isDarkModeActive ? Colors.white : Colors.black,
-            size: screenWidth * 0.05,
+            ? const Color(0xFF121212)
+            : const Color(0xFFF2F2F7),
+        appBar: AppBar(
+          backgroundColor: themeController.isDarkModeActive
+              ? const Color(0xFF1E1E1E)
+              : const Color(0xFFF2F2F7),
+          elevation: 0,
+          leading: IconButton(
+            icon: Icon(
+              Icons.arrow_back_ios,
+              color: themeController.isDarkModeActive
+                  ? Colors.white
+                  : Colors.black,
+              size: 16,
+            ),
+            onPressed: () => Get.back(),
           ),
-          onPressed: () => Get.back(),
-        ),
-        title: Text(
-          'currency_exchange'.tr,
-          style: TextStyle(
-            color: themeController.isDarkModeActive ? Colors.white : Colors.black,
-            fontSize: screenWidth * 0.045,
-            fontWeight: FontWeight.w600,
+          title: Text(
+            'currency_exchange'.tr,
+            style: TextStyle(
+              color: themeController.isDarkModeActive
+                  ? Colors.white
+                  : Colors.black,
+              fontSize: 17,
+              fontWeight: FontWeight.w600,
+            ),
           ),
+          centerTitle: true,
         ),
-        centerTitle: true,
-      ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        body: Column(
           children: [
-            SizedBox(height: screenHeight * 0.03),
-            Text(
-              'choose_currency_desc'.tr,
-              style: TextStyle(
-                fontSize: screenWidth * 0.035,
-                color: themeController.isDarkModeActive ? Colors.grey[400] : Colors.grey[700],
-                fontWeight: FontWeight.w500,
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Text(
+                'choose_currency_desc'.tr,
+                style: TextStyle(
+                  fontSize: 14,
+                  color: themeController.isDarkModeActive
+                      ? Colors.grey[400]
+                      : const Color(0xFF8E8E93),
+                  height: 1.4,
+                ),
+                textAlign: TextAlign.center,
               ),
             ),
-            SizedBox(height: screenHeight * 0.02),
-
-            // Currencies List
-            ListView.builder(
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              itemCount: controller.currencies.length,
-              itemBuilder: (context, index) {
-                return Container(
-                  decoration: BoxDecoration(
-                    border: Border(
-                      bottom: BorderSide(
-                        color: themeController.isDarkModeActive
-                            ? const Color(0xFF333333)
-                            : const Color(0xFFEEEEEE),
-                        width: 1,
-                      ),
-                    ),
+            const SizedBox(height: 8),
+            Expanded(
+              child: Container(
+                margin: const EdgeInsets.symmetric(horizontal: 16),
+                decoration: BoxDecoration(
+                  color: themeController.isDarkModeActive
+                      ? const Color(0xFF1E1E1E)
+                      : Colors.white,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Obx(
+                  () => Column(
+                    children: [
+                      for (
+                        int i = 0;
+                        i < controller.currencies.length;
+                        i++
+                      ) ...[
+                        _buildCurrencyOption(
+                          controller.currencies[i],
+                          controller.selectedCurrencyIndex.value == i,
+                          () {
+                            controller.selectedCurrencyIndex.value = i;
+                          },
+                          isDarkMode: themeController.isDarkModeActive,
+                        ),
+                        if (i < controller.currencies.length - 1)
+                          Container(
+                            height: 0.5,
+                            color: themeController.isDarkModeActive
+                                ? const Color(0xFF333333)
+                                : const Color(0xFFE5E5EA),
+                            margin: const EdgeInsets.only(left: 16),
+                          ),
+                      ],
+                    ],
                   ),
-                  child: ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    dense: true,
-                    title: Text(
-                      controller.currencies[index].name.tr,
-                      style: TextStyle(
-                        fontSize: screenWidth * 0.04,
-                        fontWeight: FontWeight.w500,
-                        color: themeController.isDarkModeActive ? Colors.white : Colors.black,
-                      ),
-                    ),
-                    subtitle: Text(
-                      controller.currencies[index].code,
-                      style: TextStyle(
-                        fontSize: screenWidth * 0.035,
-                        color: themeController.isDarkModeActive ? Colors.grey[400] : Colors.grey[600],
-                      ),
-                    ),
-                    trailing: Radio(
-                      value: index,
-                      groupValue: controller.selectedCurrencyIndex.value,
-                      onChanged: (int? newValue) {
-                        controller.selectedCurrencyIndex.value = newValue!;
-                      },
-                      activeColor: const Color(0xFF2196F3),
-                    ),
-                  ),
-                );
-              },
+                ),
+              ),
             ),
-
-            SizedBox(height: screenHeight * 0.05),
-
-            // Apply Button
-            SizedBox(
+            const SizedBox(height: 16),
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: themeController.isDarkModeActive
+                    ? const Color(0xFF332900)
+                    : const Color(0xFFFFF2CC),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.info_outline,
+                    color: themeController.isDarkModeActive
+                        ? const Color(0xFFFFB300)
+                        : const Color(0xFFFF9500),
+                    size: 16,
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      'Currency changes will be applied across the application.',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: themeController.isDarkModeActive
+                            ? const Color(0xFFFFB300)
+                            : const Color(0xFF8E6914),
+                        height: 1.3,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 24),
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 16),
               width: double.infinity,
-              height: screenHeight * 0.06,
+              height: 50,
               child: ElevatedButton(
-                onPressed: () {
-                  controller.applyCurrencyChange();
+                onPressed: () async {
+                  await controller.applyCurrencyChange();
+                  Get.back();
                   Get.snackbar(
                     'success'.tr,
                     'currency_updated'.tr,
                     snackPosition: SnackPosition.BOTTOM,
-                    backgroundColor: themeController.isDarkModeActive ? const Color(0xFF2A2A2A) : Colors.blue,
+                    backgroundColor: themeController.isDarkModeActive
+                        ? const Color(0xFF2A2A2A)
+                        : Colors.blue,
                     colorText: Colors.white,
                   );
-                  Get.back();
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF2196F3),
+                  backgroundColor: const Color(0xFF007AFF),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(screenWidth * 0.03),
+                    borderRadius: BorderRadius.circular(10),
                   ),
-                  padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.08),
+                  elevation: 0,
                 ),
                 child: Text(
                   'apply_changes'.tr,
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Colors.white,
-                    fontSize: screenWidth * 0.04,
+                    fontSize: 16,
                     fontWeight: FontWeight.w600,
                   ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 34),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCurrencyOption(
+    Currency currency,
+    bool isSelected,
+    VoidCallback onTap, {
+    required bool isDarkMode,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        height: 50,
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        color: Colors.transparent,
+        child: Row(
+          children: [
+            Text(
+              '${currency.name} (${currency.symbol})',
+              style: TextStyle(
+                fontSize: 17,
+                fontWeight: FontWeight.w400,
+                color: isDarkMode ? Colors.white : Colors.black,
+              ),
+            ),
+            const Spacer(),
+            Container(
+              width: 20,
+              height: 20,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: isSelected
+                    ? const Color(0xFF007AFF)
+                    : Colors.transparent,
+                border: Border.all(
+                  color: isSelected
+                      ? const Color(0xFF007AFF)
+                      : (isDarkMode
+                            ? const Color(0xFF555555)
+                            : const Color(0xFFD1D1D6)),
+                  width: isSelected ? 6 : 2,
                 ),
               ),
             ),
           ],
         ),
       ),
-    ));
+    );
   }
 }
 
-// Controller for managing currency selection and logic
 class CurrencyController extends GetxController {
+  final currencyService = Get.find<CurrencyService>();
+
   final List<Currency> currencies = [
-    Currency('USD', 'usd_name'.tr),
-    Currency('GBP', 'gbp_name'.tr),
-    Currency('EUR', 'eur_name'.tr),
-    Currency('PLN', 'pln_name'.tr),
-    Currency('TRY', 'try_name'.tr),
+    Currency('USD', 'United States Dollar', '\$'),
+    Currency('EUR', 'Euro', '€'),
+    Currency('GBP', 'British Pound', '£'),
+    Currency('JPY', 'Japanese Yen', '¥'),
+    Currency('CAD', 'Canadian Dollar', 'C\$'),
   ];
 
-  // Selected index
-  RxInt selectedCurrencyIndex = 0.obs; // Default to USD
+  RxInt selectedCurrencyIndex = 0.obs;
 
-  void applyCurrencyChange() {
-    // Here you can save the selected currency to shared preferences or database
-    // Example:
-    // SharedPreferences prefs = await SharedPreferences.getInstance();
-    // prefs.setString('selected_currency', currencies[selectedCurrencyIndex.value].code);
-    print('Selected Currency: ${currencies[selectedCurrencyIndex.value].code}');
+  @override
+  void onInit() {
+    super.onInit();
+    // Set the initial selected index based on current currency
+    final currentCode = currencyService.currencyCode.value;
+    final index = currencies.indexWhere((c) => c.code == currentCode);
+    if (index != -1) {
+      selectedCurrencyIndex.value = index;
+    }
+  }
+
+  Future<void> applyCurrencyChange() async {
+    final selected = currencies[selectedCurrencyIndex.value];
+    await currencyService.saveCurrency(
+      selected.code,
+      selected.symbol,
+      selected.name,
+    );
+    print('Selected Currency: ${selected.code} (${selected.symbol})');
   }
 }
 
-// Currency model class
 class Currency {
   final String code;
   final String name;
+  final String symbol;
 
-  Currency(this.code, this.name);
+  Currency(this.code, this.name, this.symbol);
 }

@@ -119,32 +119,32 @@ class ProSavingsPage extends StatelessWidget {
                               )),
                         ],
                       ),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: isDarkMode ? const Color(0xFF333333) : Colors.grey[300]!,
-                          ),
-                          borderRadius: BorderRadius.circular(20),
-                          color: isDarkMode ? const Color(0xFF1E1E1E) : Colors.white,
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              'monthly'.tr,
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: isDarkMode ? Colors.white : Colors.black,
-                              ),
-                            ),
-                            const SizedBox(width: 4),
-                            Icon(Icons.keyboard_arrow_down,
-                                size: 16,
-                                color: isDarkMode ? Colors.grey[400] : Colors.grey[600]),
-                          ],
-                        ),
-                      ),
+                      // Container(
+                      //   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      //   decoration: BoxDecoration(
+                      //     border: Border.all(
+                      //       color: isDarkMode ? const Color(0xFF333333) : Colors.grey[300]!,
+                      //     ),
+                      //     borderRadius: BorderRadius.circular(20),
+                      //     color: isDarkMode ? const Color(0xFF1E1E1E) : Colors.white,
+                      //   ),
+                      //   child: Row(
+                      //     mainAxisSize: MainAxisSize.min,
+                      //     children: [
+                      //       Text(
+                      //         'monthly'.tr,
+                      //         style: TextStyle(
+                      //           fontSize: 14,
+                      //           color: isDarkMode ? Colors.white : Colors.black,
+                      //         ),
+                      //       ),
+                      //       const SizedBox(width: 4),
+                      //       Icon(Icons.keyboard_arrow_down,
+                      //           size: 16,
+                      //           color: isDarkMode ? Colors.grey[400] : Colors.grey[600]),
+                      //     ],
+                      //   ),
+                      // ),
                     ],
                   ),
                 ),
@@ -233,8 +233,14 @@ class ProSavingsPage extends StatelessWidget {
                             final init = controller.totalInitial.value;
                             final sav = controller.totalSavings.value;
                             final pct = init > 0 ? (sav / init * 100) : 0.0;
+                            final pctStr = pct.toStringAsFixed(0);
+                            final base = 'save_percent'.tr;
+                            final txt = base
+                                .replaceAll('{percent}', pctStr)
+                                .replaceAll('@percent', pctStr)
+                                .replaceAll('%percent%', pctStr);
                             return Text(
-                              'save_percent'.trParams({'percent': pct.toStringAsFixed(0)}),
+                              txt,
                               style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w600,

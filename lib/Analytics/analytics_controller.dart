@@ -5,6 +5,7 @@ import 'package:your_expense/services/subscription_service.dart';
 import 'package:intl/intl.dart';
 import '../services/api_base_service.dart';
 import '../services/config_service.dart';
+import '../services/currency_service.dart';
 import '../routes/app_routes.dart';
 import 'package:your_expense/Analytics/ExpenseService.dart';
 import 'package:your_expense/Analytics/income_service.dart';
@@ -436,11 +437,21 @@ class AnalyticsController extends GetxController {
   }
 
   String getFormattedTotalIncome() {
-    return '\$${totalIncome.value.toStringAsFixed(0)}';
+    try {
+      final currencyService = Get.find<CurrencyService>();
+      return currencyService.formatAmountInt(totalIncome.value);
+    } catch (e) {
+      return '\$${totalIncome.value.toStringAsFixed(0)}';
+    }
   }
 
   String getFormattedTotalExpenses() {
-    return '\$${totalExpenses.value.toStringAsFixed(0)}';
+    try {
+      final currencyService = Get.find<CurrencyService>();
+      return currencyService.formatAmountInt(totalExpenses.value);
+    } catch (e) {
+      return '\$${totalExpenses.value.toStringAsFixed(0)}';
+    }
   }
 
   void selectChartType(int index) {

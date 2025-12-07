@@ -9,6 +9,7 @@ import 'package:your_expense/routes/app_routes.dart';
 import '../home/home_controller.dart';
 import '../reuseablenav/reuseablenavui.dart';
 import 'analytics_controller.dart';
+import '../services/currency_service.dart';
 import '../../Settings/appearance/ThemeController.dart';
 
 class AnalyticsScreen extends StatelessWidget {
@@ -49,74 +50,74 @@ class AnalyticsScreen extends StatelessWidget {
         return false;
       },
       child: Scaffold(
-      backgroundColor: backgroundColor,
-      appBar: _buildAppBar(screenWidth, textColor, backgroundColor),
-      body: Obx(
-        () => controller.isLoading.value
-            ? _buildLoadingIndicator()
-            : RefreshIndicator(
-                onRefresh: () async {
-                  await controller.fetchIncomeSummary();
-                  await controller.fetchExpenseSummary();
-                },
-                child: SingleChildScrollView(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  child: Padding(
-                    padding: EdgeInsets.all(screenWidth * 0.05),
-                    child: Column(
-                      children: [
-                        _buildChartTypeButtons(
-                          controller,
-                          screenWidth,
-                          iconBackgroundColor,
-                          textColor,
-                        ),
-                        SizedBox(height: screenHeight * 0.03),
-                        _buildMonthSelector(
-                          controller,
-                          screenWidth,
-                          screenHeight,
-                        ),
-                        SizedBox(height: screenHeight * 0.04),
-                        _buildChartsSection(
-                          controller,
-                          screenWidth,
-                          screenHeight,
-                          iconBackgroundColor,
-                          textColor,
-                        ),
-                        SizedBox(height: screenHeight * 0.03),
-                        _buildLegend(
-                          controller,
-                          screenWidth,
-                          textColor,
-                          secondaryTextColor,
-                        ),
-                        SizedBox(height: screenHeight * 0.04),
-                        _buildSummaryCards(
-                          controller,
-                          screenWidth,
-                          screenHeight,
-                          cardColor,
-                          textColor,
-                          secondaryTextColor,
-                        ),
-                        SizedBox(height: screenHeight * 0.04),
-                        _buildActionsSection(
-                          controller,
-                          screenWidth,
-                          screenHeight,
-                          cardColor,
-                          textColor,
-                        ),
-                        SizedBox(height: screenHeight * 0.02),
-                      ],
+        backgroundColor: backgroundColor,
+        appBar: _buildAppBar(screenWidth, textColor, backgroundColor),
+        body: Obx(
+          () => controller.isLoading.value
+              ? _buildLoadingIndicator()
+              : RefreshIndicator(
+                  onRefresh: () async {
+                    await controller.fetchIncomeSummary();
+                    await controller.fetchExpenseSummary();
+                  },
+                  child: SingleChildScrollView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    child: Padding(
+                      padding: EdgeInsets.all(screenWidth * 0.05),
+                      child: Column(
+                        children: [
+                          _buildChartTypeButtons(
+                            controller,
+                            screenWidth,
+                            iconBackgroundColor,
+                            textColor,
+                          ),
+                          SizedBox(height: screenHeight * 0.03),
+                          _buildMonthSelector(
+                            controller,
+                            screenWidth,
+                            screenHeight,
+                          ),
+                          SizedBox(height: screenHeight * 0.04),
+                          _buildChartsSection(
+                            controller,
+                            screenWidth,
+                            screenHeight,
+                            iconBackgroundColor,
+                            textColor,
+                          ),
+                          SizedBox(height: screenHeight * 0.03),
+                          _buildLegend(
+                            controller,
+                            screenWidth,
+                            textColor,
+                            secondaryTextColor,
+                          ),
+                          SizedBox(height: screenHeight * 0.04),
+                          _buildSummaryCards(
+                            controller,
+                            screenWidth,
+                            screenHeight,
+                            cardColor,
+                            textColor,
+                            secondaryTextColor,
+                          ),
+                          SizedBox(height: screenHeight * 0.04),
+                          _buildActionsSection(
+                            controller,
+                            screenWidth,
+                            screenHeight,
+                            cardColor,
+                            textColor,
+                          ),
+                          SizedBox(height: screenHeight * 0.02),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-      ),
-      bottomNavigationBar: CustomBottomNavBar(isDarkMode: isDarkMode),
+        ),
+        bottomNavigationBar: CustomBottomNavBar(isDarkMode: isDarkMode),
       ),
     );
   }
@@ -649,9 +650,10 @@ class AnalyticsScreen extends StatelessWidget {
               ? (item.value / total * 100).toStringAsFixed(1)
               : '0.0';
           print('📊 Legend item: ${item.label} - ${item.value} ($percentage%)');
+          final currencyService = Get.find<CurrencyService>();
           return _buildLegendItem(
             item.label,
-            '\$${item.value.toStringAsFixed(0)} ($percentage%)',
+            '${currencyService.currencySymbol.value}${item.value.toStringAsFixed(0)} ($percentage%)',
             item.color,
             screenWidth,
             textColor,
@@ -994,8 +996,12 @@ class BarChartPainter extends CustomPainter {
       canvas.drawLine(Offset(chartLeft, y), Offset(chartRight, y), gridPaint);
 
       final value = (maxVal * i / 5).toInt();
+      final currencyService = Get.find<CurrencyService>();
       final painter = TextPainter(
-        text: TextSpan(text: '\$${value ~/ 1000}K', style: textStyle),
+        text: TextSpan(
+          text: '${currencyService.currencySymbol.value}${value ~/ 1000}K',
+          style: textStyle,
+        ),
         textDirection: ui.TextDirection.ltr,
       )..layout();
       painter.paint(canvas, Offset(2, y - painter.height / 2));
@@ -1028,9 +1034,11 @@ class BarChartPainter extends CustomPainter {
       );
       canvas.drawRRect(rect, barPaint);
 
+      final currencyService = Get.find<CurrencyService>();
       final valueText = TextPainter(
         text: TextSpan(
-          text: '\$${data[i].value.toInt()}',
+          text:
+              '${currencyService.currencySymbol.value}${data[i].value.toInt()}',
           style: categoryTextStyle,
         ),
         textDirection: ui.TextDirection.ltr,
@@ -1099,8 +1107,12 @@ class LineChartPainter extends CustomPainter {
       canvas.drawLine(Offset(chartLeft, y), Offset(chartRight, y), gridPaint);
 
       final value = (maxVal * i / 5).toInt();
+      final currencyService = Get.find<CurrencyService>();
       final painter = TextPainter(
-        text: TextSpan(text: '\$${value ~/ 1000}K', style: textStyle),
+        text: TextSpan(
+          text: '${currencyService.currencySymbol.value}${value ~/ 1000}K',
+          style: textStyle,
+        ),
         textDirection: ui.TextDirection.ltr,
       )..layout();
       painter.paint(canvas, Offset(2, y - painter.height / 2));

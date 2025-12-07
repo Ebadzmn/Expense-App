@@ -13,6 +13,7 @@ import 'package:your_expense/Settings/userprofile/passwordchangescreen.dart';
 import 'package:your_expense/Settings/userprofile/profile_services.dart';
 import '../../services/api_base_service.dart';
 import '../appearance/ThemeController.dart';
+import 'package:your_expense/home/home_controller.dart';
 
 class PersonalInformationScreen extends StatelessWidget {
   final ProfileService profileService = Get.find<ProfileService>();
@@ -119,15 +120,21 @@ class PersonalInformationScreen extends StatelessWidget {
             size: screenWidth * 0.05,
           ),
           onPressed: () {
+            try {
+              if (Get.isRegistered<HomeController>()) {
+                final home = Get.find<HomeController>();
+                home.selectedNavIndex.value = 0;
+              }
+            } catch (_) {}
             bool routeFound = false;
             Get.until((route) {
-              if (route.settings.name == AppRoutes.settings) {
+              if (route.settings.name == AppRoutes.mainHome) {
                 routeFound = true;
               }
-              return route.settings.name == AppRoutes.settings;
+              return route.settings.name == AppRoutes.mainHome;
             });
             if (!routeFound) {
-              Get.offAllNamed(AppRoutes.settings);
+              Get.offAllNamed(AppRoutes.mainHome);
             }
           },
         ),
