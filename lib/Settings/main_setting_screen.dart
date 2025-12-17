@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:your_expense/Settings/userprofile/profile_services.dart';
 import '../home/home_controller.dart';
-import '../reuseablenav/reuseablenavui.dart';
 import '../routes/app_routes.dart';
 
 import '../Settings/appearance/ThemeController.dart';
@@ -11,7 +10,9 @@ import 'package:url_launcher/url_launcher.dart';
 import '../services/config_service.dart';
 
 class SettingsScreen extends StatefulWidget {
-  const SettingsScreen({super.key});
+  final bool isEmbeddedInMain;
+
+  const SettingsScreen({super.key, this.isEmbeddedInMain = false});
 
   @override
   _SettingsScreenState createState() => _SettingsScreenState();
@@ -35,13 +36,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
     // Refresh profile data when screen is loaded
     profileService.refreshProfile();
 
-    // Set navigation index only once
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!_hasSetNavIndex && homeController.selectedNavIndex.value != 3) {
-        homeController.selectedNavIndex.value = 3;
-        _hasSetNavIndex = true;
-      }
-    });
+    if (!widget.isEmbeddedInMain) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!_hasSetNavIndex && homeController.selectedNavIndex.value != 3) {
+          homeController.selectedNavIndex.value = 3;
+          _hasSetNavIndex = true;
+        }
+      });
+    }
   }
 
   Future<void> _initializePrefs() async {
@@ -53,63 +55,42 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
 
-    return WillPopScope(
-      onWillPop: () async {
-        try {
-          final prev = Get.previousRoute;
-          int idx = 0;
-          switch (prev) {
-            case AppRoutes.mainHome:
-              idx = 0;
-              break;
-            case AppRoutes.analytics:
-              idx = 1;
-              break;
-            case AppRoutes.comparison:
-              idx = 2;
-              break;
-            default:
-              idx = 0;
-          }
-          homeController.setNavIndex(idx);
-        } catch (_) {}
-        return true;
-      },
-      child: Scaffold(
+    final scaffold = Scaffold(
+      backgroundColor: themeController.isDarkModeActive
+          ? Color(0xFF121212)
+          : Colors.white,
+      appBar: AppBar(
         backgroundColor: themeController.isDarkModeActive
-            ? Color(0xFF121212)
+            ? Color(0xFF1E1E1E)
             : Colors.white,
-        appBar: AppBar(
-          backgroundColor: themeController.isDarkModeActive
-              ? Color(0xFF1E1E1E)
-              : Colors.white,
-          elevation: 0,
-          leading: IconButton(
-            icon: Icon(
-              Icons.arrow_back_ios,
-              color: themeController.isDarkModeActive
-                  ? Colors.white
-                  : Colors.black,
-              size: screenWidth * 0.05,
-            ),
-            onPressed: () {
-              homeController.setNavIndex(0);
-              Get.toNamed(AppRoutes.mainHome);
-            },
+        elevation: 0,
+        leading: widget.isEmbeddedInMain
+            ? null
+            : IconButton(
+                icon: Icon(
+                  Icons.arrow_back_ios,
+                  color: themeController.isDarkModeActive
+                      ? Colors.white
+                      : Colors.black,
+                  size: screenWidth * 0.05,
+                ),
+                onPressed: () {
+                  homeController.setNavIndex(0);
+                  Get.toNamed(AppRoutes.mainHome);
+                },
+              ),
+        automaticallyImplyLeading: !widget.isEmbeddedInMain,
+        title: Text(
+          'settings'.tr,
+          style: TextStyle(
+            color: themeController.isDarkModeActive ? Colors.white : Colors.black,
+            fontSize: screenWidth * 0.045,
+            fontWeight: FontWeight.w600,
           ),
-          title: Text(
-            'settings'.tr,
-            style: TextStyle(
-              color: themeController.isDarkModeActive
-                  ? Colors.white
-                  : Colors.black,
-              fontSize: screenWidth * 0.045,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          centerTitle: true,
         ),
-        body: SingleChildScrollView(
+        centerTitle: true,
+      ),
+      body: SingleChildScrollView(
           physics: ClampingScrollPhysics(),
           child: ConstrainedBox(
             constraints: BoxConstraints(
@@ -357,10 +338,35 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
           ),
         ),
-        bottomNavigationBar: CustomBottomNavBar(
-          isDarkMode: themeController.isDarkModeActive,
-        ),
-      ),
+    );
+
+    if (widget.isEmbeddedInMain) {
+      return scaffold;
+    }
+
+    return WillPopScope(
+      onWillPop: () async {
+        try {
+          final prev = Get.previousRoute;
+          int idx = 0;
+          switch (prev) {
+            case AppRoutes.mainHome:
+              idx = 0;
+              break;
+            case AppRoutes.analytics:
+              idx = 1;
+              break;
+            case AppRoutes.comparison:
+              idx = 2;
+              break;
+            default:
+              idx = 0;
+          }
+          homeController.setNavIndex(idx);
+        } catch (_) {}
+        return true;
+      },
+      child: scaffold,
     );
   }
 

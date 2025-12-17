@@ -58,6 +58,7 @@ import '../homepage/share_exp/share_exp_screen.dart';
 import '../homepage/view all/view_ui.dart';
 
 import '../login/login_ui.dart';
+import '../main_screen.dart';
 import '../make it pro/AdvertisementPage/Totalsaving_add.dart';
 import '../make it pro/AdvertisementPage/add_ui.dart';
 import '../onbaording/onboarding_ui/onboarding_screen.dart';
@@ -152,9 +153,9 @@ class AppRoutes {
     GetPage(name: setNewPassword, page: () => SetNewPasswordScreen()),
 
     // Main App Routes
-    GetPage(name: mainHome, page: () => MainHomeScreen(), transition: Transition.noTransition, middlewares: [ProUserMiddleware()]),
-    GetPage(name: analytics, page: () => AnalyticsScreen(), transition: Transition.noTransition),
-    GetPage(name: settings, page: () => SettingsScreen(), transition: Transition.noTransition),
+    GetPage(name: mainHome, page: () => const MainScreen(initialIndex: 0), transition: Transition.noTransition, middlewares: [ProUserMiddleware()]),
+    GetPage(name: analytics, page: () => const MainScreen(initialIndex: 1), transition: Transition.noTransition),
+    GetPage(name: settings, page: () => const MainScreen(initialIndex: 3), transition: Transition.noTransition),
     GetPage(name: personalInformation, page: () => PersonalInformationScreen()),
     GetPage(name: editName, page: () => EditNameScreen()),
     GetPage(name: changeEmail, page: () => ChangeEmailScreen()),
@@ -221,7 +222,7 @@ class AppRoutes {
     // Comparison Routes
     GetPage(
       name: comparison,
-      page: () => const ComparisonPageScreen(isFromExpense: true),
+      page: () => const MainScreen(initialIndex: 2),
       transition: Transition.noTransition,
       middlewares: [ComparisonProMiddleware()],
       binding: BindingsBuilder(() {

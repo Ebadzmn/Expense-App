@@ -34,7 +34,6 @@ class LanguageController extends GetxController {
     await prefs.setString(_langKey, language);
     selectedLanguage.value = language;
     updateLocale();
-    Get.forceAppUpdate(); // Force UI to rebuild
   }
 
   void updateLocale() {

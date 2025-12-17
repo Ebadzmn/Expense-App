@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:your_expense/Settings/appearance/ThemeController.dart';
-import 'package:your_expense/reuseablenav/reuseablenavui.dart';
 import 'package:your_expense/routes/app_routes.dart';
 import 'package:your_expense/homepage/MonthlyBudgetPage.dart';
 import 'package:your_expense/homepage/edit/MonthlyBudgetNonPro/MonthlyBudgetNonPro.dart';
@@ -32,11 +31,13 @@ class MainHomeScreen extends StatelessWidget {
         profile.fetchUserProfile();
       } catch (_) {}
     });
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (controller.selectedNavIndex.value != 0) {
-        controller.selectedNavIndex.value = 0;
-      }
-    });
+    if (showBottomNav) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (controller.selectedNavIndex.value != 0) {
+          controller.selectedNavIndex.value = 0;
+        }
+      });
+    }
 
     // Define colors based on theme
     final backgroundColor = themeController.isDarkModeActive
@@ -690,9 +691,7 @@ class MainHomeScreen extends StatelessWidget {
           ),
         ),
       ),
-      bottomNavigationBar: showBottomNav
-          ? CustomBottomNavBar(isDarkMode: themeController.isDarkModeActive)
-          : null,
+      bottomNavigationBar: null,
     );
   }
 

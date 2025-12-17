@@ -13,6 +13,7 @@ class CustomBottomNavBar extends StatelessWidget {
     final HomeController homeController = Get.find<HomeController>();
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
+    final double bottomInset = MediaQuery.of(context).viewPadding.bottom;
 
     final activeColor = isDarkMode ? Colors.white : const Color(0xFF2196F3);
     final inactiveColor = isDarkMode
@@ -20,7 +21,8 @@ class CustomBottomNavBar extends StatelessWidget {
         : Colors.grey.shade600;
 
     return Container(
-      height: screenHeight * 0.1,
+      height: (screenHeight * 0.1) + bottomInset,
+      padding: EdgeInsets.only(bottom: bottomInset),
       decoration: BoxDecoration(
         color: isDarkMode ? const Color(0xFF121212) : Colors.white,
         boxShadow: [
@@ -122,27 +124,7 @@ class CustomBottomNavBar extends StatelessWidget {
       return GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: () async {
-          try {
-            await homeController.changeNavIndex(index);
-          } catch (e) {
-            print('Navbar tap error for index $index: $e');
-            homeController.setNavIndex(index);
-            switch (index) {
-              case 0:
-                if (Get.currentRoute != '/mainHome')
-                  Get.offAllNamed('/mainHome');
-                break;
-              case 1:
-                Get.toNamed('/analytics');
-                break;
-              case 2:
-                Get.toNamed('/comparison');
-                break;
-              case 3:
-                Get.toNamed('/settings');
-                break;
-            }
-          }
+          await homeController.changeNavIndex(index);
         },
         child: Container(
           width: double.infinity,

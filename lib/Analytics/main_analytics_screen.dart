@@ -7,12 +7,15 @@ import 'package:your_expense/services/subscription_service.dart';
 import 'package:your_expense/routes/app_routes.dart';
 
 import '../home/home_controller.dart';
-import '../reuseablenav/reuseablenavui.dart';
 import 'analytics_controller.dart';
 import '../services/currency_service.dart';
 import '../../Settings/appearance/ThemeController.dart';
 
 class AnalyticsScreen extends StatelessWidget {
+  final bool isEmbeddedInMain;
+
+  const AnalyticsScreen({super.key, this.isEmbeddedInMain = false});
+
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(AnalyticsController());
@@ -21,11 +24,13 @@ class AnalyticsScreen extends StatelessWidget {
         : Get.put(HomeController());
     final themeController = Get.find<ThemeController>();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (homeCtrl.selectedNavIndex.value != 1) {
-        homeCtrl.selectedNavIndex.value = 1;
-      }
-    });
+    if (!isEmbeddedInMain) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (homeCtrl.selectedNavIndex.value != 1) {
+          homeCtrl.selectedNavIndex.value = 1;
+        }
+      });
+    }
 
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
@@ -41,83 +46,73 @@ class AnalyticsScreen extends StatelessWidget {
         ? Color(0xFF2A2A2A)
         : Colors.grey.shade200;
 
-    return WillPopScope(
-      onWillPop: () async {
-        try {
-          homeCtrl.setNavIndex(0);
-        } catch (_) {}
-        Get.offAllNamed(AppRoutes.mainHome);
-        return false;
-      },
-      child: Scaffold(
-        backgroundColor: backgroundColor,
-        appBar: _buildAppBar(screenWidth, textColor, backgroundColor),
-        body: Obx(
-          () => controller.isLoading.value
-              ? _buildLoadingIndicator()
-              : RefreshIndicator(
-                  onRefresh: () async {
-                    await controller.fetchIncomeSummary();
-                    await controller.fetchExpenseSummary();
-                  },
-                  child: SingleChildScrollView(
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    child: Padding(
-                      padding: EdgeInsets.all(screenWidth * 0.05),
-                      child: Column(
-                        children: [
-                          _buildChartTypeButtons(
-                            controller,
-                            screenWidth,
-                            iconBackgroundColor,
-                            textColor,
-                          ),
-                          SizedBox(height: screenHeight * 0.03),
-                          _buildMonthSelector(
-                            controller,
-                            screenWidth,
-                            screenHeight,
-                          ),
-                          SizedBox(height: screenHeight * 0.04),
-                          _buildChartsSection(
-                            controller,
-                            screenWidth,
-                            screenHeight,
-                            iconBackgroundColor,
-                            textColor,
-                          ),
-                          SizedBox(height: screenHeight * 0.03),
-                          _buildLegend(
-                            controller,
-                            screenWidth,
-                            textColor,
-                            secondaryTextColor,
-                          ),
-                          SizedBox(height: screenHeight * 0.04),
-                          _buildSummaryCards(
-                            controller,
-                            screenWidth,
-                            screenHeight,
-                            cardColor,
-                            textColor,
-                            secondaryTextColor,
-                          ),
-                          SizedBox(height: screenHeight * 0.04),
-                          _buildActionsSection(
-                            controller,
-                            screenWidth,
-                            screenHeight,
-                            cardColor,
-                            textColor,
-                          ),
-                          SizedBox(height: screenHeight * 0.02),
-                        ],
-                      ),
+    return Scaffold(
+      backgroundColor: backgroundColor,
+      appBar: _buildAppBar(screenWidth, textColor, backgroundColor),
+      body: Obx(
+        () => controller.isLoading.value
+            ? _buildLoadingIndicator()
+            : RefreshIndicator(
+                onRefresh: () async {
+                  await controller.fetchIncomeSummary();
+                  await controller.fetchExpenseSummary();
+                },
+                child: SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  child: Padding(
+                    padding: EdgeInsets.all(screenWidth * 0.05),
+                    child: Column(
+                      children: [
+                        _buildChartTypeButtons(
+                          controller,
+                          screenWidth,
+                          iconBackgroundColor,
+                          textColor,
+                        ),
+                        SizedBox(height: screenHeight * 0.03),
+                        _buildMonthSelector(
+                          controller,
+                          screenWidth,
+                          screenHeight,
+                        ),
+                        SizedBox(height: screenHeight * 0.04),
+                        _buildChartsSection(
+                          controller,
+                          screenWidth,
+                          screenHeight,
+                          iconBackgroundColor,
+                          textColor,
+                        ),
+                        SizedBox(height: screenHeight * 0.03),
+                        _buildLegend(
+                          controller,
+                          screenWidth,
+                          textColor,
+                          secondaryTextColor,
+                        ),
+                        SizedBox(height: screenHeight * 0.04),
+                        _buildSummaryCards(
+                          controller,
+                          screenWidth,
+                          screenHeight,
+                          cardColor,
+                          textColor,
+                          secondaryTextColor,
+                        ),
+                        SizedBox(height: screenHeight * 0.04),
+                        _buildActionsSection(
+                          controller,
+                          screenWidth,
+                          screenHeight,
+                          cardColor,
+                          textColor,
+                        ),
+                        SizedBox(height: screenHeight * 0.02),
+                      ],
                     ),
                   ),
                 ),
-        ),
-        bottomNavigationBar: CustomBottomNavBar(isDarkMode: isDarkMode),
+              ),
       ),
     );
   }

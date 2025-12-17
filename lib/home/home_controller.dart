@@ -423,33 +423,13 @@ class HomeController extends GetxController {
 
     selectedNavIndex.value = index;
 
-    try {
-      switch (index) {
-        case 0: // Home
-          if (Get.currentRoute != AppRoutes.mainHome) {
-            Get.toNamed(AppRoutes.mainHome);
-          }
-          break;
-        case 1: // Analytics
-          if (Get.currentRoute != AppRoutes.analytics) {
-            Get.toNamed(AppRoutes.analytics);
-          }
-          break;
-        case 2: // Comparison (no ads)
-          if (Get.currentRoute != AppRoutes.comparison) {
-            Get.toNamed(AppRoutes.comparison);
-          }
-          break;
-        case 3: // Settings
-          if (Get.currentRoute != AppRoutes.settings) {
-            Get.toNamed(AppRoutes.settings);
-          }
-          break;
-        default:
-          break;
-      }
-    } catch (e) {
-      print('Error changing navigation index: $e');
+    final current = Get.currentRoute;
+    final isInMainShell = current == AppRoutes.mainHome ||
+        current == AppRoutes.analytics ||
+        current == AppRoutes.comparison ||
+        current == AppRoutes.settings;
+    if (!isInMainShell) {
+      Get.offAllNamed(AppRoutes.mainHome, arguments: {'tabIndex': index});
     }
   }
 

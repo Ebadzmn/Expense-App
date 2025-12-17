@@ -2,7 +2,95 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
 import 'package:your_expense/Analytics/expense_controller.dart';
 import 'package:your_expense/Analytics/income_controller.dart';
+import 'package:your_expense/Analytics/income_model.dart';
+import 'package:your_expense/Analytics/income_service.dart';
 import 'package:your_expense/services/config_service.dart';
+
+import 'package:your_expense/Analytics/ExpenseService.dart';
+import 'package:your_expense/Analytics/expense_model.dart';
+
+
+class _FakeIncomeService extends GetxService implements IncomeService {
+  @override
+  Future<IncomeService> init() async => this;
+
+  @override
+  Future<IncomeResponse> getIncomes({
+    int page = 1,
+    int limit = 10,
+    String? month,
+  }) async {
+    return IncomeResponse(
+      success: true,
+      data: const <Income>[],
+      pagination: Pagination(
+        currentPage: page,
+        totalPages: 1,
+        totalItems: 0,
+        itemsPerPage: limit,
+      ),
+    );
+  }
+
+  @override
+  Future<Income> createIncome({
+    required String source,
+    required double amount,
+    DateTime? date,
+    String? month,
+  }) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<Income> updateIncome({
+    required String id,
+    String? source,
+    double? amount,
+    DateTime? date,
+  }) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> deleteIncome(String id) {
+    throw UnimplementedError();
+  }
+}
+
+class _FakeExpenseService extends GetxService implements ExpenseService {
+  @override
+  Future<ExpenseService> init() async => this;
+
+  @override
+  Future<List<ExpenseItem>> getExpenses() async => <ExpenseItem>[];
+
+  @override
+  Future<ExpenseItem> createExpense({
+    required double amount,
+    required String category,
+    String note = '',
+    DateTime? date,
+    String? month,
+  }) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<ExpenseItem> updateExpense({
+    required String id,
+    double? amount,
+    String? category,
+    String? note,
+  }) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<bool> deleteExpense(String id) {
+    throw UnimplementedError();
+  }
+}
 
 void main() {
   group('Month Switching Tests', () {
@@ -17,6 +105,9 @@ void main() {
       // Mock ConfigService
       configService = ConfigService();
       Get.put(configService);
+
+      Get.put<IncomeService>(_FakeIncomeService());
+      Get.put<ExpenseService>(_FakeExpenseService());
       
       // Initialize controllers
       expenseController = ExpenseController();

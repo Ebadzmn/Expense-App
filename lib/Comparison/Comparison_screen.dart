@@ -6,15 +6,19 @@ import 'package:url_launcher/url_launcher.dart';
 import '../Settings/appearance/ThemeController.dart';
 
 import '../home/home_controller.dart';
-import '../reuseablenav/reuseablenavui.dart';
 import 'ComparisonPageController.dart';
 import 'package:your_expense/services/subscription_service.dart';
 import 'package:your_expense/routes/app_routes.dart';
 
 class ComparisonPageScreen extends StatefulWidget {
   final bool isFromExpense;
+  final bool isEmbeddedInMain;
 
-  const ComparisonPageScreen({super.key, required this.isFromExpense});
+  const ComparisonPageScreen({
+    super.key,
+    required this.isFromExpense,
+    this.isEmbeddedInMain = false,
+  });
 
   @override
   State<ComparisonPageScreen> createState() => _ComparisonPageScreenState();
@@ -23,35 +27,16 @@ class ComparisonPageScreen extends StatefulWidget {
 class _ComparisonPageScreenState extends State<ComparisonPageScreen> {
   late final TextEditingController productNameController;
   late final TextEditingController maxPriceController;
+  late final FocusNode _productNameFocus;
+  late final FocusNode _maxPriceFocus;
   late final ComparisonPageController comparisonCtrl;
   String? _prevRoute;
   bool _overlayDismissed = false;
 
-  @override
-  void initState() {
-    super.initState();
-    productNameController = TextEditingController();
-    maxPriceController = TextEditingController();
-    // Ensure a single instance across rebuilds
-    comparisonCtrl = Get.put(ComparisonPageController());
-
-    // Position nav selection after first fra
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final homeCtrl = Get.find<HomeController>();
-      _prevRoute = Get.previousRoute;
-      if (homeCtrl.selectedNavIndex.value != 2) {
-        homeCtrl.selectedNavIndex.value = 2;
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    productNameController.dispose();
-    maxPriceController.dispose();
+  void _restoreNavIndex() {
     try {
       final homeCtrl = Get.find<HomeController>();
-      int idx = 0;
+      int idx = homeCtrl.selectedNavIndex.value;
       switch (_prevRoute) {
         case AppRoutes.analytics:
           idx = 1;
@@ -59,12 +44,43 @@ class _ComparisonPageScreenState extends State<ComparisonPageScreen> {
         case AppRoutes.settings:
           idx = 3;
           break;
-        case AppRoutes.mainHome:
         default:
-          idx = 0;
+          break;
       }
       homeCtrl.setNavIndex(idx);
     } catch (_) {}
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    productNameController = TextEditingController();
+    maxPriceController = TextEditingController();
+    _productNameFocus = FocusNode();
+    _maxPriceFocus = FocusNode();
+    // Ensure a single instance across rebuilds
+    comparisonCtrl = Get.put(ComparisonPageController());
+
+    if (!widget.isEmbeddedInMain) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final homeCtrl = Get.find<HomeController>();
+        _prevRoute = Get.previousRoute;
+        if (homeCtrl.selectedNavIndex.value != 2) {
+          homeCtrl.selectedNavIndex.value = 2;
+        }
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    productNameController.dispose();
+    maxPriceController.dispose();
+    _productNameFocus.dispose();
+    _maxPriceFocus.dispose();
+    if (!widget.isEmbeddedInMain) {
+      _restoreNavIndex();
+    }
     super.dispose();
   }
 
@@ -80,22 +96,14 @@ class _ComparisonPageScreenState extends State<ComparisonPageScreen> {
 
     return WillPopScope(
       onWillPop: () async {
-        try {
-          final homeCtrl = Get.find<HomeController>();
-          int idx = 0;
-          switch (_prevRoute) {
-            case AppRoutes.analytics:
-              idx = 1;
-              break;
-            case AppRoutes.settings:
-              idx = 3;
-              break;
-            case AppRoutes.mainHome:
-            default:
-              idx = 0;
-          }
-          homeCtrl.setNavIndex(idx);
-        } catch (_) {}
+        if (_productNameFocus.hasFocus || _maxPriceFocus.hasFocus) {
+          _productNameFocus.unfocus();
+          _maxPriceFocus.unfocus();
+          return false;
+        }
+        if (!widget.isEmbeddedInMain) {
+          _restoreNavIndex();
+        }
         return true;
       },
       child: Scaffold(
@@ -103,32 +111,20 @@ class _ComparisonPageScreenState extends State<ComparisonPageScreen> {
         appBar: AppBar(
           backgroundColor: isDarkMode ? const Color(0xFF1E1E1E) : Colors.white,
           elevation: 0,
-          leading: IconButton(
-            icon: Icon(
-              Icons.arrow_back_ios,
-              color: isDarkMode ? Colors.white : Colors.black,
-              size: 20,
-            ),
-            onPressed: () {
-              try {
-                final homeCtrl = Get.find<HomeController>();
-                int idx = 0;
-                switch (_prevRoute) {
-                  case AppRoutes.analytics:
-                    idx = 1;
-                    break;
-                  case AppRoutes.settings:
-                    idx = 3;
-                    break;
-                  case AppRoutes.mainHome:
-                  default:
-                    idx = 0;
-                }
-                homeCtrl.setNavIndex(idx);
-              } catch (_) {}
-              Get.back();
-            },
-          ),
+          leading: widget.isEmbeddedInMain
+              ? null
+              : IconButton(
+                  icon: Icon(
+                    Icons.arrow_back_ios,
+                    color: isDarkMode ? Colors.white : Colors.black,
+                    size: 20,
+                  ),
+                  onPressed: () {
+                    _restoreNavIndex();
+                    Get.back();
+                  },
+                ),
+          automaticallyImplyLeading: !widget.isEmbeddedInMain,
           title: Text(
             'compare_save'.tr,
             style: TextStyle(
@@ -193,6 +189,7 @@ class _ComparisonPageScreenState extends State<ComparisonPageScreen> {
                     ),
                     child: TextField(
                       controller: productNameController,
+                      focusNode: _productNameFocus,
                       style: TextStyle(
                         color: isDarkMode ? Colors.white : Colors.black,
                       ),
@@ -235,6 +232,7 @@ class _ComparisonPageScreenState extends State<ComparisonPageScreen> {
                     ),
                     child: TextField(
                       controller: maxPriceController,
+                      focusNode: _maxPriceFocus,
                       keyboardType: TextInputType.number,
                       style: TextStyle(
                         color: isDarkMode ? Colors.white : Colors.black,
@@ -479,7 +477,6 @@ class _ComparisonPageScreenState extends State<ComparisonPageScreen> {
               _buildProGateOverlay(screenWidth, screenHeight, isDarkMode),
           ],
         ),
-        bottomNavigationBar: CustomBottomNavBar(isDarkMode: isDarkMode),
       ),
     );
   }
@@ -699,12 +696,17 @@ Widget _buildDealCard(
                       children: [
                         Row(
                           children: [
-                            Text(
-                              siteName,
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                                color: isDarkMode ? Colors.white : Colors.black,
+                            Expanded(
+                              child: Text(
+                                siteName,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  color:
+                                      isDarkMode ? Colors.white : Colors.black,
+                                ),
                               ),
                             ),
                             if (dealType == 'specific' && rating > 0) ...[
