@@ -18,6 +18,7 @@ import 'package:your_expense/services/currency_service.dart';
 import 'package:your_expense/services/face_id_service.dart';
 import 'package:your_expense/services/push_notification_service.dart';
 import 'package:your_expense/services/token_service.dart';
+import 'package:your_expense/services/location_service.dart';
 import 'package:your_expense/Analytics/income_service.dart';
 import 'package:your_expense/login/login_service.dart';
 
@@ -27,8 +28,13 @@ Future<void> main() async {
   final appStartSw = Stopwatch()..start();
   WidgetsFlutterBinding.ensureInitialized();
 
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+  try {
+    await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+    FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+    debugPrint('Firebase initialized successfully');
+  } catch (e) {
+    debugPrint('Firebase initialization error: $e');
+  }
 
   // Initialize core services first
   await Future.wait([
@@ -38,6 +44,7 @@ Future<void> main() async {
     Get.putAsync(() => FaceIdService().init()),
     Get.putAsync(() => LoginService().init()),
     Get.putAsync(() => CurrencyService().init()),
+    Get.putAsync(() => LocationService().init()),
   ]);
 
   // Initialize services that depend on the core services

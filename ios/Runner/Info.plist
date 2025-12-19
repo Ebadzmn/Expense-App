@@ -30,6 +30,8 @@
     <string>ca-app-pub-7017672768951042~3051351549</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Allow location access to detect your country and provide localized features.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Allow camera to scan receipts/documents for OCR and for Face ID setup.</string>
 	<key>NSFaceIDUsageDescription</key>
