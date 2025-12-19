@@ -1,10 +1,8 @@
 import 'package:get/get.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:your_expense/Analytics/expense_controller.dart';
 import 'package:your_expense/models/category_model.dart';
 import 'package:your_expense/Analytics/income_service.dart';
-import 'package:intl/intl.dart';
 import 'package:your_expense/services/ocr_service.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
@@ -13,9 +11,7 @@ import 'package:your_expense/services/api_base_service.dart'; // Add this import
 import 'package:your_expense/services/config_service.dart'; // Add this import
 import 'package:your_expense/Analytics/expense_model.dart';
 import 'package:your_expense/home/home_controller.dart';
-import 'package:your_expense/add_exp/common/barcode_scanner_screen.dart';
 import 'package:your_expense/services/subscription_service.dart';
-import 'package:your_expense/routes/app_routes.dart';
 
 
 class ProExpensesIncomeController extends GetxController {
@@ -93,41 +89,6 @@ class ProExpensesIncomeController extends GetxController {
     ever(_subscriptionService.isPro, (_) => _applyProSubscriptionUnlock());
     ever<DateTime?>(_subscriptionService.expiryDate, (_) => _applyProSubscriptionUnlock());
     ever<DateTime?>(_subscriptionService.temporaryProExpiry, (_) => _applyProSubscriptionUnlock());
-  }
-
-  // Map category names to appropriate icons
-  IconData _getCategoryIcon(String categoryName) {
-    switch (categoryName.toLowerCase()) {
-      case 'food':
-      case 'groceries':
-      case 'eating out':
-      case 'eatingout':
-        return Icons.restaurant;
-      case 'transport':
-      case 'transportation':
-        return Icons.directions_car;
-      case 'home':
-      case 'housing':
-      case 'utilities':
-        return Icons.home;
-      case 'entertainment':
-      case 'fun':
-        return Icons.movie;
-      case 'health':
-      case 'medical':
-        return Icons.local_hospital;
-      case 'shopping':
-      case 'clothes':
-        return Icons.shopping_bag;
-      case 'education':
-      case 'learning':
-        return Icons.school;
-      case 'travel':
-      case 'vacation':
-        return Icons.flight;
-      default:
-        return Icons.category;
-    }
   }
 
   void _loadExpenseCategories() {
@@ -374,13 +335,6 @@ class ProExpensesIncomeController extends GetxController {
         amountController.clear();
         descriptionController.clear();
         clearSelections();
-        try {
-          final home = Get.find<HomeController>();
-          home.setNavIndex(0);
-          Get.offAllNamed(AppRoutes.mainHome);
-        } catch (_) {
-          Get.offAllNamed(AppRoutes.mainHome);
-        }
       } else {
         _showScaffoldMessage(
           _expenseController.errorMessage.value.isNotEmpty
@@ -426,13 +380,6 @@ class ProExpensesIncomeController extends GetxController {
         amountController.clear();
         descriptionController.clear();
         clearSelections();
-        try {
-          final home = Get.find<HomeController>();
-          home.setNavIndex(0);
-          Get.offAllNamed(AppRoutes.mainHome);
-        } catch (_) {
-          Get.offAllNamed(AppRoutes.mainHome);
-        }
       } catch (e) {
         _showScaffoldMessage('Failed to add income', isError: true);
       } finally {
@@ -504,25 +451,6 @@ class ProExpensesIncomeController extends GetxController {
     } finally {
       isProcessingOCR.value = false;
     }
-  }
-
-  Future<void> processOCRFromBarcode(bool isExpense) async {
-    if (!isExpense) {
-      Get.snackbar('Error', 'OCR currently supports expenses only');
-      return;
-    }
-    if (kIsWeb) {
-      await _promptAndProcessRawText(isExpense, title: 'Enter Receipt Text (Barcode)');
-      return;
-    }
-    final result = await Get.to(() => const BarcodeScannerScreen());
-    final scanned = (result is String) ? result.trim() : '';
-    if (scanned.isEmpty) {
-      Get.snackbar('Warning', 'No readable code found. Enter manually.');
-      await _promptAndProcessRawText(isExpense, title: 'Enter Receipt Text (Barcode)');
-      return;
-    }
-    await _handleOcrRawText(scanned, isExpense);
   }
 
   Future<void> _promptAndProcessRawText(bool isExpense, {String title = 'Enter Receipt Text'}) async {

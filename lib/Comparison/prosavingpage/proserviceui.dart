@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../Settings/appearance/ThemeController.dart';
+import 'package:your_expense/services/currency_service.dart';
 import 'prosavings_controller.dart';
 
 class ProSavingsPage extends StatelessWidget {
@@ -12,6 +13,7 @@ class ProSavingsPage extends StatelessWidget {
     final bool isDarkMode = themeController.isDarkModeActive;
 
     final ProSavingsController controller = Get.put(ProSavingsController());
+    final CurrencyService currencyService = Get.find<CurrencyService>();
 
     return WillPopScope(
       onWillPop: () async {
@@ -24,9 +26,11 @@ class ProSavingsPage extends StatelessWidget {
           backgroundColor: isDarkMode ? const Color(0xFF1E1E1E) : Colors.white,
           elevation: 0,
           leading: IconButton(
-            icon: Icon(Icons.arrow_back_ios,
-                color: isDarkMode ? Colors.white : Colors.black,
-                size: 20),
+            icon: Icon(
+              Icons.arrow_back_ios,
+              color: isDarkMode ? Colors.white : Colors.black,
+              size: 20,
+            ),
             onPressed: () => Get.back(),
           ),
           title: Text(
@@ -64,7 +68,7 @@ class ProSavingsPage extends StatelessWidget {
                     ElevatedButton(
                       onPressed: () => controller.fetchSavings(),
                       child: Text('Retry'),
-                    )
+                    ),
                   ],
                 ),
               ),
@@ -104,19 +108,25 @@ class ProSavingsPage extends StatelessWidget {
                             'totalSaving'.tr,
                             style: TextStyle(
                               fontSize: 14,
-                              color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
+                              color: isDarkMode
+                                  ? Colors.grey[400]
+                                  : Colors.grey[600],
                               fontWeight: FontWeight.w400,
                             ),
                           ),
                           const SizedBox(height: 4),
-                          Obx(() => Text(
-                                '\$${controller.totalSavings.value.toStringAsFixed(2)}',
-                                style: TextStyle(
-                                  fontSize: 32,
-                                  fontWeight: FontWeight.bold,
-                                  color: isDarkMode ? Colors.white : Colors.black,
-                                ),
-                              )),
+                          Obx(
+                            () => Text(
+                              currencyService.formatAmount(
+                                controller.totalSavings.value,
+                              ),
+                              style: TextStyle(
+                                fontSize: 32,
+                                fontWeight: FontWeight.bold,
+                                color: isDarkMode ? Colors.white : Colors.black,
+                              ),
+                            ),
+                          ),
                         ],
                       ),
                       // Container(
@@ -150,18 +160,23 @@ class ProSavingsPage extends StatelessWidget {
                 ),
 
                 // Chart Section (dynamic)
-                Obx(() => Container(
-                      height: 220,
-                      margin: const EdgeInsets.symmetric(horizontal: 16),
-                      child: _buildGraph(isDarkMode, controller),
-                    )),
+                Obx(
+                  () => Container(
+                    height: 220,
+                    margin: const EdgeInsets.symmetric(horizontal: 16),
+                    child: _buildGraph(isDarkMode, controller),
+                  ),
+                ),
 
                 // Products names row (under the graph)
                 Obx(() {
                   final items = controller.graphItems;
                   if (items.isEmpty) return const SizedBox.shrink();
                   return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0,
+                      vertical: 8.0,
+                    ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -180,19 +195,28 @@ class ProSavingsPage extends StatelessWidget {
                             children: items.map((m) {
                               return Container(
                                 margin: const EdgeInsets.only(right: 12),
-                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                  vertical: 6,
+                                ),
                                 decoration: BoxDecoration(
-                                  color: isDarkMode ? const Color(0xFF1E1E1E) : Colors.grey[100],
+                                  color: isDarkMode
+                                      ? const Color(0xFF1E1E1E)
+                                      : Colors.grey[100],
                                   borderRadius: BorderRadius.circular(14),
                                   border: Border.all(
-                                    color: isDarkMode ? const Color(0xFF333333) : Colors.grey[300]!,
+                                    color: isDarkMode
+                                        ? const Color(0xFF333333)
+                                        : Colors.grey[300]!,
                                   ),
                                 ),
                                 child: Text(
                                   (m['label'] as String),
                                   style: TextStyle(
                                     fontSize: 12,
-                                    color: isDarkMode ? Colors.grey[300] : Colors.grey[700],
+                                    color: isDarkMode
+                                        ? Colors.grey[300]
+                                        : Colors.grey[700],
                                   ),
                                 ),
                               );
@@ -215,21 +239,43 @@ class ProSavingsPage extends StatelessWidget {
                   margin: const EdgeInsets.symmetric(horizontal: 16),
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: isDarkMode ? const Color(0xFF1E1E1E) : Colors.grey[50],
+                    color: isDarkMode
+                        ? const Color(0xFF1E1E1E)
+                        : Colors.grey[50],
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Obx(() => Column(
-                        children: [
-                          _buildSummaryRow('withoutAppsTotal'.tr, '\$${controller.totalInitial.value.toStringAsFixed(2)}',
-                              isDarkMode ? Colors.white : Colors.black, isDarkMode),
-                          const SizedBox(height: 8),
-                          _buildSummaryRow('withAppsTotal'.tr, '\$${controller.totalActual.value.toStringAsFixed(2)}',
-                              isDarkMode ? Colors.white : Colors.black, isDarkMode),
-                          const SizedBox(height: 8),
-                          _buildSummaryRow('totalSavingAmount'.tr, '\$${controller.totalSavings.value.toStringAsFixed(2)}',
-                              const Color(0xFF88C999), isDarkMode),
-                          const SizedBox(height: 8),
-                          Builder(builder: (_) {
+                  child: Obx(
+                    () => Column(
+                      children: [
+                        _buildSummaryRow(
+                          'withoutAppsTotal'.tr,
+                          currencyService.formatAmount(
+                            controller.totalInitial.value,
+                          ),
+                          isDarkMode ? Colors.white : Colors.black,
+                          isDarkMode,
+                        ),
+                        const SizedBox(height: 8),
+                        _buildSummaryRow(
+                          'withAppsTotal'.tr,
+                          currencyService.formatAmount(
+                            controller.totalActual.value,
+                          ),
+                          isDarkMode ? Colors.white : Colors.black,
+                          isDarkMode,
+                        ),
+                        const SizedBox(height: 8),
+                        _buildSummaryRow(
+                          'totalSavingAmount'.tr,
+                          currencyService.formatAmount(
+                            controller.totalSavings.value,
+                          ),
+                          const Color(0xFF88C999),
+                          isDarkMode,
+                        ),
+                        const SizedBox(height: 8),
+                        Builder(
+                          builder: (_) {
                             final init = controller.totalInitial.value;
                             final sav = controller.totalSavings.value;
                             final pct = init > 0 ? (sav / init * 100) : 0.0;
@@ -247,9 +293,11 @@ class ProSavingsPage extends StatelessWidget {
                                 color: const Color(0xFF88C999),
                               ),
                             );
-                          }),
-                        ],
-                      )),
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
 
                 const SizedBox(height: 24),
@@ -268,96 +316,122 @@ class ProSavingsPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
 
-                Obx(() => ListView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: controller.recentPurchases.length,
-                      itemBuilder: (context, index) {
-                        final item = controller.recentPurchases[index];
-                        return Container(
-                          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                          child: Row(
-                            children: [
-                              // Icon
-                              Container(
-                                width: 32,
-                                height: 32,
-                                decoration: BoxDecoration(
-                                  color: isDarkMode ? const Color(0xFF1E1E1E) : Colors.white,
-                                  borderRadius: BorderRadius.circular(6),
-                                  border: Border.all(
-                                    color: isDarkMode ? const Color(0xFF333333) : Colors.grey[200]!,
-                                  ),
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(4),
-                                  child: Image.asset(
-                                    item['iconAsset'],
-                                    color: item['iconColor'],
-                                    errorBuilder: (context, error, stackTrace) {
-                                      return Icon(Icons.shopping_bag, color: item['iconColor'], size: 18);
-                                    },
-                                  ),
+                Obx(
+                  () => ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: controller.recentPurchases.length,
+                    itemBuilder: (context, index) {
+                      final item = controller.recentPurchases[index];
+                      return Container(
+                        margin: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 8,
+                        ),
+                        child: Row(
+                          children: [
+                            // Icon
+                            Container(
+                              width: 32,
+                              height: 32,
+                              decoration: BoxDecoration(
+                                color: isDarkMode
+                                    ? const Color(0xFF1E1E1E)
+                                    : Colors.white,
+                                borderRadius: BorderRadius.circular(6),
+                                border: Border.all(
+                                  color: isDarkMode
+                                      ? const Color(0xFF333333)
+                                      : Colors.grey[200]!,
                                 ),
                               ),
-                              const SizedBox(width: 12),
-                              // Transaction Details
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          item['title'],
-                                          style: TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w600,
-                                            color: isDarkMode ? Colors.white : Colors.black,
-                                          ),
-                                        ),
-                                        Text(
-                                          '\$${(item['actual'] as double).toStringAsFixed(2)}',
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w600,
-                                            color: isDarkMode ? Colors.white : Colors.black,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(height: 4),
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Expanded(
-                                          child: Text(
-                                            item['date'],
-                                            style: TextStyle(
-                                              fontSize: 14,
-                                              color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
-                                            ),
-                                          ),
-                                        ),
-                                        Text(
-                                          '\$${(item['initial'] as double).toStringAsFixed(2)}',
-                                          style: const TextStyle(
-                                            fontSize: 14,
-                                            decoration: TextDecoration.lineThrough,
-                                            color: Colors.grey,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
+                              child: Padding(
+                                padding: const EdgeInsets.all(4),
+                                child: Image.asset(
+                                  item['iconAsset'],
+                                  color: item['iconColor'],
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Icon(
+                                      Icons.shopping_bag,
+                                      color: item['iconColor'],
+                                      size: 18,
+                                    );
+                                  },
                                 ),
                               ),
-                            ],
-                          ),
-                        );
-                      },
-                    )),
+                            ),
+                            const SizedBox(width: 12),
+                            // Transaction Details
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        item['title'],
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w600,
+                                          color: isDarkMode
+                                              ? Colors.white
+                                              : Colors.black,
+                                        ),
+                                      ),
+                                      Text(
+                                        currencyService.formatAmount(
+                                          item['actual'] as double,
+                                        ),
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600,
+                                          color: isDarkMode
+                                              ? Colors.white
+                                              : Colors.black,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          item['date'],
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            color: isDarkMode
+                                                ? Colors.grey[400]
+                                                : Colors.grey[600],
+                                          ),
+                                        ),
+                                      ),
+                                      Text(
+                                        currencyService.formatAmount(
+                                          item['initial'] as double,
+                                        ),
+                                        style: const TextStyle(
+                                          fontSize: 14,
+                                          decoration:
+                                              TextDecoration.lineThrough,
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                ),
                 const SizedBox(height: 20),
               ],
             ),
@@ -370,13 +444,17 @@ class ProSavingsPage extends StatelessWidget {
   Widget _buildGraph(bool isDarkMode, ProSavingsController controller) {
     // Always show grouped category bars, scaled by a global max
     final values = controller.topCategories
-        .expand((cat) => [
-              (cat['initial'] as double),
-              (cat['actual'] as double),
-              (cat['savings'] as double),
-            ])
+        .expand(
+          (cat) => [
+            (cat['initial'] as double),
+            (cat['actual'] as double),
+            (cat['savings'] as double),
+          ],
+        )
         .toList();
-    final maxVal = values.isEmpty ? 1.0 : values.reduce((a, b) => a > b ? a : b);
+    final maxVal = values.isEmpty
+        ? 1.0
+        : values.reduce((a, b) => a > b ? a : b);
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -422,7 +500,14 @@ class ProSavingsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildBarGroup(String label, double original, double usingApp, double savings, double maxV, bool isDarkMode) {
+  Widget _buildBarGroup(
+    String label,
+    double original,
+    double usingApp,
+    double savings,
+    double maxV,
+    bool isDarkMode,
+  ) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
@@ -492,10 +577,7 @@ class ProSavingsPage extends StatelessWidget {
         Container(
           width: 8,
           height: 8,
-          decoration: BoxDecoration(
-            color: color,
-            shape: BoxShape.circle,
-          ),
+          decoration: BoxDecoration(color: color, shape: BoxShape.circle),
         ),
         const SizedBox(width: 4),
         Text(
@@ -509,7 +591,12 @@ class ProSavingsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildSummaryRow(String label, String value, Color valueColor, bool isDarkMode) {
+  Widget _buildSummaryRow(
+    String label,
+    String value,
+    Color valueColor,
+    bool isDarkMode,
+  ) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -541,13 +628,20 @@ class ProSavingsPage extends StatelessWidget {
   }
 
   List<Widget> _scaleLabels(List<double> values, bool isDarkMode) {
-    final maxV = values.isEmpty ? 100.0 : values.reduce((a, b) => a > b ? a : b);
+    final maxV = values.isEmpty
+        ? 100.0
+        : values.reduce((a, b) => a > b ? a : b);
     final steps = [maxV, maxV * 0.8, maxV * 0.6, maxV * 0.4, maxV * 0.2, 0.0];
     return steps
-        .map((v) => Text(
-              v == 0.0 ? '0' : v.toStringAsFixed(0),
-              style: TextStyle(fontSize: 11, color: isDarkMode ? Colors.grey[400] : Colors.grey[600]),
-            ))
+        .map(
+          (v) => Text(
+            v == 0.0 ? '0' : v.toStringAsFixed(0),
+            style: TextStyle(
+              fontSize: 11,
+              color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
+            ),
+          ),
+        )
         .toList();
   }
 }

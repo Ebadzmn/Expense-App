@@ -18,7 +18,6 @@ import 'package:your_expense/services/config_service.dart'; // Add this import
 import 'package:your_expense/services/ocr_service.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
-import 'package:your_expense/add_exp/common/barcode_scanner_screen.dart';
 import 'package:your_expense/Analytics/expense_model.dart';
 import 'package:your_expense/services/subscription_service.dart';
 
@@ -57,12 +56,16 @@ class AppStyles {
   );
 
   static const EdgeInsets defaultPadding = EdgeInsets.all(16.0);
-  static const EdgeInsets buttonPadding = EdgeInsets.symmetric(horizontal: 16, vertical: 12);
+  static const EdgeInsets buttonPadding = EdgeInsets.symmetric(
+    horizontal: 16,
+    vertical: 12,
+  );
   static const EdgeInsets iconPadding = EdgeInsets.all(12);
   static const double defaultRadius = 12.0;
 }
 
-class ReceiptButton extends StatefulWidget { // Changed to Stateful for loading state if needed
+class ReceiptButton extends StatefulWidget {
+  // Changed to Stateful for loading state if needed
   final String iconPath;
   final String label;
   final Color iconColor;
@@ -107,18 +110,21 @@ class _ReceiptButtonState extends State<ReceiptButton> {
             child: _isLoading
                 ? const Center(child: CircularProgressIndicator(strokeWidth: 2))
                 : Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Image.asset(
-                widget.iconPath,
-                color: widget.iconColor,
-                width: 30,
-                height: 30,
-                fit: BoxFit.contain,
-                errorBuilder: (context, error, stackTrace) {
-                  return Icon(Icons.error, color: widget.isDarkMode ? Colors.white : Colors.red);
-                },
-              ),
-            ),
+                    padding: const EdgeInsets.all(12.0),
+                    child: Image.asset(
+                      widget.iconPath,
+                      color: widget.iconColor,
+                      width: 30,
+                      height: 30,
+                      fit: BoxFit.contain,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Icon(
+                          Icons.error,
+                          color: widget.isDarkMode ? Colors.white : Colors.red,
+                        );
+                      },
+                    ),
+                  ),
           ),
           const SizedBox(height: 8),
           Text(widget.label.tr, style: AppStyles.buttonText(widget.isDarkMode)),
@@ -156,17 +162,26 @@ class CategoryItem extends StatelessWidget {
             Container(
               padding: AppStyles.iconPadding,
               decoration: BoxDecoration(
-                color: isSelected ? AppColors.primary : (isDarkMode ? const Color(0xFF2A2A2A) : AppColors.grey200),
+                color: isSelected
+                    ? AppColors.primary
+                    : (isDarkMode
+                          ? const Color(0xFF2A2A2A)
+                          : AppColors.grey200),
                 borderRadius: BorderRadius.circular(AppStyles.defaultRadius),
               ),
               child: Image.asset(
                 iconPath,
-                color: isSelected ? AppColors.text50 : (isDarkMode ? Colors.white : AppColors.text900),
+                color: isSelected
+                    ? AppColors.text50
+                    : (isDarkMode ? Colors.white : AppColors.text900),
                 width: 24,
                 height: 24,
                 fit: BoxFit.contain,
                 errorBuilder: (context, error, stackTrace) {
-                  return Icon(Icons.error, color: isDarkMode ? Colors.white : Colors.red);
+                  return Icon(
+                    Icons.error,
+                    color: isDarkMode ? Colors.white : Colors.red,
+                  );
                 },
               ),
             ),
@@ -199,61 +214,81 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Obx(() => DefaultTabController(
-      length: 2,
-      initialIndex: _selectedIndex,
-      child: Scaffold(
-        backgroundColor: themeController.isDarkModeActive ? const Color(0xFF121212) : AppColors.text50,
-        appBar: AppBar(
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back, color: themeController.isDarkModeActive ? Colors.white : Colors.black),
-            onPressed: Get.back,
-          ),
-          title: Text(
-            _selectedIndex == 0 ? 'addExpense'.tr : 'addIncome'.tr,
-            style: GoogleFonts.inter(
-              fontWeight: FontWeight.bold,
-              fontSize: 20,
-              color: themeController.isDarkModeActive ? Colors.white : AppColors.text900,
+    return Obx(
+      () => DefaultTabController(
+        length: 2,
+        initialIndex: _selectedIndex,
+        child: Scaffold(
+          backgroundColor: themeController.isDarkModeActive
+              ? const Color(0xFF121212)
+              : AppColors.text50,
+          appBar: AppBar(
+            leading: IconButton(
+              icon: Icon(
+                Icons.arrow_back,
+                color: themeController.isDarkModeActive
+                    ? Colors.white
+                    : Colors.black,
+              ),
+              onPressed: Get.back,
             ),
-          ),
-          centerTitle: true,
-          backgroundColor: themeController.isDarkModeActive ? const Color(0xFF1E1E1E) : AppColors.text50,
-          bottom: PreferredSize(
-            preferredSize: const Size.fromHeight(50),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: themeController.isDarkModeActive ? const Color(0xFF2A2A2A) : AppColors.grey200,
-                  borderRadius: BorderRadius.circular(25),
+            title: Text(
+              _selectedIndex == 0 ? 'addExpense'.tr : 'addIncome'.tr,
+              style: GoogleFonts.inter(
+                fontWeight: FontWeight.bold,
+                fontSize: 20,
+                color: themeController.isDarkModeActive
+                    ? Colors.white
+                    : AppColors.text900,
+              ),
+            ),
+            centerTitle: true,
+            backgroundColor: themeController.isDarkModeActive
+                ? const Color(0xFF1E1E1E)
+                : AppColors.text50,
+            bottom: PreferredSize(
+              preferredSize: const Size.fromHeight(50),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
                 ),
-                child: TabBar(
-                  indicatorSize: TabBarIndicatorSize.tab,
-                  indicator: BoxDecoration(
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: themeController.isDarkModeActive
+                        ? const Color(0xFF2A2A2A)
+                        : AppColors.grey200,
                     borderRadius: BorderRadius.circular(25),
-                    color: AppColors.primary,
                   ),
-                  labelColor: AppColors.text50,
-                  unselectedLabelColor: themeController.isDarkModeActive ? Colors.white : AppColors.text900,
-                  onTap: (index) => setState(() => _selectedIndex = index),
-                  tabs: [
-                    Tab(text: 'expense'.tr),
-                    Tab(text: 'income'.tr),
-                  ],
+                  child: TabBar(
+                    indicatorSize: TabBarIndicatorSize.tab,
+                    indicator: BoxDecoration(
+                      borderRadius: BorderRadius.circular(25),
+                      color: AppColors.primary,
+                    ),
+                    labelColor: AppColors.text50,
+                    unselectedLabelColor: themeController.isDarkModeActive
+                        ? Colors.white
+                        : AppColors.text900,
+                    onTap: (index) => setState(() => _selectedIndex = index),
+                    tabs: [
+                      Tab(text: 'expense'.tr),
+                      Tab(text: 'income'.tr),
+                    ],
+                  ),
                 ),
               ),
             ),
           ),
-        ),
-        body: TabBarView(
-          children: [
-            ExpensePage(isDarkMode: themeController.isDarkModeActive),
-            IncomePage(isDarkMode: themeController.isDarkModeActive),
-          ],
+          body: TabBarView(
+            children: [
+              ExpensePage(isDarkMode: themeController.isDarkModeActive),
+              IncomePage(isDarkMode: themeController.isDarkModeActive),
+            ],
+          ),
         ),
       ),
-    ));
+    );
   }
 }
 
@@ -273,8 +308,10 @@ class _ExpensePageState extends State<ExpensePage> {
   final ScrollController _paymentController = ScrollController();
   final ExpenseController _expenseController = Get.find();
   final TextEditingController _amountController = TextEditingController();
-  final ApiBaseService _apiService = Get.find<ApiBaseService>(); // Add API service
-  final ConfigService _configService = Get.find<ConfigService>(); // Add config service
+  final ApiBaseService _apiService =
+      Get.find<ApiBaseService>(); // Add API service
+  final ConfigService _configService =
+      Get.find<ConfigService>(); // Add config service
   bool _isSavingExpense = false;
   DateTime? _selectedDate;
   TimeOfDay? _selectedTime;
@@ -345,10 +382,18 @@ class _ExpensePageState extends State<ExpensePage> {
         // Optionally clear fields or refresh
         _amountController.clear();
       } else {
-        Get.snackbar('error'.tr, response['message'] ?? 'ocrError'.tr, snackPosition: SnackPosition.BOTTOM);
+        Get.snackbar(
+          'error'.tr,
+          response['message'] ?? 'ocrError'.tr,
+          snackPosition: SnackPosition.BOTTOM,
+        );
       }
     } catch (e) {
-      Get.snackbar('error'.tr, 'apiError'.tr, snackPosition: SnackPosition.BOTTOM);
+      Get.snackbar(
+        'error'.tr,
+        'apiError'.tr,
+        snackPosition: SnackPosition.BOTTOM,
+      );
     }
   }
 
@@ -370,8 +415,14 @@ class _ExpensePageState extends State<ExpensePage> {
         return;
       }
       final picker = ImagePicker();
-      final XFile? image = await picker.pickImage(source: ImageSource.camera, imageQuality: 85);
-      if (image == null) { _isProcessingOCR.value = false; return; }
+      final XFile? image = await picker.pickImage(
+        source: ImageSource.camera,
+        imageQuality: 85,
+      );
+      if (image == null) {
+        _isProcessingOCR.value = false;
+        return;
+      }
       final rawText = await _ocrService.extractTextFromImagePath(image.path);
       if ((rawText ?? '').trim().isEmpty) {
         Get.snackbar('warning'.tr, 'noTextFound'.tr);
@@ -399,8 +450,14 @@ class _ExpensePageState extends State<ExpensePage> {
         return;
       }
       final picker = ImagePicker();
-      final XFile? image = await picker.pickImage(source: ImageSource.gallery, imageQuality: 85);
-      if (image == null) { _isProcessingOCR.value = false; return; }
+      final XFile? image = await picker.pickImage(
+        source: ImageSource.gallery,
+        imageQuality: 85,
+      );
+      if (image == null) {
+        _isProcessingOCR.value = false;
+        return;
+      }
       final rawText = await _ocrService.extractTextFromImagePath(image.path);
       if ((rawText ?? '').trim().isEmpty) {
         Get.snackbar('warning'.tr, 'noTextFound'.tr);
@@ -415,30 +472,12 @@ class _ExpensePageState extends State<ExpensePage> {
     }
   }
 
-  Future<void> _processOCRFromBarcode() async {
-    final sub = Get.find<SubscriptionService>();
-    if (!sub.isActivePro) {
-      _showProGateDialog(isExpense: true);
-      return;
-    }
-    if (kIsWeb) {
-      await _promptAndProcessRawText(title: 'enterReceiptTextBarcode'.tr);
-      return;
-    }
-    final result = await Get.to(() => const BarcodeScannerScreen());
-    final scanned = (result is String) ? result.trim() : '';
-    if (scanned.isEmpty) {
-      Get.snackbar('warning'.tr, 'noTextFound'.tr);
-      await _promptAndProcessRawText(title: 'enterReceiptTextBarcode'.tr);
-      return;
-    }
-    await _handleOcrRawText(scanned);
-  }
-
   void _showProGateDialog({required bool isExpense}) {
     Get.dialog(
       Dialog(
-        backgroundColor: widget.isDarkMode ? const Color(0xFF1E1E1E) : Colors.white,
+        backgroundColor: widget.isDarkMode
+            ? const Color(0xFF1E1E1E)
+            : Colors.white,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         child: Stack(
           children: [
@@ -463,7 +502,9 @@ class _ExpensePageState extends State<ExpensePage> {
                     'graphsAndReports'.tr,
                     style: TextStyle(
                       fontSize: 14,
-                      color: widget.isDarkMode ? Colors.white70 : Colors.black54,
+                      color: widget.isDarkMode
+                          ? Colors.white70
+                          : Colors.black54,
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -487,9 +528,10 @@ class _ExpensePageState extends State<ExpensePage> {
                         child: OutlinedButton(
                           onPressed: () {
                             Get.back();
-                            Get.toNamed(AppRoutes.advertisement, arguments: {
-                              'isFromExpense': isExpense,
-                            });
+                            Get.toNamed(
+                              AppRoutes.advertisement,
+                              arguments: {'isFromExpense': isExpense},
+                            );
                           },
                           style: OutlinedButton.styleFrom(
                             side: const BorderSide(color: Color(0xFF2196F3)),
@@ -506,7 +548,10 @@ class _ExpensePageState extends State<ExpensePage> {
               right: 8,
               top: 8,
               child: IconButton(
-                icon: Icon(Icons.close, color: widget.isDarkMode ? Colors.white70 : Colors.black54),
+                icon: Icon(
+                  Icons.close,
+                  color: widget.isDarkMode ? Colors.white70 : Colors.black54,
+                ),
                 onPressed: () => Get.back(),
               ),
             ),
@@ -578,19 +623,30 @@ class _ExpensePageState extends State<ExpensePage> {
           } catch (_) {}
         });
       }
-      Get.snackbar('success'.tr, 'ocrExpenseCreated'.tr, snackPosition: SnackPosition.BOTTOM);
+      Get.snackbar(
+        'success'.tr,
+        'ocrExpenseCreated'.tr,
+        snackPosition: SnackPosition.BOTTOM,
+      );
     } catch (e) {
-      Get.snackbar('error'.tr, 'ocrRequestFailed'.tr, snackPosition: SnackPosition.BOTTOM);
+      Get.snackbar(
+        'error'.tr,
+        'ocrRequestFailed'.tr,
+        snackPosition: SnackPosition.BOTTOM,
+      );
     } finally {
       _isProcessingOCR.value = false;
     }
   }
 
-
   String _iconForCategoryName(String name) {
     final match = CategoryModel.getExpenseCategories().firstWhere(
-          (c) => c.name.toLowerCase() == name.toLowerCase(),
-      orElse: () => CategoryModel(name: name, icon: 'assets/icons/money.png', type: 'expense'),
+      (c) => c.name.toLowerCase() == name.toLowerCase(),
+      orElse: () => CategoryModel(
+        name: name,
+        icon: 'assets/icons/money.png',
+        type: 'expense',
+      ),
     );
     return match.icon;
   }
@@ -606,7 +662,10 @@ class _ExpensePageState extends State<ExpensePage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text('scanOrUploadReceipt'.tr, style: AppStyles.sectionHeader(widget.isDarkMode)),
+                Text(
+                  'scanOrUploadReceipt'.tr,
+                  style: AppStyles.sectionHeader(widget.isDarkMode),
+                ),
                 const SizedBox(height: 10),
                 _buildReceiptButtons(),
                 const SizedBox(height: 20),
@@ -644,15 +703,6 @@ class _ExpensePageState extends State<ExpensePage> {
             onTap: () => _processOCRFromCamera(),
           ),
           ReceiptButton(
-            iconPath: 'assets/icons/barcodescanneroc.png',
-            label: 'barcode'.tr,
-            iconColor: AppColors.expenseButtonIcon,
-            backgroundColor: AppColors.expenseButtonBackground,
-            borderColor: Colors.black.withOpacity(0.3),
-            isDarkMode: widget.isDarkMode,
-            onTap: () => _processOCRFromBarcode(),
-          ),
-          ReceiptButton(
             iconPath: 'assets/icons/galleryoc.png',
             label: 'gallery'.tr,
             iconColor: AppColors.expenseButtonIcon,
@@ -672,7 +722,10 @@ class _ExpensePageState extends State<ExpensePage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('selectCategory'.tr, style: AppStyles.sectionHeader(widget.isDarkMode)),
+        Text(
+          'selectCategory'.tr,
+          style: AppStyles.sectionHeader(widget.isDarkMode),
+        ),
         const SizedBox(height: 10),
         SizedBox(
           height: 100,
@@ -729,13 +782,19 @@ class _ExpensePageState extends State<ExpensePage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.info_outline, color: widget.isDarkMode ? Colors.grey[400] : AppColors.grey500, size: 16),
+              Icon(
+                Icons.info_outline,
+                color: widget.isDarkMode ? Colors.grey[400] : AppColors.grey500,
+                size: 16,
+              ),
               const SizedBox(width: 5),
               Flexible(
                 child: Text(
                   'proFeatureOnly'.tr,
                   style: GoogleFonts.inter(
-                    color: widget.isDarkMode ? Colors.grey[400] : AppColors.grey500,
+                    color: widget.isDarkMode
+                        ? Colors.grey[400]
+                        : AppColors.grey500,
                     fontSize: 12,
                   ),
                 ),
@@ -758,13 +817,19 @@ class _ExpensePageState extends State<ExpensePage> {
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
           decoration: InputDecoration(
             hintText: 'enterAmount'.tr,
-            hintStyle: GoogleFonts.inter(color: widget.isDarkMode ? Colors.grey[400] : AppColors.grey500),
+            hintStyle: GoogleFonts.inter(
+              color: widget.isDarkMode ? Colors.grey[400] : AppColors.grey500,
+            ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(AppStyles.defaultRadius),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(AppStyles.defaultRadius),
-              borderSide: BorderSide(color: widget.isDarkMode ? const Color(0xFF444444) : AppColors.grey200),
+              borderSide: BorderSide(
+                color: widget.isDarkMode
+                    ? const Color(0xFF444444)
+                    : AppColors.grey200,
+              ),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(AppStyles.defaultRadius),
@@ -772,9 +837,13 @@ class _ExpensePageState extends State<ExpensePage> {
             ),
             contentPadding: AppStyles.buttonPadding,
             filled: widget.isDarkMode,
-            fillColor: widget.isDarkMode ? const Color(0xFF2A2A2A) : Colors.transparent,
+            fillColor: widget.isDarkMode
+                ? const Color(0xFF2A2A2A)
+                : Colors.transparent,
           ),
-          style: GoogleFonts.inter(color: widget.isDarkMode ? Colors.white : Colors.black),
+          style: GoogleFonts.inter(
+            color: widget.isDarkMode ? Colors.white : Colors.black,
+          ),
         ),
       ],
     );
@@ -784,7 +853,10 @@ class _ExpensePageState extends State<ExpensePage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('paymentMethod'.tr, style: AppStyles.sectionHeader(widget.isDarkMode)),
+        Text(
+          'paymentMethod'.tr,
+          style: AppStyles.sectionHeader(widget.isDarkMode),
+        ),
         const SizedBox(height: 10),
         SizedBox(
           height: 100,
@@ -903,14 +975,20 @@ class _ExpensePageState extends State<ExpensePage> {
                 child: Container(
                   padding: AppStyles.buttonPadding,
                   decoration: BoxDecoration(
-                    color: widget.isDarkMode ? const Color(0xFF2A2A2A) : AppColors.grey200,
-                    borderRadius: BorderRadius.circular(AppStyles.defaultRadius),
+                    color: widget.isDarkMode
+                        ? const Color(0xFF2A2A2A)
+                        : AppColors.grey200,
+                    borderRadius: BorderRadius.circular(
+                      AppStyles.defaultRadius,
+                    ),
                   ),
                   child: Center(
                     child: Text(
                       pickedLabel,
                       style: GoogleFonts.inter(
-                        color: widget.isDarkMode ? Colors.white : AppColors.text900,
+                        color: widget.isDarkMode
+                            ? Colors.white
+                            : AppColors.text900,
                         fontSize: 12,
                       ),
                     ),
@@ -937,8 +1015,12 @@ class _ExpensePageState extends State<ExpensePage> {
         _buildUpgradeButton(
           icon: Icons.check_circle_outline,
           text: 'upgradeToPro'.tr,
-          color: widget.isDarkMode ? const Color(0xFF2A2A2A) : AppColors.grey200,
-          borderColor: widget.isDarkMode ? Colors.grey[600]! : AppColors.grey500,
+          color: widget.isDarkMode
+              ? const Color(0xFF2A2A2A)
+              : AppColors.grey200,
+          borderColor: widget.isDarkMode
+              ? Colors.grey[600]!
+              : AppColors.grey500,
         ),
         const SizedBox(height: 10),
         _buildAddButton(), // New Add button added here
@@ -956,7 +1038,7 @@ class _ExpensePageState extends State<ExpensePage> {
       onTap: () async {
         if (text.contains('watchVideoForFree'.tr)) {
           final result = await Get.to<bool>(
-                () => AdvertisementPage(isFromExpense: true),
+            () => AdvertisementPage(isFromExpense: true),
             routeName: AppRoutes.advertisement,
           );
 
@@ -981,15 +1063,18 @@ class _ExpensePageState extends State<ExpensePage> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon,
-                color: borderColor == AppColors.primary
-                    ? AppColors.primary
-                    : (widget.isDarkMode ? Colors.white : AppColors.text900)),
+            Icon(
+              icon,
+              color: borderColor == AppColors.primary
+                  ? AppColors.primary
+                  : (widget.isDarkMode ? Colors.white : AppColors.text900),
+            ),
             const SizedBox(width: 8),
             Flexible(
               child: Text(
                 text,
                 style: GoogleFonts.inter(
+                  fontSize: 12,
                   color: borderColor == AppColors.primary
                       ? AppColors.primary
                       : (widget.isDarkMode ? Colors.white : AppColors.text900),
@@ -1009,15 +1094,26 @@ class _ExpensePageState extends State<ExpensePage> {
         if (_isSavingExpense) return;
         final text = _amountController.text.trim();
         if (text.isEmpty) {
-          Get.snackbar('error'.tr, 'enterAmountError'.tr, snackPosition: SnackPosition.BOTTOM);
+          Get.snackbar(
+            'error'.tr,
+            'enterAmountError'.tr,
+            snackPosition: SnackPosition.BOTTOM,
+          );
           return;
         }
         final amount = double.tryParse(text);
         if (amount == null) {
-          Get.snackbar('error'.tr, 'enterAmountError'.tr, snackPosition: SnackPosition.BOTTOM);
+          Get.snackbar(
+            'error'.tr,
+            'enterAmountError'.tr,
+            snackPosition: SnackPosition.BOTTOM,
+          );
           return;
         }
-        final index = _selectedCategoryIndex.clamp(0, _expenseCategories.length - 1);
+        final index = _selectedCategoryIndex.clamp(
+          0,
+          _expenseCategories.length - 1,
+        );
         final categoryName = _expenseCategories[index]['name']!;
         DateTime effectiveDate;
         if (_selectedDate != null) {
@@ -1032,7 +1128,9 @@ class _ExpensePageState extends State<ExpensePage> {
         } else {
           effectiveDate = DateTime.now();
         }
-        setState(() { _isSavingExpense = true; });
+        setState(() {
+          _isSavingExpense = true;
+        });
         try {
           final success = await _expenseController.addExpense(
             amount: amount,
@@ -1041,19 +1139,16 @@ class _ExpensePageState extends State<ExpensePage> {
             date: effectiveDate,
           );
           if (success) {
-            Get.snackbar('success'.tr, 'transactionSuccess'.tr, snackPosition: SnackPosition.BOTTOM);
+            Get.snackbar(
+              'success'.tr,
+              'transactionSuccess'.tr,
+              snackPosition: SnackPosition.BOTTOM,
+            );
             _amountController.clear();
             setState(() {
               _selectedDate = null;
               _selectedTime = null;
             });
-            try {
-              final home = Get.find<HomeController>();
-              home.setNavIndex(0);
-              Get.offAllNamed(AppRoutes.mainHome);
-            } catch (_) {
-              Get.offAllNamed(AppRoutes.mainHome);
-            }
           } else {
             final msg = _expenseController.errorMessage.value.isNotEmpty
                 ? _expenseController.errorMessage.value
@@ -1061,7 +1156,9 @@ class _ExpensePageState extends State<ExpensePage> {
             Get.snackbar('error'.tr, msg, snackPosition: SnackPosition.BOTTOM);
           }
         } finally {
-          setState(() { _isSavingExpense = false; });
+          setState(() {
+            _isSavingExpense = false;
+          });
         }
       },
       child: Container(
@@ -1117,8 +1214,10 @@ class _IncomePageState extends State<IncomePage> {
   final ScrollController _paymentController = ScrollController();
   final IncomeService _incomeService = Get.find();
   final TextEditingController _incomeAmountController = TextEditingController();
-  final ApiBaseService _apiService = Get.find<ApiBaseService>(); // Add API service
-  final ConfigService _configService = Get.find<ConfigService>(); // Add config service
+  final ApiBaseService _apiService =
+      Get.find<ApiBaseService>(); // Add API service
+  final ConfigService _configService =
+      Get.find<ConfigService>(); // Add config service
   bool _isSavingIncome = false;
   DateTime? _selectedDate;
   TimeOfDay? _selectedTime;
@@ -1167,7 +1266,11 @@ class _IncomePageState extends State<IncomePage> {
 
   Future<void> _handleOcrRaw(String rawText) async {
     // Income OCR is not supported currently; show notice and exit
-    Get.snackbar('info'.tr, 'ocrSupportsExpensesOnly'.tr, snackPosition: SnackPosition.BOTTOM);
+    Get.snackbar(
+      'info'.tr,
+      'ocrSupportsExpensesOnly'.tr,
+      snackPosition: SnackPosition.BOTTOM,
+    );
     return;
   }
 
@@ -1177,12 +1280,7 @@ class _IncomePageState extends State<IncomePage> {
       _showProGateDialogIncome();
       return;
     }
-    String rawText;
-    if (option == 'camera' || option == 'gallery') {
-      rawText = "income: salary, amount tk 5000 received on oct 2025";
-    } else { // barcode
-      rawText = "barcode: INC123, amount: 1000, source: freelance";
-    }
+    String rawText = "income: salary, amount tk 5000 received on oct 2025";
     // TODO: Implement actual OCR using google_ml_kit or similar for camera/gallery
     // For barcode, use barcode scanner package to get code, then format as rawText
     await Future.delayed(const Duration(seconds: 2)); // Simulate processing
@@ -1242,7 +1340,10 @@ class _IncomePageState extends State<IncomePage> {
                         child: OutlinedButton(
                           onPressed: () {
                             Get.back();
-                            Get.toNamed(AppRoutes.advertisement, arguments: {'isFromExpense': false});
+                            Get.toNamed(
+                              AppRoutes.advertisement,
+                              arguments: {'isFromExpense': false},
+                            );
                           },
                           style: OutlinedButton.styleFrom(
                             side: const BorderSide(color: Color(0xFF2196F3)),
@@ -1259,7 +1360,10 @@ class _IncomePageState extends State<IncomePage> {
               right: 8,
               top: 8,
               child: IconButton(
-                icon: Icon(Icons.close, color: isDark ? Colors.white70 : Colors.black54),
+                icon: Icon(
+                  Icons.close,
+                  color: isDark ? Colors.white70 : Colors.black54,
+                ),
                 onPressed: () => Get.back(),
               ),
             ),
@@ -1281,7 +1385,10 @@ class _IncomePageState extends State<IncomePage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text('scanOrUploadReceipt'.tr, style: AppStyles.sectionHeader(widget.isDarkMode)),
+                Text(
+                  'scanOrUploadReceipt'.tr,
+                  style: AppStyles.sectionHeader(widget.isDarkMode),
+                ),
                 const SizedBox(height: 10),
                 _buildReceiptButtons(),
                 const SizedBox(height: 20),
@@ -1319,15 +1426,6 @@ class _IncomePageState extends State<IncomePage> {
             onTap: () => _simulateOcr('camera'), // Added onTap
           ),
           ReceiptButton(
-            iconPath: 'assets/icons/barcodescanneroc.png',
-            label: 'barcode'.tr,
-            iconColor: AppColors.incomeButtonIcon,
-            backgroundColor: AppColors.incomeButtonBackground,
-            borderColor: Colors.black.withOpacity(0.3),
-            isDarkMode: widget.isDarkMode,
-            onTap: () => _simulateOcr('barcode'), // Added onTap
-          ),
-          ReceiptButton(
             iconPath: 'assets/icons/galleryoc.png',
             label: 'gallery'.tr,
             iconColor: AppColors.incomeButtonIcon,
@@ -1346,7 +1444,10 @@ class _IncomePageState extends State<IncomePage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('selectCategory'.tr, style: AppStyles.sectionHeader(widget.isDarkMode)),
+        Text(
+          'selectCategory'.tr,
+          style: AppStyles.sectionHeader(widget.isDarkMode),
+        ),
         const SizedBox(height: 10),
         SizedBox(
           height: 100,
@@ -1403,13 +1504,19 @@ class _IncomePageState extends State<IncomePage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.info_outline, color: widget.isDarkMode ? Colors.grey[400] : AppColors.grey500, size: 16),
+              Icon(
+                Icons.info_outline,
+                color: widget.isDarkMode ? Colors.grey[400] : AppColors.grey500,
+                size: 16,
+              ),
               const SizedBox(width: 5),
               Flexible(
                 child: Text(
                   'proFeatureOnly'.tr,
                   style: GoogleFonts.inter(
-                    color: widget.isDarkMode ? Colors.grey[400] : AppColors.grey500,
+                    color: widget.isDarkMode
+                        ? Colors.grey[400]
+                        : AppColors.grey500,
                     fontSize: 12,
                   ),
                 ),
@@ -1431,13 +1538,19 @@ class _IncomePageState extends State<IncomePage> {
           controller: _incomeAmountController,
           decoration: InputDecoration(
             hintText: 'enterAmount'.tr,
-            hintStyle: GoogleFonts.inter(color: widget.isDarkMode ? Colors.grey[400] : AppColors.grey500),
+            hintStyle: GoogleFonts.inter(
+              color: widget.isDarkMode ? Colors.grey[400] : AppColors.grey500,
+            ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(AppStyles.defaultRadius),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(AppStyles.defaultRadius),
-              borderSide: BorderSide(color: widget.isDarkMode ? const Color(0xFF444444) : AppColors.grey200),
+              borderSide: BorderSide(
+                color: widget.isDarkMode
+                    ? const Color(0xFF444444)
+                    : AppColors.grey200,
+              ),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(AppStyles.defaultRadius),
@@ -1445,9 +1558,13 @@ class _IncomePageState extends State<IncomePage> {
             ),
             contentPadding: AppStyles.buttonPadding,
             filled: widget.isDarkMode,
-            fillColor: widget.isDarkMode ? const Color(0xFF2A2A2A) : Colors.transparent,
+            fillColor: widget.isDarkMode
+                ? const Color(0xFF2A2A2A)
+                : Colors.transparent,
           ),
-          style: GoogleFonts.inter(color: widget.isDarkMode ? Colors.white : Colors.black),
+          style: GoogleFonts.inter(
+            color: widget.isDarkMode ? Colors.white : Colors.black,
+          ),
         ),
       ],
     );
@@ -1457,7 +1574,10 @@ class _IncomePageState extends State<IncomePage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('paymentMethod'.tr, style: AppStyles.sectionHeader(widget.isDarkMode)),
+        Text(
+          'paymentMethod'.tr,
+          style: AppStyles.sectionHeader(widget.isDarkMode),
+        ),
         const SizedBox(height: 10),
         SizedBox(
           height: 100,
@@ -1576,14 +1696,20 @@ class _IncomePageState extends State<IncomePage> {
                 child: Container(
                   padding: AppStyles.buttonPadding,
                   decoration: BoxDecoration(
-                    color: widget.isDarkMode ? const Color(0xFF2A2A2A) : AppColors.grey200,
-                    borderRadius: BorderRadius.circular(AppStyles.defaultRadius),
+                    color: widget.isDarkMode
+                        ? const Color(0xFF2A2A2A)
+                        : AppColors.grey200,
+                    borderRadius: BorderRadius.circular(
+                      AppStyles.defaultRadius,
+                    ),
                   ),
                   child: Center(
                     child: Text(
                       pickedLabel,
                       style: GoogleFonts.inter(
-                        color: widget.isDarkMode ? Colors.white : AppColors.text900,
+                        color: widget.isDarkMode
+                            ? Colors.white
+                            : AppColors.text900,
                         fontSize: 12,
                       ),
                     ),
@@ -1610,8 +1736,12 @@ class _IncomePageState extends State<IncomePage> {
         _buildUpgradeButton(
           icon: Icons.check_circle_outline,
           text: 'upgradeToPro'.tr,
-          color: widget.isDarkMode ? const Color(0xFF2A2A2A) : AppColors.grey200,
-          borderColor: widget.isDarkMode ? Colors.grey[600]! : AppColors.grey500,
+          color: widget.isDarkMode
+              ? const Color(0xFF2A2A2A)
+              : AppColors.grey200,
+          borderColor: widget.isDarkMode
+              ? Colors.grey[600]!
+              : AppColors.grey500,
         ),
         const SizedBox(height: 10),
         _buildAddButton(), // New Add button added here
@@ -1629,7 +1759,7 @@ class _IncomePageState extends State<IncomePage> {
       onTap: () async {
         if (text.contains('watchVideoForFree'.tr)) {
           final result = await Get.to<bool>(
-                () => AdvertisementPage(isFromExpense: false),
+            () => AdvertisementPage(isFromExpense: false),
             routeName: AppRoutes.advertisement,
           );
 
@@ -1654,10 +1784,12 @@ class _IncomePageState extends State<IncomePage> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon,
-                color: borderColor == AppColors.primary
-                    ? AppColors.primary
-                    : (widget.isDarkMode ? Colors.white : AppColors.text900)),
+            Icon(
+              icon,
+              color: borderColor == AppColors.primary
+                  ? AppColors.primary
+                  : (widget.isDarkMode ? Colors.white : AppColors.text900),
+            ),
             const SizedBox(width: 8),
             Flexible(
               child: Text(
@@ -1682,15 +1814,26 @@ class _IncomePageState extends State<IncomePage> {
         if (_isSavingIncome) return;
         final text = _incomeAmountController.text.trim();
         if (text.isEmpty) {
-          Get.snackbar('error'.tr, 'enterAmountError'.tr, snackPosition: SnackPosition.BOTTOM);
+          Get.snackbar(
+            'error'.tr,
+            'enterAmountError'.tr,
+            snackPosition: SnackPosition.BOTTOM,
+          );
           return;
         }
         final amount = double.tryParse(text);
         if (amount == null || amount <= 0) {
-          Get.snackbar('error'.tr, 'enterAmountError'.tr, snackPosition: SnackPosition.BOTTOM);
+          Get.snackbar(
+            'error'.tr,
+            'enterAmountError'.tr,
+            snackPosition: SnackPosition.BOTTOM,
+          );
           return;
         }
-        final index = _selectedCategoryIndex.clamp(0, _incomeCategories.length - 1);
+        final index = _selectedCategoryIndex.clamp(
+          0,
+          _incomeCategories.length - 1,
+        );
         final source = _incomeCategories[index]['name']!;
         DateTime effectiveDate;
         if (_selectedDate != null) {
@@ -1705,32 +1848,41 @@ class _IncomePageState extends State<IncomePage> {
         } else {
           effectiveDate = DateTime.now();
         }
-        setState(() { _isSavingIncome = true; });
+        setState(() {
+          _isSavingIncome = true;
+        });
         try {
-          await _incomeService.createIncome(source: source, amount: amount, date: effectiveDate);
+          await _incomeService.createIncome(
+            source: source,
+            amount: amount,
+            date: effectiveDate,
+          );
           try {
             final home = Get.find<HomeController>();
             home.addTransaction(source, amount.toStringAsFixed(0), true);
             await home.fetchBudgetData();
             await home.fetchRecentTransactions();
           } catch (_) {}
-          Get.snackbar('success'.tr, 'transactionSuccess'.tr, snackPosition: SnackPosition.BOTTOM);
+          Get.snackbar(
+            'success'.tr,
+            'transactionSuccess'.tr,
+            snackPosition: SnackPosition.BOTTOM,
+          );
           _incomeAmountController.clear();
           setState(() {
             _selectedDate = null;
             _selectedTime = null;
           });
-          try {
-            final home = Get.find<HomeController>();
-            home.setNavIndex(0);
-            Get.offAllNamed(AppRoutes.mainHome);
-          } catch (_) {
-            Get.offAllNamed(AppRoutes.mainHome);
-          }
         } catch (e) {
-          Get.snackbar('error'.tr, 'transactionError'.tr, snackPosition: SnackPosition.BOTTOM);
+          Get.snackbar(
+            'error'.tr,
+            'transactionError'.tr,
+            snackPosition: SnackPosition.BOTTOM,
+          );
         } finally {
-          setState(() { _isSavingIncome = false; });
+          setState(() {
+            _isSavingIncome = false;
+          });
         }
       },
       child: Container(

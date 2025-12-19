@@ -3,12 +3,14 @@ import 'package:intl/intl.dart';
 import '../../home/home_controller.dart';
 import '../../services/api_base_service.dart';
 import '../../services/config_service.dart';
+import '../../services/currency_service.dart';
 import '../../services/token_service.dart';
 
 
 class MonthlyBudgetController extends GetxService {
   final ApiBaseService _apiBaseService = Get.find();
   final ConfigService _configService = Get.find();
+  final CurrencyService _currencyService = Get.find();
 
   // Observable variables for state management
   final isLoading = false.obs;
@@ -49,7 +51,10 @@ class MonthlyBudgetController extends GetxService {
 
   // Format currency for display
   String formatCurrency(double amount) {
-    final formatter = NumberFormat.currency(locale: 'en_US', symbol: '\$');
+    final formatter = NumberFormat.currency(
+      locale: 'en_US',
+      symbol: _currencyService.currencySymbol.value,
+    );
     return formatter.format(amount);
   }
 

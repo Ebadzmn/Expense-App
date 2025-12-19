@@ -6,7 +6,7 @@ import '../../Settings/appearance/ThemeController.dart';
 import '../../routes/app_routes.dart';
 import '../comparisongraphcontroller.dart';
 import 'package:your_expense/services/subscription_service.dart';
-
+import 'package:your_expense/services/currency_service.dart';
 
 class ComparisonGraphScreen extends StatelessWidget {
   const ComparisonGraphScreen({super.key});
@@ -19,7 +19,10 @@ class ComparisonGraphScreen extends StatelessWidget {
     final bool isDarkMode = themeController.isDarkModeActive;
 
     // Initialize the controller
-    final ComparisonGraphController controller = Get.put(ComparisonGraphController());
+    final ComparisonGraphController controller = Get.put(
+      ComparisonGraphController(),
+    );
+    final CurrencyService currencyService = Get.find<CurrencyService>();
 
     return Scaffold(
       backgroundColor: isDarkMode ? const Color(0xFF121212) : Colors.white,
@@ -27,21 +30,25 @@ class ComparisonGraphScreen extends StatelessWidget {
         backgroundColor: isDarkMode ? const Color(0xFF1E1E1E) : Colors.white,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios,
-              color: isDarkMode ? Colors.white : Colors.black,
-              size: 20),
+          icon: Icon(
+            Icons.arrow_back_ios,
+            color: isDarkMode ? Colors.white : Colors.black,
+            size: 20,
+          ),
           onPressed: () => Get.back(),
         ),
-        title: Obx(() => Text(
-          controller.isSpecificComparison.value
-              ? '${controller.productCategory.value} Savings'
-              : 'compareAndSave'.tr,
-          style: TextStyle(
-            color: isDarkMode ? Colors.white : Colors.black,
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
+        title: Obx(
+          () => Text(
+            controller.isSpecificComparison.value
+                ? '${controller.productCategory.value} Savings'
+                : 'compareAndSave'.tr,
+            style: TextStyle(
+              color: isDarkMode ? Colors.white : Colors.black,
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+            ),
           ),
-        )),
+        ),
         centerTitle: true,
       ),
       body: Obx(() {
@@ -71,11 +78,7 @@ class ComparisonGraphScreen extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(
-                    Icons.error_outline,
-                    color: Colors.red,
-                    size: 50,
-                  ),
+                  Icon(Icons.error_outline, color: Colors.red, size: 50),
                   SizedBox(height: 16),
                   Text(
                     'Error loading savings data',
@@ -120,7 +123,9 @@ class ComparisonGraphScreen extends StatelessWidget {
                   color: isDarkMode ? const Color(0xFF1E1E1E) : Colors.white,
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
-                    color: isDarkMode ? const Color(0xFF333333) : Colors.grey[200]!,
+                    color: isDarkMode
+                        ? const Color(0xFF333333)
+                        : Colors.grey[200]!,
                   ),
                 ),
                 child: Padding(
@@ -128,16 +133,18 @@ class ComparisonGraphScreen extends StatelessWidget {
                   child: Column(
                     children: [
                       // Graph Title
-                      Obx(() => Text(
-                        controller.isSpecificComparison.value
-                            ? 'Your Savings Comparison'
-                            : 'Overall Savings Trend',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: isDarkMode ? Colors.white : Colors.black,
+                      Obx(
+                        () => Text(
+                          controller.isSpecificComparison.value
+                              ? 'Your Savings Comparison'
+                              : 'Overall Savings Trend',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: isDarkMode ? Colors.white : Colors.black,
+                          ),
                         ),
-                      )),
+                      ),
                       SizedBox(height: 10),
 
                       // Graph Area
@@ -149,6 +156,8 @@ class ComparisonGraphScreen extends StatelessWidget {
                             originalPrice: controller.originalPrice.value,
                             withToolPrice: controller.withToolPrice.value,
                             savingsAmount: controller.savingsAmount.value,
+                            currencySymbol:
+                                currencyService.currencySymbol.value,
                           ),
                         ),
                       ),
@@ -160,7 +169,11 @@ class ComparisonGraphScreen extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           _buildLegendItem('Original', Colors.grey, isDarkMode),
-                          _buildLegendItem('With Tool', Colors.blue, isDarkMode),
+                          _buildLegendItem(
+                            'With Tool',
+                            Colors.blue,
+                            isDarkMode,
+                          ),
                           _buildLegendItem('Savings', Colors.green, isDarkMode),
                         ],
                       ),
@@ -172,155 +185,179 @@ class ComparisonGraphScreen extends StatelessWidget {
               SizedBox(height: screenHeight * 0.04),
 
               // Savings Summary Card
-              Obx(() => Container(
-                decoration: BoxDecoration(
-                  color: isDarkMode ? const Color(0xFF1E1E1E) : Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: isDarkMode ? const Color(0xFF333333) : Colors.grey[200]!,
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: isDarkMode ? Colors.black.withOpacity(0.3) : Colors.grey.withOpacity(0.1),
-                      blurRadius: 4,
-                      offset: const Offset(0, 2),
+              Obx(
+                () => Container(
+                  decoration: BoxDecoration(
+                    color: isDarkMode ? const Color(0xFF1E1E1E) : Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: isDarkMode
+                          ? const Color(0xFF333333)
+                          : Colors.grey[200]!,
                     ),
-                  ],
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        controller.isSpecificComparison.value
-                            ? 'Savings Summary'
-                            : 'Latest Savings',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: isDarkMode ? Colors.white : Colors.black,
-                        ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: isDarkMode
+                            ? Colors.black.withOpacity(0.3)
+                            : Colors.grey.withOpacity(0.1),
+                        blurRadius: 4,
+                        offset: const Offset(0, 2),
                       ),
-                      SizedBox(height: 12),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Original Price',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
-                                ),
-                              ),
-                              Text(
-                                '\$${controller.originalPrice.value.toStringAsFixed(2)}',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  color: isDarkMode ? Colors.white : Colors.black,
-                                ),
-                              ),
-                            ],
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'With Tool',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
-                                ),
-                              ),
-                              Text(
-                                '\$${controller.withToolPrice.value.toStringAsFixed(2)}',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.blue,
-                                ),
-                              ),
-                            ],
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'You Saved',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
-                                ),
-                              ),
-                              Text(
-                                '\$${controller.savingsAmount.value.toStringAsFixed(2)}',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.green[600],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 8),
-                      if (controller.originalPrice.value > 0)
-                        Text(
-                          'Savings: ${((controller.savingsAmount.value / controller.originalPrice.value) * 100).toStringAsFixed(1)}%',
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.green[600],
-                          ),
-                        ),
                     ],
                   ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          controller.isSpecificComparison.value
+                              ? 'Savings Summary'
+                              : 'Latest Savings',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: isDarkMode ? Colors.white : Colors.black,
+                          ),
+                        ),
+                        SizedBox(height: 12),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Original Price',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: isDarkMode
+                                        ? Colors.grey[400]
+                                        : Colors.grey[600],
+                                  ),
+                                ),
+                                Text(
+                                  currencyService.formatAmount(
+                                    controller.originalPrice.value,
+                                  ),
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: isDarkMode
+                                        ? Colors.white
+                                        : Colors.black,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'With Tool',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: isDarkMode
+                                        ? Colors.grey[400]
+                                        : Colors.grey[600],
+                                  ),
+                                ),
+                                Text(
+                                  currencyService.formatAmount(
+                                    controller.withToolPrice.value,
+                                  ),
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.blue,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'You Saved',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: isDarkMode
+                                        ? Colors.grey[400]
+                                        : Colors.grey[600],
+                                  ),
+                                ),
+                                Text(
+                                  currencyService.formatAmount(
+                                    controller.savingsAmount.value,
+                                  ),
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.green[600],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 8),
+                        if (controller.originalPrice.value > 0)
+                          Text(
+                            'Savings: ${((controller.savingsAmount.value / controller.originalPrice.value) * 100).toStringAsFixed(1)}%',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.green[600],
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
                 ),
-              )),
+              ),
 
               SizedBox(height: screenHeight * 0.03),
 
               // Purchase Now Button (only show for specific comparisons)
-              Obx(() => controller.isSpecificComparison.value ? SizedBox(
-                width: double.infinity,
-                height: 48,
-                child: ElevatedButton.icon(
-                  onPressed: () {
-                    final sub = Get.find<SubscriptionService>();
-                    if (sub.isActivePro) {
-                      Get.toNamed(AppRoutes.proSavings);
-                    } else {
-                      // Strict Pro-only: send non-Pro to Premium Plans (no ads)
-                      Get.toNamed(AppRoutes.premiumPlans);
-                    }
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    elevation: 0,
-                  ),
-                  icon: const Icon(
-                    Icons.shopping_bag_outlined,
-                    color: Colors.white,
-                    size: 20,
-                  ),
-                  label: Text(
-                    'viewAllPurchase'.tr,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-              ) : SizedBox()),
+              Obx(
+                () => controller.isSpecificComparison.value
+                    ? SizedBox(
+                        width: double.infinity,
+                        height: 48,
+                        child: ElevatedButton.icon(
+                          onPressed: () {
+                            final sub = Get.find<SubscriptionService>();
+                            if (sub.isActivePro) {
+                              Get.toNamed(AppRoutes.proSavings);
+                            } else {
+                              // Strict Pro-only: send non-Pro to Premium Plans (no ads)
+                              Get.toNamed(AppRoutes.premiumPlans);
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.blue,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            elevation: 0,
+                          ),
+                          icon: const Icon(
+                            Icons.shopping_bag_outlined,
+                            color: Colors.white,
+                            size: 20,
+                          ),
+                          label: Text(
+                            'viewAllPurchase'.tr,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      )
+                    : SizedBox(),
+              ),
 
               SizedBox(height: screenHeight * 0.04),
 
@@ -337,16 +374,18 @@ class ComparisonGraphScreen extends StatelessWidget {
 
               // Recent Purchase Items from API (limited to 3)
               if (controller.recentPurchases.isNotEmpty) ...[
-                ...controller.recentPurchases.take(3).map((purchase) =>
-                    _buildRecentPurchaseItem(
-                      iconAsset: purchase['iconAsset'],
-                      iconColor: purchase['iconColor'],
-                      title: purchase['categoryName'],
-                      date: purchase['date'],
-                      price: '\$${purchase['price'].toStringAsFixed(2)}',
-                      isDarkMode: isDarkMode,
+                ...controller.recentPurchases
+                    .take(3)
+                    .map(
+                      (purchase) => _buildRecentPurchaseItem(
+                        iconAsset: purchase['iconAsset'],
+                        iconColor: purchase['iconColor'],
+                        title: purchase['categoryName'],
+                        date: purchase['date'],
+                        price: currencyService.formatAmount(purchase['price']),
+                        isDarkMode: isDarkMode,
+                      ),
                     ),
-                ),
               ],
 
               // Show message if no recent purchases
@@ -358,7 +397,9 @@ class ComparisonGraphScreen extends StatelessWidget {
                     color: isDarkMode ? const Color(0xFF1E1E1E) : Colors.white,
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
-                      color: isDarkMode ? const Color(0xFF333333) : Colors.grey[200]!,
+                      color: isDarkMode
+                          ? const Color(0xFF333333)
+                          : Colors.grey[200]!,
                     ),
                   ),
                   child: Text(
@@ -376,39 +417,43 @@ class ComparisonGraphScreen extends StatelessWidget {
               SizedBox(height: screenHeight * 0.03),
 
               // View all Purchase Button
-  SizedBox(
-    width: double.infinity,
-    height: 48,
-    child: OutlinedButton(
-      onPressed: () {
-        // Route to Pro or Non-Pro Savings based on subscription status
-        final sub = Get.find<SubscriptionService>();
-        if (sub.isActivePro) {
-          Get.toNamed(AppRoutes.proSavings);
-        } else {
-          // Strict Pro-only: send non-Pro to Premium Plans (no ads)
-          Get.toNamed(AppRoutes.premiumPlans);
-        }
-      },
-      style: OutlinedButton.styleFrom(
-        side: BorderSide(
-          color: isDarkMode ? const Color(0xFF333333) : Colors.grey[300]!,
-        ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
-        backgroundColor: isDarkMode ? const Color(0xFF1E1E1E) : Colors.white,
-      ),
-      child: Text(
-        'view_all'.tr,
-        style: TextStyle(
-          color: isDarkMode ? Colors.white : Colors.black87,
-          fontSize: 16,
-          fontWeight: FontWeight.w500,
-        ),
-      ),
-    ),
-  ),
+              SizedBox(
+                width: double.infinity,
+                height: 48,
+                child: OutlinedButton(
+                  onPressed: () {
+                    // Route to Pro or Non-Pro Savings based on subscription status
+                    final sub = Get.find<SubscriptionService>();
+                    if (sub.isActivePro) {
+                      Get.toNamed(AppRoutes.proSavings);
+                    } else {
+                      // Strict Pro-only: send non-Pro to Premium Plans (no ads)
+                      Get.toNamed(AppRoutes.premiumPlans);
+                    }
+                  },
+                  style: OutlinedButton.styleFrom(
+                    side: BorderSide(
+                      color: isDarkMode
+                          ? const Color(0xFF333333)
+                          : Colors.grey[300]!,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    backgroundColor: isDarkMode
+                        ? const Color(0xFF1E1E1E)
+                        : Colors.white,
+                  ),
+                  child: Text(
+                    'view_all'.tr,
+                    style: TextStyle(
+                      color: isDarkMode ? Colors.white : Colors.black87,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ),
             ],
           ),
         );
@@ -482,11 +527,7 @@ class ComparisonGraphScreen extends StatelessWidget {
                   height: 20,
                   color: iconColor,
                   errorBuilder: (context, error, stackTrace) {
-                    return Icon(
-                      Icons.shopping_bag,
-                      color: iconColor,
-                      size: 20,
-                    );
+                    return Icon(Icons.shopping_bag, color: iconColor, size: 20);
                   },
                 ),
               ),
@@ -519,7 +560,9 @@ class ComparisonGraphScreen extends StatelessWidget {
                         date,
                         style: TextStyle(
                           fontSize: 12,
-                          color: isDarkMode ? Colors.grey[400] : Colors.grey[500],
+                          color: isDarkMode
+                              ? Colors.grey[400]
+                              : Colors.grey[500],
                         ),
                       ),
                     ],
@@ -549,21 +592,25 @@ class BarChartPainter extends CustomPainter {
   final double originalPrice;
   final double withToolPrice;
   final double savingsAmount;
+  final String currencySymbol;
 
   BarChartPainter({
     required this.isDarkMode,
     required this.originalPrice,
     required this.withToolPrice,
     required this.savingsAmount,
+    required this.currencySymbol,
   });
 
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint();
     const double spacing = 20.0; // Increased spacing for better fit
-    final double availableWidth = size.width - 60; // Reserve space for y-axis labels and margins
+    final double availableWidth =
+        size.width - 60; // Reserve space for y-axis labels and margins
     final double barWidth = (availableWidth - 2 * spacing) / 3;
-    final double maxHeight = size.height * 0.7; // Adjusted for better vertical fit
+    final double maxHeight =
+        size.height * 0.7; // Adjusted for better vertical fit
 
     // Calculate max value for scaling
     final List<double> values = [originalPrice, withToolPrice, savingsAmount];
@@ -585,9 +632,7 @@ class BarChartPainter extends CustomPainter {
       paint,
     );
 
-    final textPainter = TextPainter(
-      textDirection: TextDirection.ltr,
-    );
+    final textPainter = TextPainter(textDirection: TextDirection.ltr);
 
     // Draw grid lines and labels
     const int numLines = 4;
@@ -597,14 +642,10 @@ class BarChartPainter extends CustomPainter {
 
       paint.color = isDarkMode ? const Color(0xFF333333) : Colors.grey[300]!;
       paint.strokeWidth = 0.5;
-      canvas.drawLine(
-        Offset(startX - 5, y),
-        Offset(size.width - 10, y),
-        paint,
-      );
+      canvas.drawLine(Offset(startX - 5, y), Offset(size.width - 10, y), paint);
 
       textPainter.text = TextSpan(
-        text: '\$${value.toStringAsFixed(0)}',
+        text: '$currencySymbol${value.toStringAsFixed(0)}',
         style: TextStyle(
           color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
           fontSize: 10,
@@ -666,24 +707,17 @@ class BarChartPainter extends CustomPainter {
     // Draw the bar
     canvas.drawRRect(
       RRect.fromRectAndRadius(
-        Rect.fromLTWH(
-          x,
-          maxHeight - height,
-          barWidth,
-          height,
-        ),
+        Rect.fromLTWH(x, maxHeight - height, barWidth, height),
         const Radius.circular(4),
       ),
       paint,
     );
 
-    final textPainter = TextPainter(
-      textDirection: TextDirection.ltr,
-    );
+    final textPainter = TextPainter(textDirection: TextDirection.ltr);
 
     // Draw value above bar with overflow handling
     if (value > 0) {
-      String valueText = '\$${value.toStringAsFixed(0)}';
+      String valueText = '$currencySymbol${value.toStringAsFixed(0)}';
       textPainter.text = TextSpan(
         text: valueText,
         style: TextStyle(
@@ -696,13 +730,7 @@ class BarChartPainter extends CustomPainter {
       double offsetX = x + (barWidth - textPainter.width) / 2;
       // Clamp to prevent overflow
       offsetX = offsetX.clamp(x - 5, x + barWidth + 5);
-      textPainter.paint(
-        canvas,
-        Offset(
-          offsetX,
-          maxHeight - height - 12,
-        ),
-      );
+      textPainter.paint(canvas, Offset(offsetX, maxHeight - height - 12));
     }
 
     // Draw label below bar
@@ -716,13 +744,7 @@ class BarChartPainter extends CustomPainter {
     textPainter.layout();
     double labelOffsetX = x + (barWidth - textPainter.width) / 2;
     labelOffsetX = labelOffsetX.clamp(x, x + barWidth);
-    textPainter.paint(
-      canvas,
-      Offset(
-        labelOffsetX,
-        maxHeight + 5,
-      ),
-    );
+    textPainter.paint(canvas, Offset(labelOffsetX, maxHeight + 5));
   }
 
   @override

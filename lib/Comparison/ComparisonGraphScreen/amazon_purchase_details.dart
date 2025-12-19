@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../Settings/appearance/ThemeController.dart';
+import 'package:your_expense/services/currency_service.dart';
 import 'ReportDownloadScreen.dart';
 
 class AmazonPurchaseDetailsScreen extends StatelessWidget {
@@ -10,16 +11,21 @@ class AmazonPurchaseDetailsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final themeController = Get.find<ThemeController>();
     final bool isDarkMode = themeController.isDarkModeActive;
+    final CurrencyService currencyService = Get.find<CurrencyService>();
 
     return Scaffold(
-      backgroundColor: isDarkMode ? const Color(0xFF121212) : const Color(0xFFF9FAFB),
+      backgroundColor: isDarkMode
+          ? const Color(0xFF121212)
+          : const Color(0xFFF9FAFB),
       appBar: AppBar(
         backgroundColor: isDarkMode ? const Color(0xFF1E1E1E) : Colors.white,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios,
-              color: isDarkMode ? Colors.white : Colors.black,
-              size: 20),
+          icon: Icon(
+            Icons.arrow_back_ios,
+            color: isDarkMode ? Colors.white : Colors.black,
+            size: 20,
+          ),
           onPressed: () => Get.back(),
         ),
         centerTitle: true,
@@ -43,7 +49,7 @@ class AmazonPurchaseDetailsScreen extends StatelessWidget {
             const SizedBox(height: 20),
             _SectionTitle('priceBreakdown'.tr, isDarkMode),
             const SizedBox(height: 10),
-            _priceCard(isDarkMode),
+            _priceCard(isDarkMode, currencyService),
             const SizedBox(height: 20),
             _SectionTitle('purchaseSummary'.tr, isDarkMode),
             const SizedBox(height: 10),
@@ -53,11 +59,17 @@ class AmazonPurchaseDetailsScreen extends StatelessWidget {
               onPressed: () {},
               style: OutlinedButton.styleFrom(
                 minimumSize: const Size(double.infinity, 48),
-                side: BorderSide(color: isDarkMode ? const Color(0xFF2563EB) : const Color(0xFF2563EB)),
+                side: BorderSide(
+                  color: isDarkMode
+                      ? const Color(0xFF2563EB)
+                      : const Color(0xFF2563EB),
+                ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
-                backgroundColor: isDarkMode ? const Color(0xFF1E1E1E) : Colors.white,
+                backgroundColor: isDarkMode
+                    ? const Color(0xFF1E1E1E)
+                    : Colors.white,
               ),
               child: Text(
                 'viewAllSaving'.tr,
@@ -79,8 +91,11 @@ class AmazonPurchaseDetailsScreen extends StatelessWidget {
                 height: 22,
                 width: 22,
                 color: Colors.white,
-                errorBuilder: (_, __, ___) =>
-                const Icon(Icons.download_rounded, color: Colors.white, size: 20),
+                errorBuilder: (_, __, ___) => const Icon(
+                  Icons.download_rounded,
+                  color: Colors.white,
+                  size: 20,
+                ),
               ),
               label: Text(
                 'downloadPdfReport'.tr,
@@ -118,21 +133,27 @@ class AmazonPurchaseDetailsScreen extends StatelessWidget {
         children: [
           isDarkMode
               ? Image.asset(
-            'assets/icons/AmazonLogo (1).png', // White Amazon logo for dark mode
-            height: 36,
-            width: 36,
-            fit: BoxFit.contain,
-            errorBuilder: (_, __, ___) =>
-                Icon(Icons.store_rounded, size: 28, color: isDarkMode ? Colors.white : const Color(0xFF111827)),
-          )
+                  'assets/icons/AmazonLogo (1).png', // White Amazon logo for dark mode
+                  height: 36,
+                  width: 36,
+                  fit: BoxFit.contain,
+                  errorBuilder: (_, __, ___) => Icon(
+                    Icons.store_rounded,
+                    size: 28,
+                    color: isDarkMode ? Colors.white : const Color(0xFF111827),
+                  ),
+                )
               : Image.asset(
-            'assets/icons/AmazonLogo.png', // Regular Amazon logo for light mode
-            height: 36,
-            width: 36,
-            fit: BoxFit.contain,
-            errorBuilder: (_, __, ___) =>
-                Icon(Icons.store_rounded, size: 28, color: isDarkMode ? Colors.white : const Color(0xFF111827)),
-          ),
+                  'assets/icons/AmazonLogo.png', // Regular Amazon logo for light mode
+                  height: 36,
+                  width: 36,
+                  fit: BoxFit.contain,
+                  errorBuilder: (_, __, ___) => Icon(
+                    Icons.store_rounded,
+                    size: 28,
+                    color: isDarkMode ? Colors.white : const Color(0xFF111827),
+                  ),
+                ),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
@@ -154,7 +175,9 @@ class AmazonPurchaseDetailsScreen extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w500,
-                    color: isDarkMode ? Colors.grey[400] : const Color(0xFF6B7280),
+                    color: isDarkMode
+                        ? Colors.grey[400]
+                        : const Color(0xFF6B7280),
                     height: 1.25,
                   ),
                   maxLines: 1,
@@ -185,7 +208,7 @@ class AmazonPurchaseDetailsScreen extends StatelessWidget {
     );
   }
 
-  Widget _priceCard(bool isDarkMode) {
+  Widget _priceCard(bool isDarkMode, CurrencyService currencyService) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -196,15 +219,17 @@ class AmazonPurchaseDetailsScreen extends StatelessWidget {
         children: [
           _PriceRow(
             label: 'originalPrice'.tr,
-            value: '\$169.99',
-            valueColor: isDarkMode ? Colors.grey[600]! : const Color(0xFF9CA3AF),
+            value: '${currencyService.currencySymbol.value}169.99',
+            valueColor: isDarkMode
+                ? Colors.grey[600]!
+                : const Color(0xFF9CA3AF),
             strikeThrough: true,
             isDarkMode: isDarkMode,
           ),
           const SizedBox(height: 8),
           _PriceRow(
             label: 'purchasePrice'.tr,
-            value: '\$129.99',
+            value: '${currencyService.currencySymbol.value}129.99',
             valueColor: isDarkMode ? Colors.white : const Color(0xFF111827),
             bold: true,
             isDarkMode: isDarkMode,
@@ -213,7 +238,7 @@ class AmazonPurchaseDetailsScreen extends StatelessWidget {
           _PriceRow(
             label: 'youSaved'.tr,
             labelColor: const Color(0xFF16A34A),
-            value: '\$40.00 (23%)',
+            value: '${currencyService.currencySymbol.value}40.00 (23%)',
             valueColor: const Color(0xFF16A34A),
             bold: true,
             isDarkMode: isDarkMode,
@@ -330,8 +355,9 @@ class _PriceRow extends StatelessWidget {
               fontWeight: bold ? FontWeight.w700 : FontWeight.w500,
               color: valueColor,
               height: 1.2,
-              decoration:
-              strikeThrough ? TextDecoration.lineThrough : TextDecoration.none,
+              decoration: strikeThrough
+                  ? TextDecoration.lineThrough
+                  : TextDecoration.none,
             ),
           ),
         ),
@@ -361,7 +387,9 @@ class _SummaryRow extends StatelessWidget {
           height: 28,
           width: 28,
           decoration: BoxDecoration(
-            color: isDarkMode ? const Color(0xFF333333) : const Color(0xFFF3F4F6),
+            color: isDarkMode
+                ? const Color(0xFF333333)
+                : const Color(0xFFF3F4F6),
             borderRadius: BorderRadius.circular(8),
           ),
           child: Image.asset(
@@ -370,8 +398,11 @@ class _SummaryRow extends StatelessWidget {
             width: 18,
             color: isDarkMode ? Colors.grey[400] : null,
             fit: BoxFit.contain,
-            errorBuilder: (_, __, ___) =>
-                Icon(Icons.help_outline, size: 16, color: isDarkMode ? Colors.grey[400]! : const Color(0xFF111827)),
+            errorBuilder: (_, __, ___) => Icon(
+              Icons.help_outline,
+              size: 16,
+              color: isDarkMode ? Colors.grey[400]! : const Color(0xFF111827),
+            ),
           ),
         ),
         const SizedBox(width: 10),

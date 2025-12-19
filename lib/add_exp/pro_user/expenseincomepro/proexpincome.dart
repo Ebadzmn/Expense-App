@@ -249,13 +249,6 @@ class ProExpensesIncomeScreen extends StatelessWidget {
                 () => controller.processOCRFromCamera(isExpense),
               ),
               _buildReceiptOption(
-                'assets/icons/barcodescanneroc.png',
-                'barcode'.tr,
-                isExpense ? Colors.yellow : Colors.green,
-                isDarkMode,
-                () => controller.processOCRFromBarcode(isExpense),
-              ),
-              _buildReceiptOption(
                 'assets/icons/galleryoc.png',
                 'gallery'.tr,
                 isExpense ? Colors.yellow : Colors.green,

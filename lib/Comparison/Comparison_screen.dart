@@ -8,6 +8,7 @@ import '../Settings/appearance/ThemeController.dart';
 import '../home/home_controller.dart';
 import 'ComparisonPageController.dart';
 import 'package:your_expense/services/subscription_service.dart';
+import 'package:your_expense/services/currency_service.dart';
 import 'package:your_expense/routes/app_routes.dart';
 
 class ComparisonPageScreen extends StatefulWidget {
@@ -88,6 +89,7 @@ class _ComparisonPageScreenState extends State<ComparisonPageScreen> {
   Widget build(BuildContext context) {
     final themeController = Get.find<ThemeController>();
     final SubscriptionService sub = Get.find<SubscriptionService>();
+    final CurrencyService currencyService = Get.find<CurrencyService>();
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
 
@@ -238,7 +240,8 @@ class _ComparisonPageScreenState extends State<ComparisonPageScreen> {
                         color: isDarkMode ? Colors.white : Colors.black,
                       ),
                       decoration: InputDecoration(
-                        hintText: '\$ Enter amount',
+                        hintText:
+                            '${currencyService.currencySymbol.value} Enter amount',
                         hintStyle: TextStyle(
                           color: isDarkMode ? Colors.grey[500] : Colors.grey,
                         ),
@@ -592,6 +595,7 @@ Widget _buildDealCard(
   String searchTerm,
   double maxPrice,
 ) {
+  final CurrencyService currencyService = Get.find<CurrencyService>();
   final siteName = deal['siteName'] ?? 'unknown_site'.tr;
   final title = deal['title'] ?? '';
   final price = (deal['price'] ?? 0.0).toDouble();
@@ -704,8 +708,9 @@ Widget _buildDealCard(
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
-                                  color:
-                                      isDarkMode ? Colors.white : Colors.black,
+                                  color: isDarkMode
+                                      ? Colors.white
+                                      : Colors.black,
                                 ),
                               ),
                             ),
@@ -750,7 +755,7 @@ Widget _buildDealCard(
                         // Show price for specific deals, hide for generic
                         if (dealType == 'specific' && price > 0)
                           Text(
-                            '\$${price.toStringAsFixed(2)}',
+                            currencyService.formatAmount(price),
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
@@ -772,7 +777,7 @@ Widget _buildDealCard(
                         borderRadius: BorderRadius.circular(16),
                       ),
                       child: Text(
-                        'Save \$${savingsAmount.toStringAsFixed(2)} (${savingsPercentage.toStringAsFixed(0)}%)',
+                        'Save ${currencyService.formatAmount(savingsAmount)} (${savingsPercentage.toStringAsFixed(0)}%)',
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 12,
@@ -791,7 +796,7 @@ Widget _buildDealCard(
                         borderRadius: BorderRadius.circular(16),
                       ),
                       child: Text(
-                        '\$${price.toStringAsFixed(2)}',
+                        currencyService.formatAmount(price),
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 12,
@@ -1020,6 +1025,7 @@ void _showCompareDialog(
   double actualPrice,
   String productName,
 ) {
+  final CurrencyService currencyService = Get.find<CurrencyService>();
   final comparisonCtrl = Get.find<ComparisonPageController>();
   final TextEditingController maxPriceController = TextEditingController(
     text: maxPrice.toStringAsFixed(2),
@@ -1096,7 +1102,8 @@ void _showCompareDialog(
                               horizontal: 16,
                               vertical: 14,
                             ),
-                            hintText: '\$ Enter original price',
+                            hintText:
+                                '${currencyService.currencySymbol.value} Enter original price',
                             hintStyle: TextStyle(
                               color: isDarkMode
                                   ? Colors.grey[500]
@@ -1139,7 +1146,8 @@ void _showCompareDialog(
                               horizontal: 16,
                               vertical: 14,
                             ),
-                            hintText: '\$ Enter price with tool',
+                            hintText:
+                                '${currencyService.currencySymbol.value} Enter price with tool',
                             hintStyle: TextStyle(
                               color: isDarkMode
                                   ? Colors.grey[500]
@@ -1234,7 +1242,14 @@ void _showCompareDialog(
                                   ),
                                 ),
                                 Text(
-                                  '\$${(double.tryParse(maxPriceController.text) ?? 0) - (double.tryParse(actualPriceController.text) ?? 0)}',
+                                  currencyService.formatAmount(
+                                    (double.tryParse(maxPriceController.text) ??
+                                            0) -
+                                        (double.tryParse(
+                                              actualPriceController.text,
+                                            ) ??
+                                            0),
+                                  ),
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
