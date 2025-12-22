@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:your_expense/homepage/model/budget.dart';
 import '../../home/home_controller.dart';
 import '../../services/api_base_service.dart';
 import '../../services/config_service.dart';
@@ -16,7 +17,23 @@ class MonthlyBudgetController extends GetxService {
   final isLoading = false.obs;
   final isSettingBudget = false.obs;
   final errorMessage = ''.obs;
-  final currentBudget = Rx<Map<String, dynamic>>({"totalBudget": 0.0});
+  final currentBudget = Rx<Budget?>(null);
+  final simpleMonthlyAmount = RxnDouble();
+  
+  // Selected category for budgeting
+  final selectedCategory = RxnString();
+  
+  // Categories list for selection (static for now as per UI, or could be dynamic)
+  final availableCategories = [
+    {'name': 'Food', 'icon': 'assets/icons/food.png'}, // Placeholder paths
+    {'name': 'Transport', 'icon': 'assets/icons/transport.png'},
+    {'name': 'Groceries', 'icon': 'assets/icons/grocery.png'},
+    {'name': 'Eating Out', 'icon': 'assets/icons/eating_out.png'},
+    {'name': 'Home', 'icon': 'assets/icons/home.png'},
+    {'name': 'Travel', 'icon': 'assets/icons/travel.png'},
+    {'name': 'Medicine', 'icon': 'assets/icons/medicine.png'},
+    // Add more as needed or fetch from API
+  ].obs;
 
   @override
   void onInit() {
@@ -26,20 +43,12 @@ class MonthlyBudgetController extends GetxService {
       final tokenService = Get.find<TokenService>();
       if (tokenService.isTokenValid()) {
         fetchMonthlyBudget();
+        fetchSimpleMonthlyBudget();
       } else {
         print('MonthlyBudgetController: Skipping initial budget fetch; user not authenticated.');
-        // Default state without network call
-        currentBudget.value = {
-          'totalBudget': 0.0,
-          'month': getCurrentMonth(),
-        };
       }
     } else {
       print('MonthlyBudgetController: TokenService not registered; skipping initial budget fetch.');
-      currentBudget.value = {
-        'totalBudget': 0.0,
-        'month': getCurrentMonth(),
-      };
     }
   }
 
@@ -64,32 +73,30 @@ class MonthlyBudgetController extends GetxService {
       isLoading.value = true;
       errorMessage.value = '';
 
-      final queryParams = {'Month': getCurrentMonth()}; // Use capital 'M' for Month
-
-      print('🔍 Fetching budget with params: $queryParams');
+      final monthParam = getCurrentMonth();
+      print('🔍 Fetching budget for month: $monthParam');
 
       final response = await _apiBaseService.request(
         'GET',
-        _configService.monthlyBudgetEndpoint,
-        queryParams: queryParams,
+        _configService.getBudgetEndpoint(monthParam),
         requiresAuth: true,
       );
 
       print('📥 Fetch Response: $response');
 
-      double budget = 0.0;
-      String monthStr = getCurrentMonth();
-
       if (response['success'] == true) {
         if (response['data'] != null) {
-          if (response['data']['amount'] != null) {
-            budget = (response['data']['amount'] as num).toDouble();
-          }
-          if (response['data']['month'] != null) {
-            monthStr = response['data']['month'];
+          print('📦 Raw Data: ${response['data']}');
+          try {
+            final budget = Budget.fromJson(response['data']);
+            currentBudget.value = budget;
+            print('✅ Budget parsed successfully. Categories count: ${budget.categories.length}');
+          } catch (e) {
+             print('❌ Error parsing Budget object: $e');
+             errorMessage.value = 'Error parsing budget data';
           }
         }
-        print('✅ Budget fetched successfully: totalBudget=$budget, month=$monthStr');
+        print('✅ Budget fetched successfully');
       } else {
         final msg = response['message'] ?? 'Failed to fetch monthly budget';
         // Only set error if it's not a "no budget" or "not found" type message
@@ -98,56 +105,74 @@ class MonthlyBudgetController extends GetxService {
             !msg.toLowerCase().contains('month parameter')) {
           errorMessage.value = msg;
         }
-        print('⚠️ No budget found for this month, defaulting to 0');
+        print('⚠️ No budget found for this month');
       }
-
-      currentBudget.value = {
-        'totalBudget': budget,
-        'month': monthStr,
-      };
     } on HttpException catch (e) {
       print('❌ Fetch budget HTTP error: ${e.statusCode} - ${e.message}');
-      if (e.statusCode == 404) {
-        // No budget set for this month; treat as normal default
-        errorMessage.value = '';
-        currentBudget.value = {
-          'totalBudget': 0.0,
-          'month': getCurrentMonth(),
-        };
-      } else {
+      if (e.statusCode != 404) {
         errorMessage.value = 'Error fetching budget: ${e.message}';
-        currentBudget.value = {
-          'totalBudget': 0.0,
-          'month': getCurrentMonth(),
-        };
       }
     } catch (e) {
       errorMessage.value = 'Error fetching budget: ${e.toString()}';
       print('❌ Fetch budget error: $e');
-      // On error, default to 0 without showing fetch-specific error if it's param-related
-      if (errorMessage.value.toLowerCase().contains('month parameter')) {
-        errorMessage.value = '';
-      }
-      currentBudget.value = {
-        'totalBudget': 0.0,
-        'month': getCurrentMonth(),
-      };
     } finally {
       isLoading.value = false;
     }
   }
 
-  // Set monthly budget and refresh
+  // Fetch simple monthly budget amount
+  Future<void> fetchSimpleMonthlyBudget() async {
+    try {
+      final monthParam = getCurrentMonth();
+      print('🔍 Fetching simple monthly budget for: $monthParam');
+      final response = await _apiBaseService.request(
+        'GET',
+        _configService.getMonthlyBudgetSimpleEndpoint(monthParam),
+        requiresAuth: true,
+      );
+      print('📥 Simple Budget Response: $response');
+      if (response['success'] == true && response['data'] != null) {
+        final data = response['data'] as Map<String, dynamic>;
+        final amt = double.tryParse(data['amount']?.toString() ?? '0');
+        simpleMonthlyAmount.value = amt;
+        print('✅ Simple monthly amount set: $amt');
+      } else {
+        print('⚠️ Simple monthly budget not available');
+      }
+    } catch (e) {
+      print('❌ Error fetching simple monthly budget: $e');
+    }
+  }
+
+  // Reset controller state to avoid showing stale data after auth changes
+  void reset() {
+    try {
+      isLoading.value = false;
+      isSettingBudget.value = false;
+      errorMessage.value = '';
+      currentBudget.value = null;
+      simpleMonthlyAmount.value = null;
+      selectedCategory.value = null;
+    } catch (_) {
+      // safe reset
+    }
+  }
+
+  // Set monthly budget (category wise or general if backend supports)
   Future<bool> setMonthlyBudget(double budgetAmount) async {
     try {
       isSettingBudget.value = true;
       errorMessage.value = '';
 
+      if (selectedCategory.value == null) {
+         errorMessage.value = 'Please select a category first';
+         return false;
+      }
+
       // Debug the request
-      final month = getCurrentMonth();
       final requestBody = {
-        'amount': budgetAmount, // Use 'amount' as expected by API
-        'month': month,
+        'amount': budgetAmount,
+        'category': selectedCategory.value,
       };
 
       print('📤 Setting budget with body: $requestBody');
@@ -162,20 +187,17 @@ class MonthlyBudgetController extends GetxService {
       print('📨 POST Response: $postResponse');
 
       if (postResponse['success'] == true) {
-        // Update local state immediately
-        currentBudget.value = {
-          'totalBudget': budgetAmount,
-          'month': month,
-        };
-
-        // Also fetch to confirm (optional)
+        // Refresh to get updated totals and lists
         await fetchMonthlyBudget();
+        await fetchSimpleMonthlyBudget();
 
         // Propagate to HomeController so the main home page updates instantly
         if (Get.isRegistered<HomeController>()) {
           try {
             final home = Get.find<HomeController>();
-            home.monthlyBudget.value = budgetAmount;
+            if (currentBudget.value != null) {
+               home.monthlyBudget.value = currentBudget.value!.totalBudget;
+            }
             // Optionally refresh aggregates in the background
             home.fetchBudgetData();
           } catch (e) {

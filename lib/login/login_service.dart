@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:your_expense/services/api_base_service.dart';
 import 'package:your_expense/services/config_service.dart';
+import 'package:your_expense/homepage/model_and _controller_of_monthlybudgetpage/monthly_budget_controller.dart';
 import 'package:your_expense/services/token_service.dart';
 import 'package:your_expense/services/subscription_service.dart';
 import 'package:your_expense/home/home_controller.dart';
@@ -221,6 +222,12 @@ class LoginService extends GetxService {
         }
       } catch (e) {
         print('Warn: failed to reset ExpenseController on logout: $e');
+      }
+      try {
+        final mb = Get.find<MonthlyBudgetController>();
+        mb.reset();
+      } catch (e) {
+        print('Warn: failed to reset MonthlyBudgetController on logout: $e');
       }
     } catch (e) {
       print('Error during logout: $e');

@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:flutter/widgets.dart';
 import 'package:your_expense/homepage/service/budget_service.dart';
 import 'package:your_expense/homepage/service/transaction_service.dart';
 import 'package:intl/intl.dart';
@@ -6,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:your_expense/services/api_base_service.dart';
 import 'package:your_expense/services/config_service.dart';
 import 'package:your_expense/Analytics/ExpenseService.dart';
+import 'package:your_expense/Analytics/income_service.dart';
 import 'package:your_expense/services/subscription_service.dart';
 import 'package:your_expense/services/local_notifications_service.dart';
 
@@ -28,6 +30,7 @@ class HomeController extends GetxController {
   BudgetService? get _budgetService =>
       Get.isRegistered<BudgetService>() ? Get.find<BudgetService>() : null;
   ExpenseService? _expenseService;
+  IncomeService? _incomeService;
 
   var selectedNavIndex = 0.obs;
   var starRating = 0.obs;
@@ -70,23 +73,37 @@ class HomeController extends GetxController {
   void onInit() {
     super.onInit();
     selectedNavIndex.value = 0;
-    // Bind ExpenseService if available
+    // Bind services if available
     if (Get.isRegistered<ExpenseService>()) {
       _expenseService = Get.find<ExpenseService>();
+    }
+    if (Get.isRegistered<IncomeService>()) {
+      _incomeService = Get.find<IncomeService>();
     }
 
     // Subscribe to global Analytics month selection
     if (Get.isRegistered<AnalyticsController>()) {
       final analytics = Get.find<AnalyticsController>();
-      // Align immediately with global selected month
-      Future(() async {
+      
+      // We use WidgetsBinding.instance.addPostFrameCallback to avoid "setState() during build"
+      // because ever() might trigger immediately if the observable is already set,
+      // and onInit might be called during a widget's build phase.
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
         final initialMonth = analytics.selectedMonth.value;
-        await fetchBudgetData(month: initialMonth);
-        await _refreshExpenseFromListForMonth(initialMonth);
+        if (initialMonth.isNotEmpty) {
+          await fetchBudgetData(month: initialMonth);
+          await _refreshExpenseFromListForMonth(initialMonth);
+        }
       });
+
       ever<String>(analytics.selectedMonth, (m) async {
-        await fetchBudgetData(month: m);
-        await _refreshExpenseFromListForMonth(m);
+        // ever callbacks can also trigger during build if they update observables
+        // that other Obx widgets are listening to. Using Microtask or PostFrameCallback
+        // ensures the update happens outside the build phase.
+        Future.microtask(() async {
+          await fetchBudgetData(month: m);
+          await _refreshExpenseFromListForMonth(m);
+        });
       });
     }
 
@@ -341,7 +358,7 @@ class HomeController extends GetxController {
         income.value = monthlyIncome;
         // Use authoritative server total for expense initially
         expense.value = monthlyExpense;
-        availableBalance.value = monthlyIncome - expense.value;
+        savings.value = income.value - expense.value;
       } catch (e) {
         print('Monthly summary fetch failed: $e');
         await _fallbackUpdateMonthlyTotals(currentMonth);
@@ -358,6 +375,9 @@ class HomeController extends GetxController {
       } catch (e) {
         print('Expense list sum refresh failed: $e');
       }
+
+      // Update all-time available balance independently of monthly metrics
+      await _updateAllTimeAvailableBalance();
 
       // After all values updated, consider triggering budget alerts
       _maybeTriggerBudgetNotifications(currentMonth);
@@ -455,7 +475,7 @@ class HomeController extends GetxController {
       if (expense.value == 0.0) {
         expense.value = monthlyExpense;
       }
-      availableBalance.value = income.value - expense.value;
+      savings.value = income.value - expense.value;
     } catch (e) {
       print('Fallback monthly totals failed: $e');
     }
@@ -476,7 +496,7 @@ class HomeController extends GetxController {
           if (ym == month) total += e.amount;
         }
         expense.value = total;
-        availableBalance.value = income.value - expense.value;
+        savings.value = income.value - expense.value;
         // Re-evaluate notifications after expense recompute
         _maybeTriggerBudgetNotifications(month);
         return;
@@ -529,10 +549,84 @@ class HomeController extends GetxController {
       }
 
       expense.value = total;
-      availableBalance.value = income.value - expense.value;
+      savings.value = income.value - expense.value;
       _maybeTriggerBudgetNotifications(month);
     } catch (e) {
       print('⚠️ _refreshExpenseFromListForMonth failed: $e');
+    }
+  }
+
+  // Calculate available balance by aggregating all historical income and expenses
+  Future<void> _updateAllTimeAvailableBalance() async {
+    try {
+      double totalIncome = 0.0;
+      double totalExpense = 0.0;
+
+      // 1. Sum all expenses
+      if (_expenseService != null || Get.isRegistered<ExpenseService>()) {
+        _expenseService ??= Get.find<ExpenseService>();
+        final expenses = await _expenseService!.getExpenses();
+        for (final e in expenses) {
+          totalExpense += e.amount;
+        }
+      } else {
+        // Fallback to direct API if service missing
+        final resp = await _apiService.request('GET', _configService.expenseEndpoint, requiresAuth: true);
+        List<dynamic> list = [];
+        if (resp is List) {
+          list = resp;
+        } else if (resp is Map && resp['data'] is List) {
+          list = resp['data'];
+        }
+        for (final item in list) {
+          if (item is Map) {
+            final amt = item['amount'];
+            if (amt is num) {
+              totalExpense += amt.toDouble();
+            } else if (amt is String) {
+              totalExpense += double.tryParse(amt) ?? 0.0;
+            }
+          }
+        }
+      }
+
+      // 2. Sum all incomes (handle pagination)
+      if (_incomeService != null || Get.isRegistered<IncomeService>()) {
+        _incomeService ??= Get.find<IncomeService>();
+        int page = 1;
+        int totalPages = 1;
+        do {
+          final resp = await _incomeService!.getIncomes(page: page, limit: 100);
+          for (final inc in resp.data) {
+            totalIncome += inc.amount;
+          }
+          totalPages = resp.pagination.totalPages;
+          page++;
+        } while (page <= totalPages);
+      } else {
+        // Fallback to direct API if service missing
+        final resp = await _apiService.request('GET', _configService.incomeEndpoint, requiresAuth: true);
+        List<dynamic> list = [];
+        if (resp is List) {
+          list = resp;
+        } else if (resp is Map && resp['data'] is List) {
+          list = resp['data'];
+        }
+        for (final item in list) {
+          if (item is Map) {
+            final amt = item['amount'];
+            if (amt is num) {
+              totalIncome += amt.toDouble();
+            } else if (amt is String) {
+              totalIncome += double.tryParse(amt) ?? 0.0;
+            }
+          }
+        }
+      }
+
+      availableBalance.value = totalIncome - totalExpense;
+    } catch (e) {
+      print('Error updating all-time available balance: $e');
     }
   }
 

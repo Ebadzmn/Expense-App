@@ -7,6 +7,7 @@ import '../Settings/appearance/ThemeController.dart';
 
 import '../home/home_controller.dart';
 import 'ComparisonPageController.dart';
+import 'package:your_expense/Analytics/expense_controller.dart';
 import 'package:your_expense/services/subscription_service.dart';
 import 'package:your_expense/services/currency_service.dart';
 import 'package:your_expense/routes/app_routes.dart';
@@ -370,6 +371,58 @@ class _ComparisonPageScreenState extends State<ComparisonPageScreen> {
                   }),
 
                   // Results Section
+                  // Temporarily always show the empty state ("No deals found").
+                  // Keeping the dynamic "Better Deals Found" section commented out as requested.
+                  Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color:
+                          isDarkMode ? const Color(0xFF1E1E1E) : Colors.white,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                        color: isDarkMode
+                            ? const Color(0xFF333333)
+                            : Colors.grey[300]!,
+                      ),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.info_outline,
+                              color:
+                                  isDarkMode ? Colors.white : Colors.black54,
+                              size: 20,
+                            ),
+                            SizedBox(width: 8),
+                            Text(
+                              'no_deals_found'.tr,
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                color: isDarkMode ? Colors.white : Colors.black,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 8),
+                        Text(
+                          'try_different_product_or_increase_price'.tr,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: isDarkMode
+                                ? Colors.grey[400]
+                                : Colors.grey[600],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  /*
                   Obx(() {
                     if (comparisonCtrl.deals.isEmpty &&
                         !comparisonCtrl.isLoading.value) {
@@ -473,6 +526,7 @@ class _ComparisonPageScreenState extends State<ComparisonPageScreen> {
                       ],
                     );
                   }),
+                  */
                 ],
               ),
             ),
@@ -1337,6 +1391,21 @@ void _showCompareDialog(
                                         );
 
                                     if (success) {
+                                      // Also add this as an expense
+                                      try {
+                                        if (Get.isRegistered<ExpenseController>()) {
+                                          final expenseCtrl = Get.find<ExpenseController>();
+                                          await expenseCtrl.addExpense(
+                                            amount: actualPrice,
+                                            category: categoryController.text.trim(),
+                                            note: 'Comparison Purchase: $productName',
+                                            date: DateTime.now(),
+                                          );
+                                        }
+                                      } catch (e) {
+                                        print('Error adding expense from comparison: $e');
+                                      }
+
                                       // Close dialog and navigate to comparison graph WITH DATA
                                       Navigator.of(context).pop();
                                       Get.snackbar(

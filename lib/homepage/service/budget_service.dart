@@ -51,6 +51,7 @@ class BudgetService extends GetxService {
           totalRemaining: 0.0,
           totalPercentageUsed: 0.0,
           totalPercentageLeft: 0.0,
+          categories: [],
         );
       }
       Get.snackbar('Error', 'Failed to fetch monthly budget data: ${e.message}');

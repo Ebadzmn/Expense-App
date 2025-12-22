@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:your_expense/Settings/appearance/ThemeController.dart';
 import 'package:your_expense/routes/app_routes.dart';
 import 'package:your_expense/homepage/MonthlyBudgetPage.dart';
-import 'package:your_expense/homepage/edit/MonthlyBudgetNonPro/MonthlyBudgetNonPro.dart';
 import 'package:your_expense/Settings/userprofile/profile_services.dart';
 import 'package:your_expense/services/config_service.dart';
 import 'package:your_expense/services/subscription_service.dart';
@@ -32,7 +31,9 @@ class MainHomeScreen extends StatelessWidget {
       } catch (_) {}
     });
     if (showBottomNav) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
+      // Use microtask to defer the state update until after the build phase
+      // and only update if the value is different to avoid redundant rebuilds.
+      Future.microtask(() {
         if (controller.selectedNavIndex.value != 0) {
           controller.selectedNavIndex.value = 0;
         }
@@ -313,21 +314,19 @@ class MainHomeScreen extends StatelessWidget {
                                   final budget = controller.monthlyBudget.value;
                                   final inc = controller.income.value;
                                   final exp = controller.expense.value;
-                                  final sav = inc - exp;
-                                  final incPct = budget > 0
-                                      ? ((inc / budget) * 100)
-                                            .clamp(0, 999)
-                                            .toDouble()
+                                  final sav = controller.savings.value;
+
+                                  // Better logic: Use Income as baseline if available, otherwise fallback to Budget
+                                  final double baseline = inc > 0 ? inc : budget;
+
+                                  final incPct = baseline > 0
+                                      ? ((inc / baseline) * 100).clamp(0, 100).toDouble()
                                       : 0.0;
-                                  final expPct = budget > 0
-                                      ? ((exp / budget) * 100)
-                                            .clamp(0, 999)
-                                            .toDouble()
+                                  final expPct = baseline > 0
+                                      ? ((exp / baseline) * 100).clamp(0, 100).toDouble()
                                       : 0.0;
-                                  final savPct = budget > 0 && sav > 0
-                                      ? ((sav / budget) * 100)
-                                            .clamp(0, 999)
-                                            .toDouble()
+                                  final savPct = baseline > 0 && sav > 0
+                                      ? ((sav / baseline) * 100).clamp(0, 100).toDouble()
                                       : 0.0;
                                   return Row(
                                     mainAxisAlignment:
@@ -513,7 +512,7 @@ class MainHomeScreen extends StatelessWidget {
                                   fit: BoxFit.scaleDown,
                                   alignment: Alignment.centerRight,
                                   child: Text(
-                                    '${'left'.tr} ${currencyService.formatAmount((controller.leftAmount.value.clamp(0, double.infinity) as num).toDouble())}/${controller.leftPercentage.value.clamp(0, 100).toStringAsFixed(0)}%',
+                                    '${'left'.tr} ${currencyService.formatAmount(controller.leftAmount.value.clamp(0, double.infinity))}/${controller.leftPercentage.value.clamp(0, 100).toStringAsFixed(0)}%',
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                     textAlign: TextAlign.right,
@@ -706,10 +705,13 @@ class MainHomeScreen extends StatelessWidget {
     return Container(
       constraints: BoxConstraints(minHeight: screenWidth * 0.20),
       decoration: BoxDecoration(
-        color: const Color(0xFF2A6EBB).withOpacity(0.5),
-        borderRadius: BorderRadius.circular(screenWidth * 0.02),
-        border: Border.all(color: Colors.white.withOpacity(0.3), width: 0.2),
-      ),
+          color: const Color(0xFF2A6EBB).withValues(alpha: 0.5),
+          borderRadius: BorderRadius.circular(screenWidth * 0.02),
+          border: Border.all(
+            color: Colors.white.withValues(alpha: 0.3),
+            width: 0.2,
+          ),
+        ),
       padding: EdgeInsets.symmetric(
         vertical: screenWidth * 0.02,
         horizontal: screenWidth * 0.03,

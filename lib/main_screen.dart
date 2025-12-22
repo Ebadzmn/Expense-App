@@ -36,7 +36,13 @@ class _MainScreenState extends State<MainScreen> {
             ? argIndex.toInt()
             : widget.initialIndex;
     final int safeIdx = idx.clamp(0, 3);
-    Get.find<HomeController>().selectedNavIndex.value = safeIdx;
+    
+    // Defer state update to avoid "setState() during build" if MainScreen is rebuilt immediately
+    Future.microtask(() {
+      if (Get.find<HomeController>().selectedNavIndex.value != safeIdx) {
+        Get.find<HomeController>().selectedNavIndex.value = safeIdx;
+      }
+    });
   }
 
   @override

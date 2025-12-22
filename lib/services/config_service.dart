@@ -50,7 +50,7 @@ class ConfigService extends GetxService {
     return '$baseUrl/budget/$monthYear';
   }
 
-  String get monthlyBudgetEndpoint => '$baseUrl/budget/simple-monthly-budget';
+  String get monthlyBudgetEndpoint => 'https://api.yespend.com/api/v1/budget/current';
   String get monthlyBudgetTotalEndpoint => '$baseUrl/budget/monthly';
   String get createBudgetEndpoint => '$baseUrl/budget';
   String get savingsEndpoint => '$baseUrl/savings';

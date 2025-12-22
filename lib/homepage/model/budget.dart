@@ -8,6 +8,7 @@ class Budget {
   final double totalRemaining;
   final double totalPercentageUsed;
   final double totalPercentageLeft;
+  final List<BudgetCategory> categories;
 
   Budget({
     required this.month,
@@ -19,9 +20,23 @@ class Budget {
     required this.totalRemaining,
     required this.totalPercentageUsed,
     required this.totalPercentageLeft,
+    required this.categories,
   });
 
   factory Budget.fromJson(Map<String, dynamic> json) {
+    var categoriesList = <BudgetCategory>[];
+    if (json['categories'] != null && json['categories'] is List) {
+      for (var v in json['categories']) {
+        try {
+          if (v is Map) {
+            categoriesList.add(BudgetCategory.fromJson(Map<String, dynamic>.from(v)));
+          }
+        } catch (e) {
+          print('Error parsing budget category: $e');
+        }
+      }
+    }
+
     return Budget(
       month: json['month'] ?? '',
       totalIncome: double.tryParse(json['totalIncome']?.toString() ?? '0') ?? 0.0,
@@ -32,6 +47,36 @@ class Budget {
       totalRemaining: double.tryParse(json['totalRemaining']?.toString() ?? '0') ?? 0.0,
       totalPercentageUsed: double.tryParse(json['totalPercentageUsed']?.toString() ?? '0') ?? 0.0,
       totalPercentageLeft: double.tryParse(json['totalPercentageLeft']?.toString() ?? '0') ?? 0.0,
+      categories: categoriesList,
+    );
+  }
+}
+
+class BudgetCategory {
+  final String categoryId;
+  final double budgetAmount;
+  final double spent;
+  final double remaining;
+  final double percentageUsed;
+  final String status;
+
+  BudgetCategory({
+    required this.categoryId,
+    required this.budgetAmount,
+    required this.spent,
+    required this.remaining,
+    required this.percentageUsed,
+    required this.status,
+  });
+
+  factory BudgetCategory.fromJson(Map<String, dynamic> json) {
+    return BudgetCategory(
+      categoryId: json['categoryId'] ?? '',
+      budgetAmount: double.tryParse(json['budgetAmount']?.toString() ?? '0') ?? 0.0,
+      spent: double.tryParse(json['spent']?.toString() ?? '0') ?? 0.0,
+      remaining: double.tryParse(json['remaining']?.toString() ?? '0') ?? 0.0,
+      percentageUsed: double.tryParse(json['percentageUsed']?.toString() ?? '0') ?? 0.0,
+      status: json['status'] ?? 'good',
     );
   }
 }

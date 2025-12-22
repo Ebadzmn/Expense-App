@@ -11,6 +11,7 @@ import 'package:your_expense/Settings/userprofile/profile_services.dart';
 import '../home/home_controller.dart';
 import 'login_service.dart';
 import 'package:your_expense/services/subscription_service.dart';
+import 'package:your_expense/homepage/model_and _controller_of_monthlybudgetpage/monthly_budget_controller.dart';
 
 class LoginController extends GetxController {
   final emailController = TextEditingController();
@@ -56,6 +57,13 @@ class LoginController extends GetxController {
           final home = Get.find<HomeController>();
           home.reset();
           await home.ensureHomeDataLoaded();
+        } catch (_) {}
+        // Reset monthly budget controller and fetch fresh data for this user
+        try {
+          final mb = Get.find<MonthlyBudgetController>();
+          mb.reset();
+          await mb.fetchMonthlyBudget();
+          await mb.fetchSimpleMonthlyBudget();
         } catch (_) {}
         // Reset expenses to avoid showing stale data from previous session
         try {
