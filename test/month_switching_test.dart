@@ -63,7 +63,7 @@ class _FakeExpenseService extends GetxService implements ExpenseService {
   Future<ExpenseService> init() async => this;
 
   @override
-  Future<List<ExpenseItem>> getExpenses() async => <ExpenseItem>[];
+  Future<List<ExpenseItem>> getExpenses({String? month}) async => <ExpenseItem>[];
 
   @override
   Future<ExpenseItem> createExpense({

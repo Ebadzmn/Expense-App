@@ -519,7 +519,7 @@ class AppTranslations extends Translations {
       'purchase_confirm_show_graph': 'Purchase Confirm and show graph',
 
       //analysis
-      'analytics': 'Analytics',
+      'analytics': 'Análisis',
       'pie_chart': 'Pie Chart',
       'bar_chart': 'Bar Chart',
       'line_chart': 'Line Chart',
@@ -626,13 +626,13 @@ class AppTranslations extends Translations {
       'spent': 'Spent',
       'left': 'Left',
       'rate_app': 'Rate App',
-      'lets_grow': "Let's grow together!",
-      'feedback_help': 'Your feedback helps us improve',
+      'lets_grow': "Suggest to us privately how you would the app",
+      'feedback_help': 'Your opinion can make a difference',
       'share_experience': 'Share Your Experience',
       'recent_transaction': 'Recent Transaction',
       'view_all': 'View all',
       'home': 'Home',
-      'analytics': 'Analytics',
+      'analytics': 'Analitica',
       'comparison': 'Comparison',
       'settings': 'Settings',
       //some translation
@@ -4482,6 +4482,8 @@ class AppTranslations extends Translations {
       'upgradeToProToView': 'বিজ্ঞাপন সরাতে PRO-তে আপগ্রেড করুন',
       'password_change_description':
           'আপনার অ্যাকাউন্ট সুরক্ষিত রাখতে পাসওয়ার্ড পরিবর্তন করুন। বর্তমান পাসওয়ার্ড দিন, নতুনটি লিখে নিশ্চিত করুন',
+      'lets_grow': 'অ্যাপটি কীভাবে আরও ভালো করা যায়, আমাদেরকে ব্যক্তিগতভাবে জানান',
+      'feedback_help': 'আপনার মতামত পরিবর্তন আনতে পারে',
     },
     'tr_TR': {
       //rate and help

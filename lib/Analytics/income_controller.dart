@@ -80,7 +80,7 @@ class IncomeController extends GetxController {
 
   void updateMonth(String month) {
     selectedMonth.value = month;
-    applyMonthFilter();
+    fetchIncomes();
   }
 
   void applyMonthFilter() {
@@ -114,8 +114,22 @@ class IncomeController extends GetxController {
   /// Get available months that have income data
   List<String> get availableMonths {
     final months = <String>{};
+    // Add months from loaded data
     for (final income in allIncomes) {
       final ym = '${income.date.year}-${income.date.month.toString().padLeft(2, '0')}';
+      months.add(ym);
+    }
+    // Add last 12 months to ensure navigation is possible even if data isn't loaded yet
+    final now = DateTime.now();
+    for (int i = 0; i < 12; i++) {
+      // Logic to handle year rollback correctly
+      int year = now.year;
+      int month = now.month - i;
+      while (month <= 0) {
+        month += 12;
+        year -= 1;
+      }
+      final ym = '$year-${month.toString().padLeft(2, '0')}';
       months.add(ym);
     }
     final sortedMonths = months.toList()..sort((a, b) => b.compareTo(a)); // Newest first

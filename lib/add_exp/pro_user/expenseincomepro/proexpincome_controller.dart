@@ -25,8 +25,10 @@ class ProExpensesIncomeController extends GetxController {
   var selectedExpenseCategory = ''.obs;
   var selectedIncomeCategory = ''.obs;
   var selectedPaymentMethod = ''.obs;
-  var selectedDate = DateTime.now().obs;
-  var selectedTime = TimeOfDay.now().obs;
+  // Use nullable types to distinguish between "not set" and "set"
+  // This ensures we use the fresh DateTime.now() when saving if no date was picked
+  final selectedDate = Rxn<DateTime>();
+  final selectedTime = Rxn<TimeOfDay>();
   var isLoading = false.obs;
   var uploadedReceiptPath = ''.obs;
   var isProcessingOCR = false.obs;
@@ -218,6 +220,9 @@ class ProExpensesIncomeController extends GetxController {
     selectedExpenseCategory.value = '';
     selectedIncomeCategory.value = '';
     selectedPaymentMethod.value = '';
+    // Reset date and time to null to indicate no user selection
+    selectedDate.value = null;
+    selectedTime.value = null;
   }
 
   // Custom category helpers
@@ -322,7 +327,13 @@ class ProExpensesIncomeController extends GetxController {
       // Build effective date from selected date & time
       final d = selectedDate.value;
       final t = selectedTime.value;
-      final DateTime effectiveDate = DateTime(d.year, d.month, d.day, t.hour, t.minute);
+      final DateTime effectiveDate = DateTime(
+        d?.year ?? DateTime.now().year,
+        d?.month ?? DateTime.now().month,
+        d?.day ?? DateTime.now().day,
+        t?.hour ?? TimeOfDay.now().hour,
+        t?.minute ?? TimeOfDay.now().minute,
+      );
       final success = await _expenseController.addExpense(
         amount: amount,
         category: selectedExpenseCategory.value,
@@ -364,7 +375,13 @@ class ProExpensesIncomeController extends GetxController {
         final incomeService = Get.find<IncomeService>();
         final d = selectedDate.value;
         final t = selectedTime.value;
-        final DateTime effectiveDate = DateTime(d.year, d.month, d.day, t.hour, t.minute);
+        final DateTime effectiveDate = DateTime(
+          d?.year ?? DateTime.now().year,
+          d?.month ?? DateTime.now().month,
+          d?.day ?? DateTime.now().day,
+          t?.hour ?? TimeOfDay.now().hour,
+          t?.minute ?? TimeOfDay.now().minute,
+        );
         await incomeService.createIncome(
           source: selectedIncomeCategory.value,
           amount: amount,

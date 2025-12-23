@@ -556,12 +556,14 @@ class MainHomeScreen extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          'rate_app'.tr,
-                          style: TextStyle(
-                            fontSize: screenWidth * 0.045,
-                            fontWeight: FontWeight.w600,
-                            color: textColor,
+                        Center(
+                          child: Text(
+                            'rate_app'.tr,
+                            style: TextStyle(
+                              fontSize: screenWidth * 0.045,
+                              fontWeight: FontWeight.w600,
+                              color: textColor,
+                            ),
                           ),
                         ),
                         SizedBox(height: screenHeight * 0.03),
@@ -575,12 +577,14 @@ class MainHomeScreen extends StatelessWidget {
                           ),
                         ),
                         SizedBox(height: screenHeight * 0.01),
-                        Text(
-                          'feedback_help'.tr,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: secondaryTextColor,
-                            fontSize: screenWidth * 0.035,
+                        Center(
+                          child: Text(
+                            'feedback_help'.tr,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: secondaryTextColor,
+                              fontSize: screenWidth * 0.035,
+                            ),
                           ),
                         ),
                         SizedBox(height: screenHeight * 0.03),

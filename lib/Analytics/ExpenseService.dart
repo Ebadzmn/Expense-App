@@ -41,13 +41,19 @@ class ExpenseService extends GetxService {
     return this;
   }
 
-  Future<List<ExpenseItem>> getExpenses() async {
+  Future<List<ExpenseItem>> getExpenses({String? month}) async {
     try {
       print('🔍 Fetching expenses from: ${_configService.expenseEndpoint}');
+      
+      final Map<String, dynamic> queryParams = {};
+      if (month != null && month.isNotEmpty) {
+        queryParams['month'] = month;
+      }
 
       final response = await _apiService.request(
         'GET',
         _configService.expenseEndpoint,
+        queryParams: queryParams,
         requiresAuth: true,
       );
 

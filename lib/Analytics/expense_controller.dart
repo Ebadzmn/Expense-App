@@ -98,7 +98,7 @@ class ExpenseController extends GetxController {
       isLoading.value = true;
       errorMessage.value = '';
 
-      final List<ExpenseItem> fetchedExpenses = await _expenseService.getExpenses();
+      final List<ExpenseItem> fetchedExpenses = await _expenseService.getExpenses(month: selectedMonth.value);
       allExpenses.assignAll(fetchedExpenses);
 
       applyMonthFilter();
@@ -112,7 +112,7 @@ class ExpenseController extends GetxController {
 
   void updateMonth(String month) {
     selectedMonth.value = month;
-    applyMonthFilter();
+    loadExpenses();
   }
 
   void applyMonthFilter() {
@@ -120,7 +120,9 @@ class ExpenseController extends GetxController {
       expenses.assignAll(allExpenses);
     } else {
       final filtered = allExpenses.where((expense) {
-        final ym = '${expense.createdAt.year}-${expense.createdAt.month.toString().padLeft(2, '0')}';
+        final ym = expense.month.isNotEmpty
+            ? expense.month
+            : '${expense.createdAt.year}-${expense.createdAt.month.toString().padLeft(2, '0')}';
         return ym == selectedMonth.value;
       }).toList();
       expenses.assignAll(filtered);
@@ -132,7 +134,9 @@ class ExpenseController extends GetxController {
   /// Get expenses for a specific month without changing the current filter
   List<ExpenseItem> getExpensesForMonth(String month) {
     return allExpenses.where((expense) {
-      final ym = '${expense.createdAt.year}-${expense.createdAt.month.toString().padLeft(2, '0')}';
+      final ym = expense.month.isNotEmpty
+          ? expense.month
+          : '${expense.createdAt.year}-${expense.createdAt.month.toString().padLeft(2, '0')}';
       return ym == month;
     }).toList();
   }
@@ -146,8 +150,24 @@ class ExpenseController extends GetxController {
   /// Get available months that have expense data
   List<String> get availableMonths {
     final months = <String>{};
+    // Add months from loaded data
     for (final expense in allExpenses) {
-      final ym = '${expense.createdAt.year}-${expense.createdAt.month.toString().padLeft(2, '0')}';
+      final ym = expense.month.isNotEmpty
+          ? expense.month
+          : '${expense.createdAt.year}-${expense.createdAt.month.toString().padLeft(2, '0')}';
+      months.add(ym);
+    }
+    // Add last 12 months to ensure navigation is possible even if data isn't loaded yet
+    final now = DateTime.now();
+    for (int i = 0; i < 12; i++) {
+      // Logic to handle year rollback correctly
+      int year = now.year;
+      int month = now.month - i;
+      while (month <= 0) {
+        month += 12;
+        year -= 1;
+      }
+      final ym = '$year-${month.toString().padLeft(2, '0')}';
       months.add(ym);
     }
     final sortedMonths = months.toList()..sort((a, b) => b.compareTo(a)); // Newest first

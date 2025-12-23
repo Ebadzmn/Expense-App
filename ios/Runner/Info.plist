@@ -44,6 +44,10 @@
 	<string>Microphone access may be used when recording video via the camera.</string>
 	<key>NSUserTrackingUsageDescription</key>
 	<string>Allow tracking to deliver relevant ads and reduce ad fraud.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+<string>
+We use your location to provide location-based features and improve app functionality.
+</string>
 	<key>SKAdNetworkItems</key>
 	<array>
 		<dict>

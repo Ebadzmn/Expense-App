@@ -8,6 +8,7 @@ class ExpenseItem {
   final String category;
   final String note;
   final DateTime createdAt;
+  final String month;
 
   ExpenseItem({
     required this.id,
@@ -16,6 +17,7 @@ class ExpenseItem {
     required this.category,
     required this.note,
     required this.createdAt,
+    required this.month,
   });
 
   factory ExpenseItem.fromJson(Map<String, dynamic> json) {
@@ -49,6 +51,7 @@ class ExpenseItem {
               .toString(),
       note: json['note']?.toString() ?? '',
       createdAt: parsedDate,
+      month: json['month']?.toString() ?? '',
     );
   }
 
@@ -60,6 +63,7 @@ class ExpenseItem {
       'category': category,
       'note': note,
       'createdAt': createdAt.toIso8601String(),
+      'month': month,
     };
   }
 

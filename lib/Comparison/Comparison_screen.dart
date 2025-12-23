@@ -114,20 +114,29 @@ class _ComparisonPageScreenState extends State<ComparisonPageScreen> {
         appBar: AppBar(
           backgroundColor: isDarkMode ? const Color(0xFF1E1E1E) : Colors.white,
           elevation: 0,
-          leading: widget.isEmbeddedInMain
-              ? null
-              : IconButton(
-                  icon: Icon(
-                    Icons.arrow_back_ios,
-                    color: isDarkMode ? Colors.white : Colors.black,
-                    size: 20,
-                  ),
-                  onPressed: () {
-                    _restoreNavIndex();
-                    Get.back();
-                  },
-                ),
-          automaticallyImplyLeading: !widget.isEmbeddedInMain,
+          leading: IconButton(
+            icon: Icon(
+              Icons.arrow_back_ios,
+              color: isDarkMode ? Colors.white : Colors.black,
+              size: 20,
+            ),
+            onPressed: () {
+              if (widget.isEmbeddedInMain) {
+                if (_productNameFocus.hasFocus || _maxPriceFocus.hasFocus) {
+                  _productNameFocus.unfocus();
+                  _maxPriceFocus.unfocus();
+                }
+                try {
+                  final homeCtrl = Get.find<HomeController>();
+                  homeCtrl.setNavIndex(0);
+                } catch (_) {}
+              } else {
+                _restoreNavIndex();
+                Get.back();
+              }
+            },
+          ),
+          automaticallyImplyLeading: true,
           title: Text(
             'compare_save'.tr,
             style: TextStyle(

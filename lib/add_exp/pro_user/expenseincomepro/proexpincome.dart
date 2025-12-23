@@ -652,9 +652,19 @@ class ProExpensesIncomeScreen extends StatelessWidget {
                   ),
                   child: Center(
                     child: Obx(() {
-                      final DateTime d = controller.selectedDate.value;
-                      final TimeOfDay t = controller.selectedTime.value;
-                      final DateTime combined = DateTime(d.year, d.month, d.day, t.hour, t.minute);
+                      final DateTime? d = controller.selectedDate.value;
+                      final TimeOfDay? t = controller.selectedTime.value;
+                      if (d == null) {
+                        return Text(
+                          'tapToSet'.tr,
+                          style: GoogleFonts.inter(
+                            color: isDarkMode ? Colors.white : Colors.black,
+                            fontSize: 12,
+                          ),
+                        );
+                      }
+                      final TimeOfDay time = t ?? TimeOfDay.now();
+                      final DateTime combined = DateTime(d.year, d.month, d.day, time.hour, time.minute);
                       final String pickedLabel = DateFormat('yyyy-MM-dd HH:mm').format(combined);
                       return Text(
                         pickedLabel,
@@ -710,19 +720,21 @@ class ProExpensesIncomeScreen extends StatelessWidget {
   void _selectDateTime(ProExpensesIncomeController controller) async {
     final DateTime? pickedDate = await showDatePicker(
       context: Get.context!,
-      initialDate: controller.selectedDate.value,
+      initialDate: controller.selectedDate.value ?? DateTime.now(),
       firstDate: DateTime(2020),
       lastDate: DateTime(2030),
     );
 
     if (pickedDate != null) {
+      // Update date immediately
+      controller.selectDate(pickedDate);
+
       final TimeOfDay? pickedTime = await showTimePicker(
         context: Get.context!,
-        initialTime: controller.selectedTime.value,
+        initialTime: controller.selectedTime.value ?? TimeOfDay.now(),
       );
 
       if (pickedTime != null) {
-        controller.selectDate(pickedDate);
         controller.selectTime(pickedTime);
       }
     }

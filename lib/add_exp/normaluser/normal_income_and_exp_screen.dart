@@ -351,16 +351,18 @@ class _ExpensePageState extends State<ExpensePage> {
       lastDate: DateTime(2035),
     );
     if (pickedDate != null) {
+      // Prompt for time but don't discard date if time is cancelled
       final TimeOfDay? pickedTime = await showTimePicker(
         context: context,
         initialTime: initialTime,
       );
-      if (pickedTime != null) {
-        setState(() {
-          _selectedDate = pickedDate;
+      
+      setState(() {
+        _selectedDate = pickedDate;
+        if (pickedTime != null) {
           _selectedTime = pickedTime;
-        });
-      }
+        }
+      });
     }
   }
 
@@ -1255,12 +1257,13 @@ class _IncomePageState extends State<IncomePage> {
         context: context,
         initialTime: initialTime,
       );
-      if (pickedTime != null) {
-        setState(() {
-          _selectedDate = pickedDate;
+      
+      setState(() {
+        _selectedDate = pickedDate;
+        if (pickedTime != null) {
           _selectedTime = pickedTime;
-        });
-      }
+        }
+      });
     }
   }
 
