@@ -9,7 +9,8 @@ class ConfigService extends GetxService {
   final String termsOfUseUrl;
 
   ConfigService({
-    this.baseUrl = 'https://api.yespend.com/api/v1',
+    // this.baseUrl = 'https://api.yespend.com/api/v1',
+    this.baseUrl = 'http://10.10.7.106:5001/api/v1',
     this.privacyPolicyUrl = 'https://yespend.com/privacy',
     this.termsOfUseUrl = 'https://www.apple.com/legal/internet-services/itunes/dev/stdeula/',
   });
@@ -50,7 +51,7 @@ class ConfigService extends GetxService {
     return '$baseUrl/budget/$monthYear';
   }
 
-  String get monthlyBudgetEndpoint => 'https://api.yespend.com/api/v1/budget/current';
+  String get monthlyBudgetEndpoint => '$baseUrl/budget/current';
   String get monthlyBudgetTotalEndpoint => '$baseUrl/budget/monthly';
   String get createBudgetEndpoint => '$baseUrl/budget';
   String get savingsEndpoint => '$baseUrl/savings';

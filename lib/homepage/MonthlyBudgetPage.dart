@@ -185,21 +185,17 @@ class MonthlyBudgetPage extends StatelessWidget {
                                   return;
                                 }
 
-                                final budgetAmount = double.tryParse(_textEditingController.text.replaceAll(RegExp(r'[^0-9.]'), ''));
-                                if (budgetAmount == null || budgetAmount <= 0) {
+                                final budgetAmount = double.tryParse(
+                                  _textEditingController.text.replaceAll(RegExp(r'[^0-9.]'), ''),
+                                );
+                                if (budgetAmount == null || budgetAmount < 0) {
                                   _monthlyBudgetController.errorMessage.value = 'Please enter a valid budget amount';
                                   return;
                                 }
 
-                                if (_monthlyBudgetController.selectedCategory.value == null) {
-                                  Get.snackbar('Select Category', 'Please select a category below to apply this budget.',
-                                      snackPosition: SnackPosition.BOTTOM,
-                                      backgroundColor: Colors.orange,
-                                      colorText: Colors.white);
-                                  return;
-                                }
-
-                                final success = await _monthlyBudgetController.setMonthlyBudget(budgetAmount);
+                                final success = _monthlyBudgetController.selectedCategory.value == null
+                                    ? await _monthlyBudgetController.setMonthlyBudgetWithoutCategory(budgetAmount)
+                                    : await _monthlyBudgetController.setMonthlyBudget(budgetAmount);
                                 if (success) {
                                   _textEditingController.clear(); // Clear the input field
                                   Get.snackbar(
@@ -248,13 +244,17 @@ class MonthlyBudgetPage extends StatelessWidget {
                       scrollDirection: Axis.horizontal,
                       child: Row(
                         children: _monthlyBudgetController.availableCategories.map((category) {
-                          final isSelected = _monthlyBudgetController.selectedCategory.value == category['name'];
+                          final categoryName = (category['name'] ?? '').toString();
+                          final displayName = categoryName.trim().toLowerCase() == 'other'
+                              ? _monthlyBudgetController.getCustomOtherLabel()
+                              : categoryName;
+                          final isSelected = _monthlyBudgetController.selectedCategory.value == categoryName;
                           return GestureDetector(
                             onTap: () {
                               if (isSelected) {
                                 _monthlyBudgetController.selectedCategory.value = null;
                               } else {
-                                _monthlyBudgetController.selectedCategory.value = category['name'];
+                                _monthlyBudgetController.selectedCategory.value = categoryName;
                               }
                             },
                             child: Container(
@@ -275,13 +275,13 @@ class MonthlyBudgetPage extends StatelessWidget {
                                 children: [
                                   // Since we don't have real assets yet, using Icons
                                   Icon(
-                                    _getIconForCategory(category['name']!),
+                                    _getIconForCategory(categoryName),
                                     color: isSelected ? primaryColor : secondaryTextColor,
                                     size: 24,
                                   ),
                                   SizedBox(height: 4),
                                   Text(
-                                    category['name']!,
+                                    displayName,
                                     style: TextStyle(
                                       fontSize: screenWidth * 0.03,
                                       color: isSelected ? primaryColor : secondaryTextColor,
@@ -298,27 +298,102 @@ class MonthlyBudgetPage extends StatelessWidget {
                     SizedBox(height: screenHeight * 0.02),
                     
                     // Add Custom Category Button
-                    Container(
-                      width: double.infinity,
-                      padding: EdgeInsets.symmetric(vertical: screenHeight * 0.02),
-                      decoration: BoxDecoration(
-                        color: cardColor,
-                        borderRadius: BorderRadius.circular(screenWidth * 0.03),
-                        border: Border.all(color: Colors.grey.withOpacity(0.1)),
-                      ),
-                      child: Column(
-                        children: [
-                          Icon(Icons.add, color: textColor),
-                          SizedBox(height: 4),
-                          Text(
-                            'Add Custom Category',
-                            style: TextStyle(
-                              color: textColor,
-                              fontSize: screenWidth * 0.035,
-                              fontWeight: FontWeight.w500,
+                    GestureDetector(
+                      onTap: () async {
+                        final nameController = TextEditingController();
+                        final customName = await showDialog<String>(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              backgroundColor: cardColor,
+                              title: Text(
+                                'Add Custom Category',
+                                style: TextStyle(color: textColor),
+                              ),
+                              content: TextField(
+                                controller: nameController,
+                                style: TextStyle(color: textColor),
+                                decoration: InputDecoration(
+                                  hintText: 'Category name',
+                                  hintStyle: TextStyle(color: secondaryTextColor),
+                                  enabledBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(color: secondaryTextColor),
+                                  ),
+                                  focusedBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(color: textColor),
+                                  ),
+                                ),
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.of(context).pop(),
+                                  child: Text(
+                                    'Cancel',
+                                    style: TextStyle(color: secondaryTextColor),
+                                  ),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    final v = nameController.text.trim();
+                                    if (v.isEmpty) {
+                                      Get.snackbar(
+                                        'Error',
+                                        'Please enter category name',
+                                        snackPosition: SnackPosition.BOTTOM,
+                                        backgroundColor: Colors.red,
+                                        colorText: Colors.white,
+                                      );
+                                      return;
+                                    }
+                                    Navigator.of(context).pop(v);
+                                  },
+                                  child: Text(
+                                    'Submit',
+                                    style: TextStyle(color: primaryColor),
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+
+                        if (customName == null || customName.trim().isEmpty) {
+                          return;
+                        }
+
+                        _monthlyBudgetController.addCustomCategoryToAvailableList(customName.trim());
+                        _monthlyBudgetController.selectedCategory.value = null;
+
+                        Get.snackbar(
+                          'Success',
+                          'Custom category create successfull select Other.',
+                          snackPosition: SnackPosition.BOTTOM,
+                          backgroundColor: Colors.green,
+                          colorText: Colors.white,
+                        );
+                      },
+                      child: Container(
+                        width: double.infinity,
+                        padding: EdgeInsets.symmetric(vertical: screenHeight * 0.02),
+                        decoration: BoxDecoration(
+                          color: cardColor,
+                          borderRadius: BorderRadius.circular(screenWidth * 0.03),
+                          border: Border.all(color: Colors.grey.withOpacity(0.1)),
+                        ),
+                        child: Column(
+                          children: [
+                            Icon(Icons.add, color: textColor),
+                            SizedBox(height: 4),
+                            Text(
+                              'Add Custom Category',
+                              style: TextStyle(
+                                color: textColor,
+                                fontSize: screenWidth * 0.035,
+                                fontWeight: FontWeight.w500,
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                     SizedBox(height: screenHeight * 0.03),
@@ -387,6 +462,203 @@ class MonthlyBudgetPage extends StatelessWidget {
                                       color: secondaryTextColor,
                                     ),
                                   ),
+                                  SizedBox(height: 6),
+                                  Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      IconButton(
+                                        visualDensity: VisualDensity.compact,
+                                        constraints: const BoxConstraints(),
+                                        padding: EdgeInsets.zero,
+                                        icon: Icon(Icons.edit, size: 18, color: secondaryTextColor),
+                                        onPressed: _monthlyBudgetController.isSettingBudget.value
+                                            ? null
+                                            : () async {
+                                                final budgetId = catItem.id;
+                                                if (budgetId == null || budgetId.trim().isEmpty) {
+                                                  Get.snackbar(
+                                                    'Error',
+                                                    'Missing budget _id',
+                                                    snackPosition: SnackPosition.BOTTOM,
+                                                    backgroundColor: Colors.red,
+                                                    colorText: Colors.white,
+                                                  );
+                                                  return;
+                                                }
+
+                                                final editController = TextEditingController(
+                                                  text: catItem.budgetAmount.toString(),
+                                                );
+
+                                                final newAmount = await showDialog<double>(
+                                                  context: context,
+                                                  builder: (context) {
+                                                    return AlertDialog(
+                                                      backgroundColor: cardColor,
+                                                      title: Text(
+                                                        'Update Budget',
+                                                        style: TextStyle(color: textColor),
+                                                      ),
+                                                      content: TextField(
+                                                        controller: editController,
+                                                        keyboardType: const TextInputType.numberWithOptions(
+                                                          decimal: true,
+                                                        ),
+                                                        style: TextStyle(color: textColor),
+                                                        decoration: InputDecoration(
+                                                          hintText: 'Enter amount',
+                                                          hintStyle: TextStyle(color: secondaryTextColor),
+                                                          enabledBorder: UnderlineInputBorder(
+                                                            borderSide: BorderSide(color: secondaryTextColor),
+                                                          ),
+                                                          focusedBorder: UnderlineInputBorder(
+                                                            borderSide: BorderSide(color: textColor),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      actions: [
+                                                        TextButton(
+                                                          onPressed: () => Navigator.of(context).pop(),
+                                                          child: Text(
+                                                            'Cancel',
+                                                            style: TextStyle(color: secondaryTextColor),
+                                                          ),
+                                                        ),
+                                                        TextButton(
+                                                          onPressed: () {
+                                                            final parsed = double.tryParse(
+                                                              editController.text.replaceAll(
+                                                                RegExp(r'[^0-9.]'),
+                                                                '',
+                                                              ),
+                                                            );
+                                                            Navigator.of(context).pop(parsed);
+                                                          },
+                                                          child: Text(
+                                                            'Update',
+                                                            style: TextStyle(color: primaryColor),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    );
+                                                  },
+                                                );
+
+                                                if (newAmount == null || newAmount < 0) {
+                                                  return;
+                                                }
+
+                                                final ok = await _monthlyBudgetController.updateCategoryBudget(
+                                                  id: budgetId,
+                                                  amount: newAmount,
+                                                );
+
+                                                if (ok) {
+                                                  Get.snackbar(
+                                                    'Success',
+                                                    'Budget updated',
+                                                    snackPosition: SnackPosition.BOTTOM,
+                                                    backgroundColor: Colors.green,
+                                                    colorText: Colors.white,
+                                                  );
+                                                } else {
+                                                  Get.snackbar(
+                                                    'Error',
+                                                    _monthlyBudgetController.errorMessage.value.isNotEmpty
+                                                        ? _monthlyBudgetController.errorMessage.value
+                                                        : 'Failed to update budget',
+                                                    snackPosition: SnackPosition.BOTTOM,
+                                                    backgroundColor: Colors.red,
+                                                    colorText: Colors.white,
+                                                  );
+                                                }
+                                              },
+                                      ),
+                                      SizedBox(width: 12),
+                                      IconButton(
+                                        visualDensity: VisualDensity.compact,
+                                        constraints: const BoxConstraints(),
+                                        padding: EdgeInsets.zero,
+                                        icon: Icon(Icons.delete, size: 18, color: Colors.red),
+                                        onPressed: _monthlyBudgetController.isSettingBudget.value
+                                            ? null
+                                            : () async {
+                                                final budgetId = catItem.id;
+                                                if (budgetId == null || budgetId.trim().isEmpty) {
+                                                  Get.snackbar(
+                                                    'Error',
+                                                    'Missing budget _id',
+                                                    snackPosition: SnackPosition.BOTTOM,
+                                                    backgroundColor: Colors.red,
+                                                    colorText: Colors.white,
+                                                  );
+                                                  return;
+                                                }
+
+                                                final confirmed = await showDialog<bool>(
+                                                  context: context,
+                                                  builder: (context) {
+                                                    return AlertDialog(
+                                                      backgroundColor: cardColor,
+                                                      title: Text(
+                                                        'Delete Budget',
+                                                        style: TextStyle(color: textColor),
+                                                      ),
+                                                      content: Text(
+                                                        'Are you sure you want to delete this category budget?',
+                                                        style: TextStyle(color: secondaryTextColor),
+                                                      ),
+                                                      actions: [
+                                                        TextButton(
+                                                          onPressed: () => Navigator.of(context).pop(false),
+                                                          child: Text(
+                                                            'Cancel',
+                                                            style: TextStyle(color: secondaryTextColor),
+                                                          ),
+                                                        ),
+                                                        TextButton(
+                                                          onPressed: () => Navigator.of(context).pop(true),
+                                                          child: const Text(
+                                                            'Delete',
+                                                            style: TextStyle(color: Colors.red),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    );
+                                                  },
+                                                );
+
+                                                if (confirmed != true) {
+                                                  return;
+                                                }
+
+                                                final ok = await _monthlyBudgetController.deleteCategoryBudget(
+                                                  id: budgetId,
+                                                );
+
+                                                if (ok) {
+                                                  Get.snackbar(
+                                                    'Success',
+                                                    'Budget deleted',
+                                                    snackPosition: SnackPosition.BOTTOM,
+                                                    backgroundColor: Colors.green,
+                                                    colorText: Colors.white,
+                                                  );
+                                                } else {
+                                                  Get.snackbar(
+                                                    'Error',
+                                                    _monthlyBudgetController.errorMessage.value.isNotEmpty
+                                                        ? _monthlyBudgetController.errorMessage.value
+                                                        : 'Failed to delete budget',
+                                                    snackPosition: SnackPosition.BOTTOM,
+                                                    backgroundColor: Colors.red,
+                                                    colorText: Colors.white,
+                                                  );
+                                                }
+                                              },
+                                      ),
+                                    ],
+                                  ),
                                 ],
                               ),
                             ],
@@ -429,6 +701,8 @@ class MonthlyBudgetPage extends StatelessWidget {
         return Icons.flight;
       case 'medicine':
         return Icons.medical_services;
+      case 'other':
+        return Icons.category;
       default:
         return Icons.category;
     }

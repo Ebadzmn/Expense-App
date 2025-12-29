@@ -54,6 +54,7 @@ class Budget {
 
 class BudgetCategory {
   final String categoryId;
+  final String? id;
   final double budgetAmount;
   final double spent;
   final double remaining;
@@ -62,6 +63,7 @@ class BudgetCategory {
 
   BudgetCategory({
     required this.categoryId,
+    required this.id,
     required this.budgetAmount,
     required this.spent,
     required this.remaining,
@@ -70,9 +72,28 @@ class BudgetCategory {
   });
 
   factory BudgetCategory.fromJson(Map<String, dynamic> json) {
+    String? pickId() {
+      const keys = ['_id', 'id', 'budgetCategoryId', 'categoryBudgetId'];
+      for (final k in keys) {
+        final v = json[k]?.toString();
+        if (v != null && v.trim().isNotEmpty) {
+          return v.trim();
+        }
+      }
+      final categoryId = json['categoryId']?.toString();
+      if (categoryId != null &&
+          RegExp(r'^[a-fA-F0-9]{24}$').hasMatch(categoryId.trim())) {
+        return categoryId.trim();
+      }
+      return null;
+    }
+
+    final parsedId = pickId();
+    final rawAmount = json['budgetAmount'] ?? json['amount'];
     return BudgetCategory(
       categoryId: json['categoryId'] ?? '',
-      budgetAmount: double.tryParse(json['budgetAmount']?.toString() ?? '0') ?? 0.0,
+      id: parsedId,
+      budgetAmount: double.tryParse(rawAmount?.toString() ?? '0') ?? 0.0,
       spent: double.tryParse(json['spent']?.toString() ?? '0') ?? 0.0,
       remaining: double.tryParse(json['remaining']?.toString() ?? '0') ?? 0.0,
       percentageUsed: double.tryParse(json['percentageUsed']?.toString() ?? '0') ?? 0.0,

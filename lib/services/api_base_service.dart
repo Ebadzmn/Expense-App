@@ -112,7 +112,15 @@ User ID: ${tokenService?.getUserId()}
           );
           break;
         case 'DELETE':
-          response = await _client.delete(uri, headers: requestHeaders);
+          if (body != null) {
+            final req = http.Request('DELETE', uri);
+            req.headers.addAll(requestHeaders);
+            req.body = json.encode(body);
+            final streamed = await _client.send(req);
+            response = await http.Response.fromStream(streamed);
+          } else {
+            response = await _client.delete(uri, headers: requestHeaders);
+          }
           break;
         default:
           throw Exception('Unsupported HTTP method: $method');
