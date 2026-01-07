@@ -380,62 +380,9 @@ class _ComparisonPageScreenState extends State<ComparisonPageScreen> {
                   }),
 
                   // Results Section
-                  // Temporarily always show the empty state ("No deals found").
-                  // Keeping the dynamic "Better Deals Found" section commented out as requested.
-                  Container(
-                    width: double.infinity,
-                    padding: EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color:
-                          isDarkMode ? const Color(0xFF1E1E1E) : Colors.white,
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(
-                        color: isDarkMode
-                            ? const Color(0xFF333333)
-                            : Colors.grey[300]!,
-                      ),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Icon(
-                              Icons.info_outline,
-                              color:
-                                  isDarkMode ? Colors.white : Colors.black54,
-                              size: 20,
-                            ),
-                            SizedBox(width: 8),
-                            Text(
-                              'no_deals_found'.tr,
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                                color: isDarkMode ? Colors.white : Colors.black,
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 8),
-                        Text(
-                          'try_different_product_or_increase_price'.tr,
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: isDarkMode
-                                ? Colors.grey[400]
-                                : Colors.grey[600],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  /*
                   Obx(() {
                     if (comparisonCtrl.deals.isEmpty &&
                         !comparisonCtrl.isLoading.value) {
-                      // Empty state message when no deals are found
                       return Container(
                         width: double.infinity,
                         padding: EdgeInsets.all(16),
@@ -494,8 +441,6 @@ class _ComparisonPageScreenState extends State<ComparisonPageScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         SizedBox(height: screenHeight * 0.03),
-
-                        // Better Deals Found Section with Count
                         Text(
                           'better_deals_found_count'.trParams({
                             'count': comparisonCtrl.deals.length.toString(),
@@ -507,8 +452,6 @@ class _ComparisonPageScreenState extends State<ComparisonPageScreen> {
                           ),
                         ),
                         SizedBox(height: screenHeight * 0.02),
-
-                        // Loading Indicator
                         if (comparisonCtrl.isLoading.value)
                           Center(
                             child: Padding(
@@ -516,8 +459,6 @@ class _ComparisonPageScreenState extends State<ComparisonPageScreen> {
                               child: CircularProgressIndicator(),
                             ),
                           ),
-
-                        // Deal Cards List
                         if (!comparisonCtrl.isLoading.value)
                           ...comparisonCtrl.deals.map(
                             (deal) => _buildDealCard(
@@ -530,12 +471,10 @@ class _ComparisonPageScreenState extends State<ComparisonPageScreen> {
                               comparisonCtrl.maxPrice.value,
                             ),
                           ),
-
                         SizedBox(height: screenHeight * 0.02),
                       ],
                     );
                   }),
-                  */
                 ],
               ),
             ),
