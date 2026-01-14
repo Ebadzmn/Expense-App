@@ -406,10 +406,12 @@ class MainHomeScreen extends StatelessWidget {
                             final hasBudget =
                                 controller.monthlyBudget.value > 0.0;
                             if (!sub.isActivePro && hasBudget) {
-                              Get.snackbar(
-                                'upgradeToProToView'.tr,
-                                'upgrade_subtitle'.tr,
-                                snackPosition: SnackPosition.BOTTOM,
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    'upgrade_subtitle'.tr,
+                                  ),
+                                ),
                               );
                               Get.toNamed(AppRoutes.premiumPlans);
                               return;

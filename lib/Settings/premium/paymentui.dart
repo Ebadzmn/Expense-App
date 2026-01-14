@@ -257,11 +257,13 @@ class _PremiumPlansScreenState extends State<PremiumPlansScreen> {
                             onTap: () {
                               // if yearly product not available, don't change selection to it
                               if (yearly == null) {
-                                Get.snackbar(
-                                  'Not available',
-                                  'Yearly plan is not available yet. Try reinstalling the app from Play Store or wait a few minutes.'
-                                      .tr,
-                                  snackPosition: SnackPosition.BOTTOM,
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      'Yearly plan is not available yet. Try reinstalling the app from Play Store or wait a few minutes.'
+                                          .tr,
+                                    ),
+                                  ),
                                 );
                                 return;
                               }
@@ -413,20 +415,28 @@ class _PremiumPlansScreenState extends State<PremiumPlansScreen> {
 
                                     // Guard: if store is not available (e.g., web or unsupported), block upgrade
                                     if (!iap.isAvailable.value) {
-                                      Get.snackbar(
-                                        'Store not available',
-                                        'In-app purchases are not available on this device. Please use Play Store or App Store.',
-                                        snackPosition: SnackPosition.BOTTOM,
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        SnackBar(
+                                          content: Text(
+                                            'In-app purchases are not available on this device. Please use Play Store or App Store.'
+                                                .tr,
+                                          ),
+                                        ),
                                       );
                                       return;
                                     }
 
                                     // If no plan selected, block and prompt selection
                                     if (selected == null) {
-                                      Get.snackbar(
-                                        'Select a plan',
-                                        'Please choose Monthly or Yearly before upgrading.',
-                                        snackPosition: SnackPosition.BOTTOM,
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        SnackBar(
+                                          content: Text(
+                                            'Please choose Monthly or Yearly before upgrading.'
+                                                .tr,
+                                          ),
+                                        ),
                                       );
                                       return;
                                     }

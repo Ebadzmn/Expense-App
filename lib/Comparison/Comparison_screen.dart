@@ -606,6 +606,48 @@ Widget _buildDealCard(
   final url = deal['url'] ?? '';
   final dealType = deal['type'] ?? 'generic';
 
+  final rawDealCurrencySymbol =
+      deal['currencySymbol'] ?? deal['currency_symbol'];
+  final rawDealCurrencyCode =
+      deal['currencyCode'] ?? deal['currency_code'] ?? deal['currency'];
+
+  String effectiveCurrencySymbol = currencyService.currencySymbol.value;
+
+  if (rawDealCurrencySymbol != null &&
+      rawDealCurrencySymbol.toString().trim().isNotEmpty) {
+    effectiveCurrencySymbol = rawDealCurrencySymbol.toString().trim();
+  } else if (rawDealCurrencyCode != null &&
+      rawDealCurrencyCode.toString().trim().isNotEmpty) {
+    final code = rawDealCurrencyCode.toString().trim().toUpperCase();
+    switch (code) {
+      case 'USD':
+        effectiveCurrencySymbol = '\$';
+        break;
+      case 'EUR':
+        effectiveCurrencySymbol = '€';
+        break;
+      case 'GBP':
+        effectiveCurrencySymbol = '£';
+        break;
+      case 'JPY':
+        effectiveCurrencySymbol = '¥';
+        break;
+      case 'CAD':
+        effectiveCurrencySymbol = 'C\$';
+        break;
+      case 'INR':
+        effectiveCurrencySymbol = '₹';
+        break;
+      default:
+        effectiveCurrencySymbol = currencyService.currencySymbol.value;
+        break;
+    }
+  }
+
+  String formatDealAmount(double amount, {int decimals = 2}) {
+    return '$effectiveCurrencySymbol${amount.toStringAsFixed(decimals)}';
+  }
+
   String displayTitle = (title is String && title.trim().isNotEmpty)
       ? title.toString().trim()
       : searchTerm;
@@ -757,7 +799,7 @@ Widget _buildDealCard(
                         // Show price for specific deals, hide for generic
                         if (dealType == 'specific' && price > 0)
                           Text(
-                            currencyService.formatAmount(price),
+                            formatDealAmount(price),
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
@@ -779,7 +821,7 @@ Widget _buildDealCard(
                         borderRadius: BorderRadius.circular(16),
                       ),
                       child: Text(
-                        'Save ${currencyService.formatAmount(savingsAmount)} (${savingsPercentage.toStringAsFixed(0)}%)',
+                        'Save ${formatDealAmount(savingsAmount)} (${savingsPercentage.toStringAsFixed(0)}%)',
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 12,
@@ -798,7 +840,7 @@ Widget _buildDealCard(
                         borderRadius: BorderRadius.circular(16),
                       ),
                       child: Text(
-                        currencyService.formatAmount(price),
+                        formatDealAmount(price),
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 12,

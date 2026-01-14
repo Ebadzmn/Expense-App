@@ -26,6 +26,7 @@ import '../Settings/applock/yourfaceissave.dart';
 import '../Settings/currencyexchange.dart';
 import '../Settings/language/languageui.dart';
 import '../Settings/main_setting_screen.dart';
+import '../Settings/country_selection_screen.dart';
 import '../Settings/notification/notificationscreen.dart';
 import '../Settings/premium/paymentsuccessscreen.dart';
 // import '../Settings/premium/paymenttypetui.dart';
@@ -102,6 +103,7 @@ class AppRoutes {
   static const String faceAuthentication = '/faceAuthentication';
   static const String appearance = '/appearance';
   static const String languageSettings = '/languageSettings'; // 🔥 New route constant
+  static const String countrySelection = '/countrySelection';
 
   // Transaction Related Routes
   static const String addTransaction = '/addTransaction';
@@ -169,6 +171,7 @@ class AppRoutes {
     GetPage(name: faceAuthentication, page: () => FaceAuthenticationScreen()),
     GetPage(name: appearance, page: () => const AppearanceScreen()),
     GetPage(name: languageSettings, page: () => const LanguageSettingsScreen()), // 🔥 New route
+    GetPage(name: countrySelection, page: () => CountrySelectionScreen()),
 
     // Transaction Routes
     GetPage(

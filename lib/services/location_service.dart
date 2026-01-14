@@ -10,6 +10,14 @@ class LocationService extends GetxService {
   static const String _countryKey = 'user_country';
   final _country = ''.obs;
   String get country => _country.value;
+  set country(String value) => _country.value = value;
+
+  Future<void> setCountryManually(String countryName) async {
+    final prefs = await SharedPreferences.getInstance();
+    _country.value = countryName;
+    await prefs.setString(_countryKey, countryName);
+    debugPrint("Country manually set: ${_country.value.toLowerCase()}");
+  }
 
   Future<LocationService> init() async {
     await _detectAndStoreLocation();

@@ -234,6 +234,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     themeController.isDarkModeActive,
                   ),
                   _buildSettingsItem(
+                    'country_change'.tr,
+                    'country_change_subtitle'.tr,
+                    'assets/icons/Language.png',
+                    () => Get.toNamed(AppRoutes.countrySelection),
+                    screenWidth,
+                    screenHeight,
+                    themeController.isDarkModeActive,
+                  ),
+                  _buildSettingsItem(
                     'Privacy Policy',
                     'Read privacy policy for data handling',
                     'assets/icons/Terms & Conditions.png',
